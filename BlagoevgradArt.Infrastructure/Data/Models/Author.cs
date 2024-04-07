@@ -31,5 +31,10 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         [MaxLength(ImagePathMaxLength)]
         [Comment("File path to the author's profile picture. | Файлов път до профилната снимка на автора.")]
         public string? ProfilePicturePath { get; set; }
+
+        /// <summary>
+        /// Navigation property to the many-to-many table of AuthorExhibitions.
+        /// </summary>
+        public List<AuthorExhibition> AuthorExhibitions { get; set; } = new List<AuthorExhibition>();
     }
 }
