@@ -38,5 +38,10 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         [MaxLength(GalleryDescriptionMaxLength)]
         [Comment("Description of the gallery. | Описание на галерията.")]
         public string Description { get; set; } = string.Empty;
+
+        /// <summary>
+        /// List of exhibitions in the gallery.
+        /// </summary>
+        public List<Exhibition> Exhibitions { get; set; } = new List<Exhibition>();
     }
 }
