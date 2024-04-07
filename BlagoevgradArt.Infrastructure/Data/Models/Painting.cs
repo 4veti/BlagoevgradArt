@@ -82,7 +82,7 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         public ArtType ArtType { get; set; } = null!;
 
         /// <summary>
-        /// List of used techniques.
+        /// List of used techniques in the painting.
         /// </summary>
         public List<Technique> Techniques { get; set; } = new List<Technique>();
 
@@ -100,7 +100,7 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         public BaseType BaseType { get; set; } = null!;
 
         /// <summary>
-        /// List of materials used in the painting.
+        /// List of the used materials in the painting.
         /// </summary>
         public List<Material> Materials { get; set; } = new List<Material>();
 
@@ -117,7 +117,7 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         /// </summary>
         [Required]
         [Column(TypeName = "tinyint")]
-        [Comment("Painting's width in centimetres. | Широчина на картината в сантиметри.")]
+        [Comment("Painting's width in centimeters. | Широчина на картината в сантиметри.")]
         public int WidthCm { get; set; }
 
         /// <summary>
@@ -131,12 +131,12 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         /// Unique identifier of the exhibition which hosts the painting.
         /// </summary>
         [Comment("Unique identifier of the exhibition which hosts the painting. | Уникален идентификатор на изложбата, в която е картината.")]
-        public int? ExhibitionParticipationId { get; set; }
+        public int? ExhibitionId { get; set; }
 
         /// <summary>
-        /// Navigation property to the exibition that hosts the painting.
+        /// Navigation property to the exhibition that hosts the painting.
         /// </summary>
-        [ForeignKey(nameof(ExhibitionParticipationId))]
-        public Exhibition? ExhibitionParticipation { get; set; }
+        [ForeignKey(nameof(ExhibitionId))]
+        public Exhibition? Exhibition { get; set; }
     }
 }

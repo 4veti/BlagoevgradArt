@@ -55,6 +55,11 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         public Gallery Gallery { get; set; } = null!;
 
         /// <summary>
+        /// List of paintings in the exhibition.
+        /// </summary>
+        public List<Painting> Paintings { get; set; } = new List<Painting>();
+
+        /// <summary>
         /// Navigation property to the many-to-many entity of AuthorExhibitions.
         /// </summary>
         public List<AuthorExhibition> AuthorExhibitions { get; set; } = new List<AuthorExhibition>();
