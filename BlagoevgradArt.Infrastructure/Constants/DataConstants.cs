@@ -30,7 +30,26 @@
         public const int BaseTypeNameMaxLength = 30;
         public const int GenreNameMaxLength = 30;
 
+        public const int ExhibitionNameMinLength = 3;
+        public const int ExhibitionNameMaxLength = 50;
+
+        public const int GalleryAddressMinLength = 10;
+        public const int GalleryAddressMaxLength = 150;
+
         public const int GalleryNameMinLength = 3;
         public const int GalleryNameMaxLength = 50;
+
+        public const int GalleryWorkingTimeMinLength = 10;
+        public const int GalleryWorkingTimeMaxLength = 100;
+
+        public const int GalleryDescriptionMinLength = 10;
+        public const int GalleryDescriptionMaxLength = 250;
+
+        public const int ExhibitionDescriptionMinLength = 10;
+        public const int ExhibitionDescriptionMaxLength = 250;
+
+        public const int TechniqueMinLength = 3;
+        public const int TechniqueMaxLength = 30;
+
     }
 }
