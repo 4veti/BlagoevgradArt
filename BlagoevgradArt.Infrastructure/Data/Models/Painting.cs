@@ -122,11 +122,14 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         [Comment("Physical availability of the painting. | Физическа наличност на картината.")]
         public bool IsAvailable { get; set; }
 
+        /// <summary>
+        /// Unique identifier of the exhibition which hosts the painting.
+        /// </summary>
         [Comment("Unique identifier of the exhibition which hosts the painting. | Уникален идентификатор на изложбата, в която е картината.")]
         public int? ExhibitionParticipationId { get; set; }
 
         /// <summary>
-        /// Current participation in an exhibition.
+        /// Navigation property to the exibition that hosts the painting.
         /// </summary>
         [ForeignKey(nameof(ExhibitionParticipationId))]
         public Exhibition? ExhibitionParticipation { get; set; }
