@@ -13,7 +13,6 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         /// <summary>
         /// Unique identifier of the author.
         /// </summary>
-        [MaxLength(AuthorIdMaxLength)]
         [Comment("Author's unique identifier. | Уникален идентификатор на автора.")]
         public string AuthorId { get; set; } = string.Empty;
 
@@ -32,7 +31,6 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         /// <summary>
         /// Navigation property of the exhibition.
         /// </summary>
-        [ForeignKey(nameof(ExhibitionId))]
         public Exhibition Exhibition { get; set; } = null!;
     }
 }

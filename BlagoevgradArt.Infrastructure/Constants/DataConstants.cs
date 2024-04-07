@@ -6,12 +6,13 @@
         public const int TitleMaxLength = 50;
 
         public const int AuthorIdMaxLength = 42;
-        public const int GalleryIdMaxLength = 42;
-
         public const int YearMinValue = 1900;
 
         public const int ImagePathMaxLength = 150;
         public const int ImageSizeMaxMb = 32;
+
+        public const int ImageDescriptionMinLength = 10;
+        public const int ImageDescriptionMaxLength = 250;
 
         public const int HeightCmMinValue = 1;
         public const int HeightCmMaxLength = 255;

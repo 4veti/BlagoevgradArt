@@ -30,7 +30,6 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         /// Unique identifier of the painting's author.
         /// </summary>
         [Required]
-        [MaxLength(AuthorIdMaxLength)]
         [Comment("Author's unique identifier. | Уникален идентификатор на автора.")]
         public string AuthorId { get; set; } = string.Empty;
 
@@ -103,6 +102,13 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         /// List of the used materials in the painting.
         /// </summary>
         public List<Material> Materials { get; set; } = new List<Material>();
+
+        /// <summary>
+        /// Description of the painting.
+        /// </summary>
+        [MaxLength(ImageDescriptionMaxLength)]
+        [Comment("Description of the painting. | Описание на картината.")]
+        public string? Description { get; set; }
 
         /// <summary>
         /// Height of the painting in centimeters.
