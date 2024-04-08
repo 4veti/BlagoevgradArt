@@ -1,15 +1,30 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using BlagoevgradArt.Infrastructure.Data.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using static BlagoevgradArt.Infrastructure.Constants.DataConstants;
 
 namespace BlagoevgradArt.Infrastructure.Data.Models
 {
     /// <summary>
-    /// The author entity class. It inherits the IdentityUser class.
+    /// The author entity class.
     /// </summary>
-    public class Author : IdentityUser
+    [Index(nameof(PhoneNumber), IsUnique = true)]
+    public class Author : ISpecialUser
     {
+        /// <summary>
+        /// User unique identifier.
+        /// </summary>
+        [Required]
+        [Comment("User unique identifier. | Уникален идентификатор на потребителя.")]
+        public string UserId { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Navigation property to the IdentityUser.
+        /// </summary>
+        [ForeignKey(nameof(UserId))]
+        public ApplicationUser User { get; set; } = null!;
+
         /// <summary>
         /// First name of the author.
         /// </summary>
@@ -24,6 +39,14 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         [MaxLength(LastNameMaxLength)]
         [Comment("Last name of the author. | Фамилия на автора.")]
         public string? LastName { get; set; }
+
+        /// <summary>
+        /// Author's phone number.
+        /// </summary>
+        [Required]
+        [MaxLength(PhoneNumberMaxLength)]
+        [Comment("Author's phone number. | Телефонен номер на автора.")]
+        public string PhoneNumber { get; set; } = string.Empty;
 
         /// <summary>
         /// Path to the author's profile picture.

@@ -46,6 +46,9 @@
         public const int GalleryDescriptionMinLength = 10;
         public const int GalleryDescriptionMaxLength = 250;
 
+        public const int AuthorPhoneMinLength = 7;
+        public const int PhoneNumberMaxLength = 15;
+
         public const int ExhibitionDescriptionMinLength = 10;
         public const int ExhibitionDescriptionMaxLength = 250;
 
