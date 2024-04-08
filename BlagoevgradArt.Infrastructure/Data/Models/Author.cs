@@ -1,5 +1,4 @@
-﻿using BlagoevgradArt.Infrastructure.Data.Contracts;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static BlagoevgradArt.Infrastructure.Constants.DataConstants;
@@ -10,7 +9,7 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
     /// The author entity class.
     /// </summary>
     [Index(nameof(PhoneNumber), IsUnique = true)]
-    public class Author : ISpecialUser
+    public class Author
     {
         /// <summary>
         /// User unique identifier.
@@ -20,10 +19,10 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         public string UserId { get; set; } = string.Empty;
 
         /// <summary>
-        /// Navigation property to the IdentityUser.
+        /// Navigation property to the helper IdentityUser class.
         /// </summary>
         [ForeignKey(nameof(UserId))]
-        public ApplicationUser User { get; set; } = null!;
+        public AuthorHelperUser User { get; set; } = null!;
 
         /// <summary>
         /// First name of the author.

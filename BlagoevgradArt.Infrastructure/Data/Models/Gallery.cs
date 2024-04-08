@@ -1,6 +1,4 @@
-﻿using BlagoevgradArt.Infrastructure.Data.Contracts;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static BlagoevgradArt.Infrastructure.Constants.DataConstants;
@@ -11,7 +9,7 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
     /// The gallery entity class.
     /// </summary>
     [Index(nameof(PhoneNumber), IsUnique = true)]
-    public class Gallery : ISpecialUser
+    public class Gallery
     {
         /// <summary>
         /// User unique identifier.
@@ -21,11 +19,14 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         public string UserId { get; set; } = string.Empty;
 
         /// <summary>
-        /// Navigation property to the IdentityUser.
+        /// Navigation property to the helper IdentityUser class.
         /// </summary>
         [ForeignKey(nameof(UserId))]
-        public ApplicationUser User { get; set; } = null!;
+        public GalleryHelperUser User { get; set; } = null!;
 
+        /// <summary>
+        /// Name of the gallery.
+        /// </summary>
         [Required]
         [MaxLength(GalleryNameMaxLength)]
         [Comment("Name of the gallery. | Име на галерията.")]
