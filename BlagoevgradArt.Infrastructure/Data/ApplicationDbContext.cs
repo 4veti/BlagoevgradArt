@@ -23,10 +23,33 @@ namespace BlagoevgradArt.Data
         public DbSet<Painting> Paintings { get; set; } = null!;
         public DbSet<Gallery> Galleries { get; set; } = null!;
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+
+            optionsBuilder.EnableSensitiveDataLogging(); // REMOVE FOR PRODUCTION
+        }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.ApplyConfiguration(new AuthorExhibitionConfiguration());
+            builder.ApplyConfiguration(new BaseTypeConfiguration());
+            builder.ApplyConfiguration(new ArtTypeConfiguration());
+            builder.ApplyConfiguration(new MaterialConfiguration());
+            builder.ApplyConfiguration(new TechniqueConfiguration());
+            builder.ApplyConfiguration(new GenreConfiguration());
+
+            builder.ApplyConfiguration(new PaintingConfiguration());
+
+            builder.ApplyConfiguration(new AuthorHelperUserConfiguration());
+            builder.ApplyConfiguration(new AuthorConfiguration());
+
+            builder.ApplyConfiguration(new GalleryHelperUserConfiguration());
+            builder.ApplyConfiguration(new GalleryConfiguration());
+
             builder.ApplyConfiguration(new ExhibitionConfiguration());
+
+            builder.ApplyConfiguration(new AuthorExhibitionConfiguration());
+            builder.ApplyConfiguration(new PaintingMaterialConfiguration());
 
             base.OnModelCreating(builder);
         }

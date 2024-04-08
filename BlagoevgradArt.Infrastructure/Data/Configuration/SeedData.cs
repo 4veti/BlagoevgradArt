@@ -13,7 +13,7 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
 
         public Painting[] Paintings { get; set; }
 
-        public Exhibition Exhibition { get; set; }
+        public Exhibition[] Exhibitions { get; set; }
 
         public AuthorHelperUser AuthorHelperUser1 { get; set; }
         public AuthorHelperUser AuthorHelperUser2 { get; set; }
@@ -24,6 +24,7 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
         public Gallery Gallery { get; set; }
 
         public AuthorExhibition[] AuthorsExhibitions { get; set; }
+        public PaintingMaterial[] PaintingsMaterials { get; set; }
 
         public SeedData()
         {
@@ -32,10 +33,11 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
             SeedArtTypes();
             SeedTechniques();
             SeedGenres();
-            SeedAuthors();
             SeedPaintings();
+            SeedAuthors();
             SeedGalleries();
             SeedExhibitions();
+            SeedPaintingsMaterials();
             SeedAuthorsExhibitions();
         }
 
@@ -141,7 +143,7 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
                 UserId = "7d7a4b74-dd27-4262-b932-ee5cd63a519d",
                 FirstName = "Vladimir",
                 LastName = "Maistora",
-                PhoneNumber = "+359888654321",
+                PhoneNumber = "+359888123456",
                 ProfilePicturePath = "BlagoevgradArt\\Images\\Authors\\Tsanko_Lavrenov.jpg"
             };
 
@@ -160,9 +162,17 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
         {
             Paintings = new Painting[]
             {
-                new Painting {Id = 1, Title = "Жена", AuthorId = 1, Year = 1920, GenreId = 1, ArtTypeId = 3, BaseTypeId = 1, Materials = new List<Material>() { Materials[1] }, Description = "Тази картина вероятно е от XXв.", HeightCm = 69, WidthCm = 42, IsAvailable = false, ImagePath = "BlagoevgradArt\\Images\\Paintings\\Vladimir_Woman.jpg"},
-                new Painting {Id = 2, Title = "Майка", AuthorId = 1, Year = 1923, GenreId = 1, ArtTypeId = 3, BaseTypeId = 2, Materials = new List<Material>() { Materials[2] }, Description = "Тази картина изобразява неизвестна жена от миналия век.", HeightCm = 50, WidthCm = 30, IsAvailable = false, ImagePath = "BlagoevgradArt\\Images\\Paintings\\Vladimir_Mother.jpg"},
-                new Painting {Id = 3, Title = "Хилендарския манастир", AuthorId = 2, Year = 1945, GenreId = 2, ArtTypeId = 1, BaseTypeId = 1, Materials = new List<Material>() { Materials[1], Materials[6] }, Description = "Пейзаж на Хилендарския манастир.", HeightCm = 55, WidthCm = 73, IsAvailable = false, ImagePath = "BlagoevgradArt\\Images\\Paintings\\Tsanko_Hilendarski.jpg"},
+                new Painting {Id = 1, Title = "Жена", AuthorId = 1, Year = 1920, GenreId = 1, ArtTypeId = 3, BaseTypeId = 1,
+                    Description = "Тази картина вероятно е от XXв.", ExhibitionId = 1,
+                    HeightCm = 69, WidthCm = 42, IsAvailable = false, ImagePath = "BlagoevgradArt\\Images\\Paintings\\Vladimir_Woman.jpg"},
+
+                new Painting {Id = 2, Title = "Майка", AuthorId = 1, Year = 1923, GenreId = 1, ArtTypeId = 3, BaseTypeId = 2,
+                    Description = "Тази картина изобразява неизвестна жена от миналия век.", ExhibitionId = 1,
+                    HeightCm = 50, WidthCm = 30, IsAvailable = false, ImagePath = "BlagoevgradArt\\Images\\Paintings\\Vladimir_Mother.jpg"},
+
+                new Painting {Id = 3, Title = "Хилендарския манастир", AuthorId = 2, Year = 1945, GenreId = 2, ArtTypeId = 1, BaseTypeId = 1,
+                    Description = "Пейзаж на Хилендарския манастир.", ExhibitionId = 1,
+                    HeightCm = 55, WidthCm = 73, IsAvailable = false,  ImagePath = "BlagoevgradArt\\Images\\Paintings\\Tsanko_Hilendarski.jpg"}
             };
         }
 
@@ -195,15 +205,16 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
 
         private void SeedExhibitions()
         {
-            Exhibition = new Exhibition()
+            Exhibitions = new Exhibition[]
             {
-                Id = 1,
-                Name = "Началото на българското възрожденско изкуство.",
-                OpeningDate = DateTime.Today.AddDays(25).AddHours(15),
-                Description = "Запознайте се с някои от основоположниците на българското възрожденско изкуство."
-                ,
-                GalleryId = 1,
-                Paintings = new List<Painting>() { Paintings[0], Paintings[1], Paintings[2] }
+                new Exhibition()
+                {
+                    Id = 1,
+                    Name = "Началото на българското възрожденско изкуство.",
+                    OpeningDate = DateTime.Today.AddDays(25).AddHours(15),
+                    Description = "Запознайте се с някои от основоположниците на българското възрожденско изкуство.",
+                    GalleryId = 1
+                }
             };
         }
 
@@ -213,6 +224,17 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
             {
                 new AuthorExhibition() { AuthorId = 1, ExhibitionId = 1 },
                 new AuthorExhibition() { AuthorId = 2, ExhibitionId = 1 }
+            };
+        }
+
+        private void SeedPaintingsMaterials()
+        {
+            PaintingsMaterials = new PaintingMaterial[]
+            {
+                new PaintingMaterial() { PaintingId = 1, MaterialId = 1 },
+                new PaintingMaterial() { PaintingId = 2, MaterialId = 2 },
+                new PaintingMaterial() { PaintingId = 3, MaterialId = 1 },
+                new PaintingMaterial() { PaintingId = 3, MaterialId = 6 },
             };
         }
     }

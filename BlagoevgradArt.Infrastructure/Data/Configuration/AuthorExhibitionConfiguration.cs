@@ -9,6 +9,10 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
         public void Configure(EntityTypeBuilder<AuthorExhibition> builder)
         {
             builder.HasKey(ae => new { ae.AuthorId, ae.ExhibitionId });
+
+            SeedData data = new();
+
+            builder.HasData(data.AuthorsExhibitions);
         }
     }
 }

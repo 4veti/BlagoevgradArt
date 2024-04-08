@@ -12,6 +12,10 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
                 .WithOne(ae => ae.Exhibition)
                 .HasForeignKey(ae => ae.ExhibitionId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            SeedData data = new();
+
+            builder.HasData(data.Exhibitions);
         }
     }
 }
