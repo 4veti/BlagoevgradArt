@@ -83,7 +83,7 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         /// <summary>
         /// List of used techniques in the painting.
         /// </summary>
-        public List<Technique> Techniques { get; set; } = new List<Technique>();
+        public List<Technique>? Techniques { get; set; } = new List<Technique>();
 
         /// <summary>
         /// Unique identifier of the painting's base type.
