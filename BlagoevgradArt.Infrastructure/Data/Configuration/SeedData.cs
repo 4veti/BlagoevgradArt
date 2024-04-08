@@ -36,6 +36,7 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
             SeedPaintings();
             SeedAuthors();
             SeedGalleries();
+            SeedExhibitions();
             SeedPaintingsMaterials();
             SeedAuthorsExhibitions();
         }
@@ -142,7 +143,7 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
                 UserId = "7d7a4b74-dd27-4262-b932-ee5cd63a519d",
                 FirstName = "Vladimir",
                 LastName = "Maistora",
-                PhoneNumber = "+359888654321",
+                PhoneNumber = "+359888123456",
                 ProfilePicturePath = "BlagoevgradArt\\Images\\Authors\\Tsanko_Lavrenov.jpg"
             };
 
@@ -162,15 +163,15 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
             Paintings = new Painting[]
             {
                 new Painting {Id = 1, Title = "Жена", AuthorId = 1, Year = 1920, GenreId = 1, ArtTypeId = 3, BaseTypeId = 1,
-                    Description = "Тази картина вероятно е от XXв.",
+                    Description = "Тази картина вероятно е от XXв.", ExhibitionId = 1,
                     HeightCm = 69, WidthCm = 42, IsAvailable = false, ImagePath = "BlagoevgradArt\\Images\\Paintings\\Vladimir_Woman.jpg"},
 
                 new Painting {Id = 2, Title = "Майка", AuthorId = 1, Year = 1923, GenreId = 1, ArtTypeId = 3, BaseTypeId = 2,
-                    Description = "Тази картина изобразява неизвестна жена от миналия век.",
+                    Description = "Тази картина изобразява неизвестна жена от миналия век.", ExhibitionId = 1,
                     HeightCm = 50, WidthCm = 30, IsAvailable = false, ImagePath = "BlagoevgradArt\\Images\\Paintings\\Vladimir_Mother.jpg"},
 
                 new Painting {Id = 3, Title = "Хилендарския манастир", AuthorId = 2, Year = 1945, GenreId = 2, ArtTypeId = 1, BaseTypeId = 1,
-                    Description = "Пейзаж на Хилендарския манастир.",
+                    Description = "Пейзаж на Хилендарския манастир.", ExhibitionId = 1,
                     HeightCm = 55, WidthCm = 73, IsAvailable = false,  ImagePath = "BlagoevgradArt\\Images\\Paintings\\Tsanko_Hilendarski.jpg"}
             };
         }
@@ -199,6 +200,21 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
                 WorkingTime = "Пон-Пет 08:30-19:30",
                 PhoneNumber = "+359888696969",
                 Description = "Най-дейната и известна галерия в югозапада."
+            };
+        }
+
+        private void SeedExhibitions()
+        {
+            Exhibitions = new Exhibition[]
+            {
+                new Exhibition()
+                {
+                    Id = 1,
+                    Name = "Началото на българското възрожденско изкуство.",
+                    OpeningDate = DateTime.Today.AddDays(25).AddHours(15),
+                    Description = "Запознайте се с някои от основоположниците на българското възрожденско изкуство.",
+                    GalleryId = 1
+                }
             };
         }
 

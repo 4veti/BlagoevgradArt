@@ -14,7 +14,6 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
                 .OnDelete(DeleteBehavior.Restrict);
 
             SeedData data = new();
-            data.Exhibitions[0].Paintings.Add(data.Paintings[0]);
 
             builder.HasData(data.Exhibitions);
         }

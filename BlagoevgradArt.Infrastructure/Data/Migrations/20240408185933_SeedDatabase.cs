@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -8,10 +9,6 @@ namespace BlagoevgradArt.Infrastructure.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_AuthorsExhibitions_Exhibitions_ExhibitionId",
-                table: "AuthorsExhibitions");
-
             migrationBuilder.CreateTable(
                 name: "PaintingMaterial",
                 columns: table => new
@@ -59,9 +56,9 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "1b6e897e-6594-4453-ade4-305d69ae8391", 0, "91380cc1-0db9-4714-894d-198143251aae", "AuthorHelperUser", "tsankolavrenov@mail.com", false, false, null, "tsankolavrenov@mail.com", "tsankolavrenov@mail.com", "AQAAAAEAACcQAAAAEAiaJ9avksootfA7cIHs6czLhcZtPI5KDPXnQ/zTxufgHRW5jNMy/iyOP2jFHWvPhg==", null, false, "606d2258-45df-4918-bb5f-7f7e965d8e15", false, "tsankolavrenov@mail.com" },
-                    { "7d7a4b74-dd27-4262-b932-ee5cd63a519d", 0, "52330b0d-5290-4450-a452-71d76cf71aea", "AuthorHelperUser", "vladimaistora@mail.com", false, false, null, "vladimaistora@mail.com", "vladimaistora@mail.com", "AQAAAAEAACcQAAAAEF4E75R8kht7UOsNG/4x9fKjw3R6JhDHo8QP/70ySYi/+y1116Y/Xam/PTggyXnmIg==", null, false, "49975b45-2dd6-4442-bc1a-254b4f3ed5ba", false, "vladimaistora@mail.com" },
-                    { "a9d96207-30f8-40cb-a670-adc6acd76fba", 0, "b3708e47-789e-4153-b49a-b4ade5781c2b", "GalleryHelperUser", "gallery@mail.com", false, false, null, "gallery@mail.com", "gallery@mail.com", null, null, false, "edd41f67-8c44-4f97-879e-433f46bbc52b", false, "gallery@mail.com" }
+                    { "1b6e897e-6594-4453-ade4-305d69ae8391", 0, "b77197d7-cc95-4a40-babd-50bca4286f61", "AuthorHelperUser", "tsankolavrenov@mail.com", false, false, null, "tsankolavrenov@mail.com", "tsankolavrenov@mail.com", "AQAAAAEAACcQAAAAECNi86wYmiI06izBl/5k2ZQjM/zeBNO6Bz9rQ3xIk3MfriosScMygK1Z3moEh7Cj1A==", null, false, "c0e332f4-bc5c-47c2-be26-dd1269e5e707", false, "tsankolavrenov@mail.com" },
+                    { "7d7a4b74-dd27-4262-b932-ee5cd63a519d", 0, "6d4e555e-e3ae-4b8d-a91c-0ea87e2a59c2", "AuthorHelperUser", "vladimaistora@mail.com", false, false, null, "vladimaistora@mail.com", "vladimaistora@mail.com", "AQAAAAEAACcQAAAAEDd9bTiXVbfHgvK+Agg0LvRQShXWvOz75/1aDDV5fsC/Q3QIr5QESiGKtRrfTSH2+A==", null, false, "77fe2ae1-40de-4a8c-a960-af50da446cae", false, "vladimaistora@mail.com" },
+                    { "a9d96207-30f8-40cb-a670-adc6acd76fba", 0, "2eeab427-8b6d-49b9-9c29-b7e2294401dd", "GalleryHelperUser", "gallery@mail.com", false, false, null, "gallery@mail.com", "gallery@mail.com", null, null, false, "af200ab0-3131-41f5-becb-a90f9d83f0e9", false, "gallery@mail.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -119,7 +116,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "Authors",
                 columns: new[] { "Id", "FirstName", "LastName", "PhoneNumber", "ProfilePicturePath", "UserId" },
-                values: new object[] { 1, "Vladimir", "Maistora", "+359888654321", "BlagoevgradArt\\Images\\Authors\\Tsanko_Lavrenov.jpg", "7d7a4b74-dd27-4262-b932-ee5cd63a519d" });
+                values: new object[] { 1, "Vladimir", "Maistora", "+359888123456", "BlagoevgradArt\\Images\\Authors\\Tsanko_Lavrenov.jpg", "7d7a4b74-dd27-4262-b932-ee5cd63a519d" });
 
             migrationBuilder.InsertData(
                 table: "Authors",
@@ -130,6 +127,11 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                 table: "Galleries",
                 columns: new[] { "Id", "Address", "Description", "MainImage", "Name", "PhoneNumber", "UserId", "WorkingTime" },
                 values: new object[] { 1, "ул. \"Горно нанадолнище\" №0, кв. \"Кал до колене\", Благоевград.", "Най-дейната и известна галерия в югозапада.", null, "АртГалерия", "+359888696969", "a9d96207-30f8-40cb-a670-adc6acd76fba", "Пон-Пет 08:30-19:30" });
+
+            migrationBuilder.InsertData(
+                table: "Exhibitions",
+                columns: new[] { "Id", "Description", "GalleryId", "Name", "OpeningDate" },
+                values: new object[] { 1, "Запознайте се с някои от основоположниците на българското възрожденско изкуство.", 1, "Началото на българското възрожденско изкуство.", new DateTime(2024, 5, 3, 15, 0, 0, 0, DateTimeKind.Local) });
 
             migrationBuilder.InsertData(
                 table: "AuthorsExhibitions",
@@ -145,9 +147,9 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                 columns: new[] { "Id", "ArtTypeId", "AuthorId", "BaseTypeId", "Description", "ExhibitionId", "GenreId", "HeightCm", "ImagePath", "IsAvailable", "Title", "WidthCm", "Year" },
                 values: new object[,]
                 {
-                    { 1, 3, 1, 1, "Тази картина вероятно е от XXв.", null, 1, (byte)69, "BlagoevgradArt\\Images\\Paintings\\Vladimir_Woman.jpg", false, "Жена", (byte)42, (short)1920 },
-                    { 2, 3, 1, 2, "Тази картина изобразява неизвестна жена от миналия век.", null, 1, (byte)50, "BlagoevgradArt\\Images\\Paintings\\Vladimir_Mother.jpg", false, "Майка", (byte)30, (short)1923 },
-                    { 3, 1, 2, 1, "Пейзаж на Хилендарския манастир.", null, 2, (byte)55, "BlagoevgradArt\\Images\\Paintings\\Tsanko_Hilendarski.jpg", false, "Хилендарския манастир", (byte)73, (short)1945 }
+                    { 1, 3, 1, 1, "Тази картина вероятно е от XXв.", 1, 1, (byte)69, "BlagoevgradArt\\Images\\Paintings\\Vladimir_Woman.jpg", false, "Жена", (byte)42, (short)1920 },
+                    { 2, 3, 1, 2, "Тази картина изобразява неизвестна жена от миналия век.", 1, 1, (byte)50, "BlagoevgradArt\\Images\\Paintings\\Vladimir_Mother.jpg", false, "Майка", (byte)30, (short)1923 },
+                    { 3, 1, 2, 1, "Пейзаж на Хилендарския манастир.", 1, 2, (byte)55, "BlagoevgradArt\\Images\\Paintings\\Tsanko_Hilendarski.jpg", false, "Хилендарския манастир", (byte)73, (short)1945 }
                 });
 
             migrationBuilder.InsertData(
@@ -165,22 +167,10 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                 name: "IX_PaintingMaterial_MaterialId",
                 table: "PaintingMaterial",
                 column: "MaterialId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_AuthorsExhibitions_Exhibitions_ExhibitionId",
-                table: "AuthorsExhibitions",
-                column: "ExhibitionId",
-                principalTable: "Exhibitions",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_AuthorsExhibitions_Exhibitions_ExhibitionId",
-                table: "AuthorsExhibitions");
-
             migrationBuilder.DropTable(
                 name: "PaintingMaterial");
 
@@ -255,11 +245,6 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                 keyValue: 5);
 
             migrationBuilder.DeleteData(
-                table: "Galleries",
-                keyColumn: "Id",
-                keyValue: 1);
-
-            migrationBuilder.DeleteData(
                 table: "Genres",
                 keyColumn: "Id",
                 keyValue: 3);
@@ -330,11 +315,6 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                 keyValue: 5);
 
             migrationBuilder.DeleteData(
-                table: "AspNetUsers",
-                keyColumn: "Id",
-                keyValue: "a9d96207-30f8-40cb-a670-adc6acd76fba");
-
-            migrationBuilder.DeleteData(
                 table: "Materials",
                 keyColumn: "Id",
                 keyValue: 1);
@@ -395,6 +375,11 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                 keyValue: 2);
 
             migrationBuilder.DeleteData(
+                table: "Exhibitions",
+                keyColumn: "Id",
+                keyValue: 1);
+
+            migrationBuilder.DeleteData(
                 table: "Genres",
                 keyColumn: "Id",
                 keyValue: 1);
@@ -414,13 +399,15 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                 keyColumn: "Id",
                 keyValue: "7d7a4b74-dd27-4262-b932-ee5cd63a519d");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_AuthorsExhibitions_Exhibitions_ExhibitionId",
-                table: "AuthorsExhibitions",
-                column: "ExhibitionId",
-                principalTable: "Exhibitions",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+            migrationBuilder.DeleteData(
+                table: "Galleries",
+                keyColumn: "Id",
+                keyValue: 1);
+
+            migrationBuilder.DeleteData(
+                table: "AspNetUsers",
+                keyColumn: "Id",
+                keyValue: "a9d96207-30f8-40cb-a670-adc6acd76fba");
         }
     }
 }

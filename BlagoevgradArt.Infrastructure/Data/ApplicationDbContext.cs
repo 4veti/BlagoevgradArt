@@ -37,11 +37,17 @@ namespace BlagoevgradArt.Data
             builder.ApplyConfiguration(new MaterialConfiguration());
             builder.ApplyConfiguration(new TechniqueConfiguration());
             builder.ApplyConfiguration(new GenreConfiguration());
+
             builder.ApplyConfiguration(new PaintingConfiguration());
+
             builder.ApplyConfiguration(new AuthorHelperUserConfiguration());
             builder.ApplyConfiguration(new AuthorConfiguration());
+
             builder.ApplyConfiguration(new GalleryHelperUserConfiguration());
             builder.ApplyConfiguration(new GalleryConfiguration());
+
+            builder.ApplyConfiguration(new ExhibitionConfiguration());
+
             builder.ApplyConfiguration(new AuthorExhibitionConfiguration());
             builder.ApplyConfiguration(new PaintingMaterialConfiguration());
 
