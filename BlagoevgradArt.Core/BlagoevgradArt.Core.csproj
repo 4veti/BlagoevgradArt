@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BlagoevgradArt.Infrastructure\BlagoevgradArt.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
