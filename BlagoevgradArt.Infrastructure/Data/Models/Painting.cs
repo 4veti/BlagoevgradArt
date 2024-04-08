@@ -31,7 +31,7 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         /// </summary>
         [Required]
         [Comment("Author's unique identifier. | Уникален идентификатор на автора.")]
-        public string AuthorId { get; set; } = string.Empty;
+        public int AuthorId { get; set; }
 
         /// <summary>
         /// Author of the painting.

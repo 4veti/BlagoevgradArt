@@ -14,7 +14,7 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         /// Unique identifier of the author.
         /// </summary>
         [Comment("Author's unique identifier. | Уникален идентификатор на автора.")]
-        public string AuthorId { get; set; } = string.Empty;
+        public int AuthorId { get; set; }
 
         /// <summary>
         /// Navigation property of the author.

@@ -45,7 +45,7 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         /// </summary>
         [Required]
         [Comment("Unique identifier of the gallery hosting the exhibition. | Уникален идентификатор на галерията, в която е изложбата.")]
-        public string GalleryId { get; set; } = string.Empty;
+        public int GalleryId { get; set; }
 
         /// <summary>
         /// Navigation property to the exhibition's hosting gallery.

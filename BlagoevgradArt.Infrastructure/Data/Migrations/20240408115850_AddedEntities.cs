@@ -10,67 +10,11 @@ namespace BlagoevgradArt.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Address",
-                table: "AspNetUsers",
-                type: "nvarchar(150)",
-                maxLength: 150,
-                nullable: true,
-                comment: "Address of the gallery. | Адрес на галерията.");
-
-            migrationBuilder.AddColumn<string>(
-                name: "Description",
-                table: "AspNetUsers",
-                type: "nvarchar(250)",
-                maxLength: 250,
-                nullable: true,
-                comment: "Description of the gallery. | Описание на галерията.");
-
-            migrationBuilder.AddColumn<string>(
                 name: "Discriminator",
                 table: "AspNetUsers",
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "");
-
-            migrationBuilder.AddColumn<string>(
-                name: "FirstName",
-                table: "AspNetUsers",
-                type: "nvarchar(50)",
-                maxLength: 50,
-                nullable: true,
-                comment: "First name of the author. | Първото име на автора.");
-
-            migrationBuilder.AddColumn<string>(
-                name: "LastName",
-                table: "AspNetUsers",
-                type: "nvarchar(50)",
-                maxLength: 50,
-                nullable: true,
-                comment: "Last name of the author. | Фамилия на автора.");
-
-            migrationBuilder.AddColumn<string>(
-                name: "Name",
-                table: "AspNetUsers",
-                type: "nvarchar(50)",
-                maxLength: 50,
-                nullable: true,
-                comment: "Name of the gallery. | Име на галерията.");
-
-            migrationBuilder.AddColumn<string>(
-                name: "ProfilePicturePath",
-                table: "AspNetUsers",
-                type: "nvarchar(150)",
-                maxLength: 150,
-                nullable: true,
-                comment: "File path to the author's profile picture. | Файлов път до профилната снимка на автора.");
-
-            migrationBuilder.AddColumn<string>(
-                name: "WorkingTime",
-                table: "AspNetUsers",
-                type: "nvarchar(100)",
-                maxLength: 100,
-                nullable: true,
-                comment: "Working time of the gallery. | Работно време на галерията.");
 
             migrationBuilder.CreateTable(
                 name: "ArtTypes",
@@ -83,6 +27,29 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ArtTypes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Authors",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false, comment: "Author unique identifier. | Уникален идентификатор на автора.")
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "User unique identifier. | Уникален идентификатор на потребителя."),
+                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, comment: "First name of the author. | Първото име на автора."),
+                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true, comment: "Last name of the author. | Фамилия на автора."),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false, comment: "Author's phone number. | Телефонен номер на автора."),
+                    ProfilePicturePath = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true, comment: "File path to the author's profile picture. | Файлов път до профилната снимка на автора.")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Authors", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Authors_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -99,22 +66,24 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Exhibitions",
+                name: "Galleries",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false, comment: "Exhibition unique identifier. | Уникален идентификатор на изложбата.")
+                    Id = table.Column<int>(type: "int", nullable: false, comment: "Gallery unique identifier. | Уникален идентификатор на галерията.")
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, comment: "Name of the exhibition. | Име на изложбата."),
-                    OpeningDate = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "Opening date of the exhibition. | Дата на откриване на изложбата."),
-                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false, comment: "Description of the exhibition. | Описание на изложбата."),
-                    GalleryId = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "Unique identifier of the gallery hosting the exhibition. | Уникален идентификатор на галерията, в която е изложбата.")
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "User unique identifier. | Уникален идентификатор на потребителя."),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, comment: "Name of the gallery. | Име на галерията."),
+                    Address = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false, comment: "Address of the gallery. | Адрес на галерията."),
+                    WorkingTime = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false, comment: "Working time of the gallery. | Работно време на галерията."),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false, comment: "Gallery's phone number. | Телефонен номер на галерията."),
+                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false, comment: "Description of the gallery. | Описание на галерията.")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Exhibitions", x => x.Id);
+                    table.PrimaryKey("PK_Galleries", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Exhibitions_AspNetUsers_GalleryId",
-                        column: x => x.GalleryId,
+                        name: "FK_Galleries_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -134,19 +103,41 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Exhibitions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false, comment: "Exhibition unique identifier. | Уникален идентификатор на изложбата.")
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, comment: "Name of the exhibition. | Име на изложбата."),
+                    OpeningDate = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "Opening date of the exhibition. | Дата на откриване на изложбата."),
+                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false, comment: "Description of the exhibition. | Описание на изложбата."),
+                    GalleryId = table.Column<int>(type: "int", nullable: false, comment: "Unique identifier of the gallery hosting the exhibition. | Уникален идентификатор на галерията, в която е изложбата.")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Exhibitions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Exhibitions_Galleries_GalleryId",
+                        column: x => x.GalleryId,
+                        principalTable: "Galleries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AuthorsExhibitions",
                 columns: table => new
                 {
-                    AuthorId = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "Author's unique identifier. | Уникален идентификатор на автора."),
+                    AuthorId = table.Column<int>(type: "int", nullable: false, comment: "Author's unique identifier. | Уникален идентификатор на автора."),
                     ExhibitionId = table.Column<int>(type: "int", nullable: false, comment: "Exhibition's unique identifier. | Уникален идентификатор на изложбата.")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AuthorsExhibitions", x => new { x.AuthorId, x.ExhibitionId });
                     table.ForeignKey(
-                        name: "FK_AuthorsExhibitions_AspNetUsers_AuthorId",
+                        name: "FK_AuthorsExhibitions_Authors_AuthorId",
                         column: x => x.AuthorId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "Authors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -164,7 +155,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false, comment: "Painting's unique identifier. | Уникален идентификатор на картината.")
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "Painting's title. | Заглавие на картината."),
-                    AuthorId = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "Author's unique identifier. | Уникален идентификатор на автора."),
+                    AuthorId = table.Column<int>(type: "int", nullable: false, comment: "Author's unique identifier. | Уникален идентификатор на автора."),
                     ImagePath = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false, comment: "Painting's file path. | Файлов път на картината."),
                     Year = table.Column<short>(type: "smallint", nullable: true, comment: "Year of the painting. | Година на картината."),
                     GenreId = table.Column<int>(type: "int", nullable: false, comment: "Genre unique identifier. | Уникален идентификатор на жанра."),
@@ -186,9 +177,9 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Paintings_AspNetUsers_AuthorId",
+                        name: "FK_Paintings_Authors_AuthorId",
                         column: x => x.AuthorId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "Authors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -250,6 +241,18 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Authors_PhoneNumber",
+                table: "Authors",
+                column: "PhoneNumber",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Authors_UserId",
+                table: "Authors",
+                column: "UserId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AuthorsExhibitions_ExhibitionId",
                 table: "AuthorsExhibitions",
                 column: "ExhibitionId");
@@ -258,6 +261,18 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                 name: "IX_Exhibitions_GalleryId",
                 table: "Exhibitions",
                 column: "GalleryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Galleries_PhoneNumber",
+                table: "Galleries",
+                column: "PhoneNumber",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Galleries_UserId",
+                table: "Galleries",
+                column: "UserId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Materials_PaintingId",
@@ -313,6 +328,9 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                 name: "ArtTypes");
 
             migrationBuilder.DropTable(
+                name: "Authors");
+
+            migrationBuilder.DropTable(
                 name: "BaseTypes");
 
             migrationBuilder.DropTable(
@@ -321,36 +339,11 @@ namespace BlagoevgradArt.Infrastructure.Migrations
             migrationBuilder.DropTable(
                 name: "Genres");
 
-            migrationBuilder.DropColumn(
-                name: "Address",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropColumn(
-                name: "Description",
-                table: "AspNetUsers");
+            migrationBuilder.DropTable(
+                name: "Galleries");
 
             migrationBuilder.DropColumn(
                 name: "Discriminator",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropColumn(
-                name: "FirstName",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropColumn(
-                name: "LastName",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropColumn(
-                name: "Name",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropColumn(
-                name: "ProfilePicturePath",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropColumn(
-                name: "WorkingTime",
                 table: "AspNetUsers");
         }
     }

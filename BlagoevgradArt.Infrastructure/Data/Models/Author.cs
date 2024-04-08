@@ -12,6 +12,13 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
     public class Author
     {
         /// <summary>
+        /// Author unique identifier.
+        /// </summary>
+        [Key]
+        [Comment("Author unique identifier. | Уникален идентификатор на автора.")]
+        public int Id { get; set; }
+
+        /// <summary>
         /// User unique identifier.
         /// </summary>
         [Required]

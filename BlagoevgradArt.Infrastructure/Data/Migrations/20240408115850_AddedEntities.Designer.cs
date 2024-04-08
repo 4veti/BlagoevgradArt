@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlagoevgradArt.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240407213734_AddedEntities")]
+    [Migration("20240408115850_AddedEntities")]
     partial class AddedEntities
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,10 +44,57 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                     b.ToTable("ArtTypes");
                 });
 
+            modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.Author", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasComment("Author unique identifier. | Уникален идентификатор на автора.");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasComment("First name of the author. | Първото име на автора.");
+
+                    b.Property<string>("LastName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasComment("Last name of the author. | Фамилия на автора.");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)")
+                        .HasComment("Author's phone number. | Телефонен номер на автора.");
+
+                    b.Property<string>("ProfilePicturePath")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
+                        .HasComment("File path to the author's profile picture. | Файлов път до профилната снимка на автора.");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasComment("User unique identifier. | Уникален идентификатор на потребителя.");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique();
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Authors");
+                });
+
             modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.AuthorExhibition", b =>
                 {
-                    b.Property<string>("AuthorId")
-                        .HasColumnType("nvarchar(450)")
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("int")
                         .HasComment("Author's unique identifier. | Уникален идентификатор на автора.");
 
                     b.Property<int>("ExhibitionId")
@@ -96,9 +143,8 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                         .HasColumnType("nvarchar(250)")
                         .HasComment("Description of the exhibition. | Описание на изложбата.");
 
-                    b.Property<string>("GalleryId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)")
+                    b.Property<int>("GalleryId")
+                        .HasColumnType("int")
                         .HasComment("Unique identifier of the gallery hosting the exhibition. | Уникален идентификатор на галерията, в която е изложбата.");
 
                     b.Property<string>("Name")
@@ -116,6 +162,61 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                     b.HasIndex("GalleryId");
 
                     b.ToTable("Exhibitions");
+                });
+
+            modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.Gallery", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasComment("Gallery unique identifier. | Уникален идентификатор на галерията.");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
+                        .HasComment("Address of the gallery. | Адрес на галерията.");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)")
+                        .HasComment("Description of the gallery. | Описание на галерията.");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasComment("Name of the gallery. | Име на галерията.");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)")
+                        .HasComment("Gallery's phone number. | Телефонен номер на галерията.");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasComment("User unique identifier. | Уникален идентификатор на потребителя.");
+
+                    b.Property<string>("WorkingTime")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasComment("Working time of the gallery. | Работно време на галерията.");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique();
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Galleries");
                 });
 
             modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.Genre", b =>
@@ -176,9 +277,8 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasComment("Art type unique identifier. | Уникален идентификатор на вида изкуство.");
 
-                    b.Property<string>("AuthorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)")
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("int")
                         .HasComment("Author's unique identifier. | Уникален идентификатор на автора.");
 
                     b.Property<int>("BaseTypeId")
@@ -475,58 +575,29 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.Author", b =>
+            modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.AuthorHelperUser", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasComment("First name of the author. | Първото име на автора.");
-
-                    b.Property<string>("LastName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasComment("Last name of the author. | Фамилия на автора.");
-
-                    b.Property<string>("ProfilePicturePath")
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)")
-                        .HasComment("File path to the author's profile picture. | Файлов път до профилната снимка на автора.");
-
-                    b.HasDiscriminator().HasValue("Author");
+                    b.HasDiscriminator().HasValue("AuthorHelperUser");
                 });
 
-            modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.Gallery", b =>
+            modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.GalleryHelperUser", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)")
-                        .HasComment("Address of the gallery. | Адрес на галерията.");
+                    b.HasDiscriminator().HasValue("GalleryHelperUser");
+                });
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)")
-                        .HasComment("Description of the gallery. | Описание на галерията.");
+            modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.Author", b =>
+                {
+                    b.HasOne("BlagoevgradArt.Infrastructure.Data.Models.AuthorHelperUser", "User")
+                        .WithOne("Author")
+                        .HasForeignKey("BlagoevgradArt.Infrastructure.Data.Models.Author", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasComment("Name of the gallery. | Име на галерията.");
-
-                    b.Property<string>("WorkingTime")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasComment("Working time of the gallery. | Работно време на галерията.");
-
-                    b.HasDiscriminator().HasValue("Gallery");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.AuthorExhibition", b =>
@@ -557,6 +628,17 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Gallery");
+                });
+
+            modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.Gallery", b =>
+                {
+                    b.HasOne("BlagoevgradArt.Infrastructure.Data.Models.GalleryHelperUser", "User")
+                        .WithOne("Gallery")
+                        .HasForeignKey("BlagoevgradArt.Infrastructure.Data.Models.Gallery", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.Material", b =>
@@ -665,11 +747,21 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.Author", b =>
+                {
+                    b.Navigation("AuthorExhibitions");
+                });
+
             modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.Exhibition", b =>
                 {
                     b.Navigation("AuthorExhibitions");
 
                     b.Navigation("Paintings");
+                });
+
+            modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.Gallery", b =>
+                {
+                    b.Navigation("Exhibitions");
                 });
 
             modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.Painting", b =>
@@ -679,14 +771,16 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                     b.Navigation("Techniques");
                 });
 
-            modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.Author", b =>
+            modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.AuthorHelperUser", b =>
                 {
-                    b.Navigation("AuthorExhibitions");
+                    b.Navigation("Author")
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.Gallery", b =>
+            modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.GalleryHelperUser", b =>
                 {
-                    b.Navigation("Exhibitions");
+                    b.Navigation("Gallery")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

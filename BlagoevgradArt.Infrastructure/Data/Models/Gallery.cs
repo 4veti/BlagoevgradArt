@@ -12,6 +12,13 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
     public class Gallery
     {
         /// <summary>
+        /// Gallery unique identifier.
+        /// </summary>
+        [Key]
+        [Comment("Gallery unique identifier. | Уникален идентификатор на галерията.")]
+        public int Id { get; set; }
+
+        /// <summary>
         /// User unique identifier.
         /// </summary>
         [Required]
@@ -55,6 +62,13 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         [MaxLength(PhoneNumberMaxLength)]
         [Comment("Gallery's phone number. | Телефонен номер на галерията.")]
         public string PhoneNumber { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Path to the gallery's main image.
+        /// </summary>
+        [MaxLength(ImagePathMaxLength)]
+        [Comment("File path to the gallery's main image. | Файлов път до главната снимка на галерията.")]
+        public string? MainImage { get; set; }
 
         /// <summary>
         /// Description of the gallery.
