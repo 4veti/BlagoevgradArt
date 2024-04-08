@@ -39,7 +39,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ArtTypes");
+                    b.ToTable("ArtTypes", (string)null);
                 });
 
             modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.Author", b =>
@@ -86,7 +86,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Authors");
+                    b.ToTable("Authors", (string)null);
                 });
 
             modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.AuthorExhibition", b =>
@@ -103,7 +103,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
 
                     b.HasIndex("ExhibitionId");
 
-                    b.ToTable("AuthorsExhibitions");
+                    b.ToTable("AuthorsExhibitions", (string)null);
                 });
 
             modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.BaseType", b =>
@@ -123,7 +123,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BaseTypes");
+                    b.ToTable("BaseTypes", (string)null);
                 });
 
             modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.Exhibition", b =>
@@ -159,7 +159,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
 
                     b.HasIndex("GalleryId");
 
-                    b.ToTable("Exhibitions");
+                    b.ToTable("Exhibitions", (string)null);
                 });
 
             modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.Gallery", b =>
@@ -219,7 +219,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Galleries");
+                    b.ToTable("Galleries", (string)null);
                 });
 
             modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.Genre", b =>
@@ -239,7 +239,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genres");
+                    b.ToTable("Genres", (string)null);
                 });
 
             modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.Material", b =>
@@ -264,7 +264,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
 
                     b.HasIndex("PaintingId");
 
-                    b.ToTable("Materials");
+                    b.ToTable("Materials", (string)null);
                 });
 
             modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.Painting", b =>
@@ -340,7 +340,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
 
                     b.HasIndex("GenreId");
 
-                    b.ToTable("Paintings");
+                    b.ToTable("Paintings", (string)null);
 
                     b.HasComment("The painting table. | Таблица за картина.");
                 });
@@ -367,7 +367,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
 
                     b.HasIndex("PaintingId");
 
-                    b.ToTable("Techniques");
+                    b.ToTable("Techniques", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

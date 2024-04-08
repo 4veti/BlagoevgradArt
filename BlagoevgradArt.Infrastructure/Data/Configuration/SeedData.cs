@@ -13,7 +13,7 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
 
         public Painting[] Paintings { get; set; }
 
-        public Exhibition Exhibition { get; set; }
+        public Exhibition[] Exhibitions { get; set; }
 
         public AuthorHelperUser AuthorHelperUser1 { get; set; }
         public AuthorHelperUser AuthorHelperUser2 { get; set; }
@@ -32,8 +32,8 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
             SeedArtTypes();
             SeedTechniques();
             SeedGenres();
-            SeedAuthors();
             SeedPaintings();
+            SeedAuthors();
             SeedGalleries();
             SeedExhibitions();
             SeedAuthorsExhibitions();
@@ -160,9 +160,17 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
         {
             Paintings = new Painting[]
             {
-                new Painting {Id = 1, Title = "Жена", AuthorId = 1, Year = 1920, GenreId = 1, ArtTypeId = 3, BaseTypeId = 1, Materials = new List<Material>() { Materials[1] }, Description = "Тази картина вероятно е от XXв.", HeightCm = 69, WidthCm = 42, IsAvailable = false, ImagePath = "BlagoevgradArt\\Images\\Paintings\\Vladimir_Woman.jpg"},
-                new Painting {Id = 2, Title = "Майка", AuthorId = 1, Year = 1923, GenreId = 1, ArtTypeId = 3, BaseTypeId = 2, Materials = new List<Material>() { Materials[2] }, Description = "Тази картина изобразява неизвестна жена от миналия век.", HeightCm = 50, WidthCm = 30, IsAvailable = false, ImagePath = "BlagoevgradArt\\Images\\Paintings\\Vladimir_Mother.jpg"},
-                new Painting {Id = 3, Title = "Хилендарския манастир", AuthorId = 2, Year = 1945, GenreId = 2, ArtTypeId = 1, BaseTypeId = 1, Materials = new List<Material>() { Materials[1], Materials[6] }, Description = "Пейзаж на Хилендарския манастир.", HeightCm = 55, WidthCm = 73, IsAvailable = false, ImagePath = "BlagoevgradArt\\Images\\Paintings\\Tsanko_Hilendarski.jpg"},
+                new Painting {Id = 1, Title = "Жена", AuthorId = 1, Year = 1920, GenreId = 1, ArtTypeId = 3, BaseTypeId = 1,
+                    Materials = new List<Material>() { Materials[1] }, Description = "Тази картина вероятно е от XXв.",
+                    HeightCm = 69, WidthCm = 42, IsAvailable = false, ExhibitionId = 1, ImagePath = "BlagoevgradArt\\Images\\Paintings\\Vladimir_Woman.jpg"},
+
+                new Painting {Id = 2, Title = "Майка", AuthorId = 1, Year = 1923, GenreId = 1, ArtTypeId = 3, BaseTypeId = 2,
+                    Materials = new List<Material>() { Materials[2] }, Description = "Тази картина изобразява неизвестна жена от миналия век.",
+                    HeightCm = 50, WidthCm = 30, IsAvailable = false, ExhibitionId = 1, ImagePath = "BlagoevgradArt\\Images\\Paintings\\Vladimir_Mother.jpg"},
+
+                new Painting {Id = 3, Title = "Хилендарския манастир", AuthorId = 2, Year = 1945, GenreId = 2, ArtTypeId = 1, BaseTypeId = 1,
+                    Materials = new List<Material>() { Materials[1], Materials[6] }, Description = "Пейзаж на Хилендарския манастир.",
+                    HeightCm = 55, WidthCm = 73, IsAvailable = false, ExhibitionId = 1, ImagePath = "BlagoevgradArt\\Images\\Paintings\\Tsanko_Hilendarski.jpg"}
             };
         }
 
@@ -195,15 +203,17 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
 
         private void SeedExhibitions()
         {
-            Exhibition = new Exhibition()
+            Exhibitions = new Exhibition[]
             {
-                Id = 1,
-                Name = "Началото на българското възрожденско изкуство.",
-                OpeningDate = DateTime.Today.AddDays(25).AddHours(15),
-                Description = "Запознайте се с някои от основоположниците на българското възрожденско изкуство."
-                ,
-                GalleryId = 1,
-                Paintings = new List<Painting>() { Paintings[0], Paintings[1], Paintings[2] }
+                new Exhibition()
+                {
+                    Id = 1,
+                    Name = "Началото на българското възрожденско изкуство.",
+                    OpeningDate = DateTime.Today.AddDays(25).AddHours(15),
+                    Description = "Запознайте се с някои от основоположниците на българското възрожденско изкуство.",
+                    GalleryId = 1,
+                    Paintings = new List<Painting>() { new Painting() }
+                }
             };
         }
 
