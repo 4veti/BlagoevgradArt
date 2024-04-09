@@ -1,4 +1,7 @@
-﻿using BlagoevgradArt.Data;
+﻿using BlagoevgradArt.Core.Contracts;
+using BlagoevgradArt.Core.Services;
+using BlagoevgradArt.Data;
+using BlagoevgradArt.Infrastructure.Data.Common;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +11,11 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddScoped<IRepository, Repository>();
+            services.AddScoped<IAuthorService, AuthorService>();
+            services.AddScoped<IGalleryService, GalleryService>();
+            services.AddScoped<IPaintingService, PaintingService>();
+            services.AddScoped<IExhibitionService, ExhibitionService>();
             return services;
         }
 

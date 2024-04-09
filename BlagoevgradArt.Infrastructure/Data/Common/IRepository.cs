@@ -1,4 +1,4 @@
-﻿namespace BlagoevgradArt.Infrastructure.Common
+﻿namespace BlagoevgradArt.Infrastructure.Data.Common
 {
     public interface IRepository
     {

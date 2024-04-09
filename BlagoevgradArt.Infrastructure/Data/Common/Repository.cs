@@ -1,9 +1,9 @@
 ﻿using BlagoevgradArt.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace BlagoevgradArt.Infrastructure.Common
+namespace BlagoevgradArt.Infrastructure.Data.Common
 {
-    class Repository : IRepository
+    public class Repository : IRepository
     {
         private readonly ApplicationDbContext _context;
 
