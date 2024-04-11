@@ -15,10 +15,10 @@
         public const int ImageDescriptionMaxLength = 250;
 
         public const int HeightCmMinValue = 1;
-        public const int HeightCmMaxLength = 255;
+        public const int HeightCmMaxValue = 255;
 
         public const int WidthCmMinValue = 1;
-        public const int WidthCmMaxLength = 255;
+        public const int WidthCmMaxValue = 255;
 
         public const int FirstNameMinLength = 2;
         public const int FirstNameMaxLength = 50;
