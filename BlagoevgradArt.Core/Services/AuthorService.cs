@@ -1,5 +1,7 @@
 ﻿using BlagoevgradArt.Core.Contracts;
 using BlagoevgradArt.Infrastructure.Data.Common;
+using BlagoevgradArt.Infrastructure.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlagoevgradArt.Core.Services
 {
@@ -11,5 +13,9 @@ namespace BlagoevgradArt.Core.Services
         {
             _repository = repository;
         }
+
+        public async Task<bool> ExistsByIdAsync(string userId)
+            => await _repository.AllAsReadOnlyAsync<Author>()
+            .AnyAsync(a => a.UserId ==  userId);
     }
 }
