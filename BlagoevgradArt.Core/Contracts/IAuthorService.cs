@@ -2,5 +2,6 @@
 {
     public interface IAuthorService
     {
+        Task<bool> ExistsByIdAsync(string userId);
     }
 }
