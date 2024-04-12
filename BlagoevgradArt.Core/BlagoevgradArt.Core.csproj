@@ -10,4 +10,8 @@
     <ProjectReference Include="..\BlagoevgradArt.Infrastructure\BlagoevgradArt.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Home\" />
+  </ItemGroup>
+
 </Project>

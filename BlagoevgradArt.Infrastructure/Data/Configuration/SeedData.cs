@@ -189,7 +189,7 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
                 NormalizedEmail = "gallery@mail.com"
             };
 
-            AuthorHelperUser1.PasswordHash = hasher.HashPassword(GalleryHelperUser, "gallery123456");
+            GalleryHelperUser.PasswordHash = hasher.HashPassword(GalleryHelperUser, "gallery123456");
 
             Gallery = new Gallery()
             {

@@ -55,6 +55,11 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         public string PhoneNumber { get; set; } = string.Empty;
 
         /// <summary>
+        /// Collection of the author's paintings.
+        /// </summary>
+        public IEnumerable<Painting> Paintings { get; set; } = new List<Painting>();
+
+        /// <summary>
         /// Path to the author's profile picture.
         /// </summary>
         [MaxLength(ImagePathMaxLength)]

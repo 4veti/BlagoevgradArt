@@ -4,6 +4,7 @@ using BlagoevgradArt.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlagoevgradArt.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240410211419_FixedSeedInconsistency")]
+    partial class FixedSeedInconsistency
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -284,7 +286,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                             Description = "Запознайте се с някои от основоположниците на българското възрожденско изкуство.",
                             GalleryId = 1,
                             Name = "Началото на българското възрожденско изкуство.",
-                            OpeningDate = new DateTime(2024, 5, 8, 15, 0, 0, 0, DateTimeKind.Local)
+                            OpeningDate = new DateTime(2024, 5, 6, 15, 0, 0, 0, DateTimeKind.Local)
                         });
                 });
 
@@ -917,15 +919,15 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                         {
                             Id = "7d7a4b74-dd27-4262-b932-ee5cd63a519d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "813a7187-e494-4a0a-a1d0-ce7a4c94efb3",
+                            ConcurrencyStamp = "89876a1e-7327-4dcd-8759-89d142b79196",
                             Email = "vladimaistora@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "vladimaistora@mail.com",
                             NormalizedUserName = "vladimaistora@mail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEP7I6Z77DdpafTjb9HsX1QcuMQ5uB92E2P+KNUzk/seR8Fian0LS8l3z+R5PSsZtsQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAECk/81N942vsrrIE3DiYlYiuFFSxWZeg3w3vGa+pM68yp9cBKFK9jALwWID/OwUYUg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "02baaa30-8b7b-43d6-809d-fa92009fff3d",
+                            SecurityStamp = "35c22205-bd90-4c75-8991-86884d1f565d",
                             TwoFactorEnabled = false,
                             UserName = "vladimaistora@mail.com"
                         },
@@ -933,15 +935,15 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                         {
                             Id = "1b6e897e-6594-4453-ade4-305d69ae8391",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7d11551d-9876-423d-bc43-a732c4ebcdc4",
+                            ConcurrencyStamp = "59790652-c1c9-4b65-875e-deb4b29d9fd8",
                             Email = "tsankolavrenov@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "tsankolavrenov@mail.com",
                             NormalizedUserName = "tsankolavrenov@mail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAECWAbmLF5vTpeVeCE9Z/dr0ORemCPceJ2l2vatQjirKiyxVbg5mk2cgrFkW1eetu0g==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIl2KlSf5Ll2bi7Ynh9HTiaXn4PejgpJJsB1vJLy5OZfNqOcBO8x/JkhXNc6t6MqKg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "803c7e56-05be-4c79-b778-09f41b5f8ee7",
+                            SecurityStamp = "e5ed8edf-bfc0-46b7-8326-eb54b070ce8d",
                             TwoFactorEnabled = false,
                             UserName = "tsankolavrenov@mail.com"
                         });
@@ -958,15 +960,15 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                         {
                             Id = "a9d96207-30f8-40cb-a670-adc6acd76fba",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "cc121b7f-0c7f-43d0-b12a-57ba621b0229",
+                            ConcurrencyStamp = "7efba940-3711-4da6-aa44-7de516561833",
                             Email = "gallery@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "gallery@mail.com",
                             NormalizedUserName = "gallery@mail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBBo0FY8GqFkr9KtHH44jVWuXZemFobXDVI20UUHb0dHoNUY4RFTlGONHk83UFberA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEE7GJCBWyQOuO/uZIr2vfxz3zOvHwFO1/hx1+1ZbAjvp0/2tnFRy8NOSZ/peNAMmwA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "acbf3d0f-7987-4ae1-be19-4b1a62bcf949",
+                            SecurityStamp = "01eefc4f-fe16-4bc0-858c-592f14c64efc",
                             TwoFactorEnabled = false,
                             UserName = "gallery@mail.com"
                         });
@@ -1040,7 +1042,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("BlagoevgradArt.Infrastructure.Data.Models.Author", "Author")
-                        .WithMany("Paintings")
+                        .WithMany()
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1152,8 +1154,6 @@ namespace BlagoevgradArt.Infrastructure.Migrations
             modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.Author", b =>
                 {
                     b.Navigation("AuthorExhibitions");
-
-                    b.Navigation("Paintings");
                 });
 
             modelBuilder.Entity("BlagoevgradArt.Infrastructure.Data.Models.Exhibition", b =>
