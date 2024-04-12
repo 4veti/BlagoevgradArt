@@ -101,7 +101,7 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         /// <summary>
         /// List of the used materials in the painting.
         /// </summary>
-        public List<Material> Materials { get; set; } = new List<Material>();
+        public IEnumerable<Material> Materials { get; set; } = new List<Material>();
 
         /// <summary>
         /// Description of the painting.
