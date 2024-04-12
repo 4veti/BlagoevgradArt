@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BlagoevgradArt.Core.Contracts;
+using System.ComponentModel.DataAnnotations;
 using static BlagoevgradArt.Core.Constants.ErrorMessages;
 using static BlagoevgradArt.Infrastructure.Constants.DataConstants;
 
@@ -9,6 +10,32 @@ namespace BlagoevgradArt.Core.Models.Painting
     /// </summary>
     public class PaintingFormModel
     {
+        /// <summary>
+        /// Empty constructor is left in case it's needed.
+        /// </summary>
+        public PaintingFormModel()
+        {
+            
+        }
+
+        /// <summary>
+        /// Helper constructor for easier initialization.
+        /// </summary>
+        /// <param name="genres">Available genres of the painting.</param>
+        /// <param name="artTypes">Available art types of the painting.</param>
+        /// <param name="baseTypes">Available base types of the painting.</param>
+        /// <param name="materials">Available materials of the painting.</param>
+        public PaintingFormModel(IEnumerable<GenreViewModel> genres,
+            IEnumerable<ArtTypeViewModel> artTypes,
+            IEnumerable<BaseTypeViewModel> baseTypes,
+            IEnumerable<MaterialViewModel> materials)
+        {
+            Genres = genres;
+            ArtTypes = artTypes;
+            BaseTypes = baseTypes;
+            Materials = materials;
+        }
+
         /// <summary>
         /// Title of the painting.
         /// </summary>
@@ -35,6 +62,9 @@ namespace BlagoevgradArt.Core.Models.Painting
         [Required]
         public int GenreId { get; set; }
 
+        /// <summary>
+        /// Lst of available genres.
+        /// </summary>
         public IEnumerable<GenreViewModel> Genres = new List<GenreViewModel>();
 
         /// <summary>
@@ -43,7 +73,10 @@ namespace BlagoevgradArt.Core.Models.Painting
         [Required]
         public int ArtTypeId { get; set; }
 
-        public IEnumerable<BaseTypeViewModel> ArtTypes = new List<BaseTypeViewModel>();
+        /// <summary>
+        /// List of available art types.
+        /// </summary>
+        public IEnumerable<ArtTypeViewModel> ArtTypes = new List<ArtTypeViewModel>();
 
         /// <summary>
         /// Unique identifier of the painting's base type.
@@ -62,7 +95,7 @@ namespace BlagoevgradArt.Core.Models.Painting
         public IEnumerable<int> SelectedMaterialIds = new List<int>();
 
         /// <summary>
-        /// List of all available materials.
+        /// List of available materials.
         /// </summary>
         public IEnumerable<MaterialViewModel> Materials { get; set; } = new List<MaterialViewModel>();
 
