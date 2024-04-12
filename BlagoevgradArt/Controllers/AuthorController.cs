@@ -8,5 +8,17 @@ namespace BlagoevgradArt.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        public IActionResult Become()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult AllPaintings()
+        {
+            return View();
+        }
     }
 }
