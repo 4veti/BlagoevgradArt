@@ -14,12 +14,12 @@ namespace BlagoevgradArt.Core.Services
             _repository = repository;
         }
 
-        public async Task<int> AddPaintingAsync(PaintingFormModel model)
+        public async Task<int> AddPaintingAsync(PaintingFormModel model, int authorId)
         {
             Painting painting = new Painting()
             {
                 Title = model.Title,
-                AuthorId = model.AuthorId,
+                AuthorId = authorId,
                 ImagePath = $"Images/Paintings/{model.Title}.jpg",
                 Year = model.Year,
                 GenreId = model.GenreId,

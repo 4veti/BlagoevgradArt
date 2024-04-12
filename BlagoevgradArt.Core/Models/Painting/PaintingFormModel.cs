@@ -43,6 +43,7 @@ namespace BlagoevgradArt.Core.Models.Painting
         [StringLength(TitleMaxLength,
             MinimumLength = TitleMinLength,
             ErrorMessage = InvalidLength)]
+        [Display(Name = "Заглавие")]
         public string Title { get; set; } = string.Empty;
 
         /// <summary>
@@ -54,12 +55,14 @@ namespace BlagoevgradArt.Core.Models.Painting
         /// <summary>
         /// Year of finishing the painting.
         /// </summary>
+        [Display(Name = "Година")]
         public int? Year { get; set; }
 
         /// <summary>
         /// Unique identifier of the painting's genre.
         /// </summary>
         [Required]
+        [Display(Name = "Жанр")]
         public int GenreId { get; set; }
 
         /// <summary>
@@ -71,6 +74,7 @@ namespace BlagoevgradArt.Core.Models.Painting
         /// Unique identifier of the painting's art type.
         /// </summary>
         [Required]
+        [Display(Name = "Вид изкуство")]
         public int ArtTypeId { get; set; }
 
         /// <summary>
@@ -82,6 +86,7 @@ namespace BlagoevgradArt.Core.Models.Painting
         /// Unique identifier of the painting's base type.
         /// </summary>
         [Required]
+        [Display(Name = "Основа")]
         public int BaseTypeId { get; set; }
 
         /// <summary>
@@ -105,6 +110,7 @@ namespace BlagoevgradArt.Core.Models.Painting
         [StringLength(ImageDescriptionMaxLength,
             MinimumLength = ImageDescriptionMinLength,
             ErrorMessage = InvalidLength)]
+        [Display(Name = "Описание")]
         public string? Description { get; set; }
 
         /// <summary>
@@ -114,6 +120,7 @@ namespace BlagoevgradArt.Core.Models.Painting
         [Range(HeightCmMinValue,
             HeightCmMaxValue,
             ErrorMessage = DimensionsInvalidValue)]
+        [Display(Name = "Височина в см")]
         public int HeightCm { get; set; }
 
         /// <summary>
@@ -123,12 +130,14 @@ namespace BlagoevgradArt.Core.Models.Painting
         [Range(WidthCmMinValue,
             WidthCmMaxValue,
             ErrorMessage = DimensionsInvalidValue)]
+        [Display(Name = "Широчина в см")]
         public int WidthCm { get; set; }
 
         /// <summary>
         /// Physical availability of the painting.
         /// </summary>
         [Required]
+        [Display(Name = "Наличност")]
         public bool IsAvailable { get; set; }
     }
 }

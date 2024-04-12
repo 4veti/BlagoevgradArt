@@ -1,6 +1,7 @@
 ﻿using BlagoevgradArt.Attributes;
 using BlagoevgradArt.Core.Contracts;
 using BlagoevgradArt.Core.Models.Painting;
+using BlagoevgradArt.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlagoevgradArt.Controllers
@@ -28,8 +29,10 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Details(int id, string modelInformation)
+        public async Task<IActionResult> Details(int id)
         {
+
+
             return View();
         }
 
@@ -74,7 +77,9 @@ namespace BlagoevgradArt.Controllers
                 return RedirectToAction(nameof(Add));                // See if this behaves as expected and keeps error messages displayed.
             }
 
-            int id = await _paintingService.AddPaintingAsync(model);
+            int authorId = await _authorService.GetIdAsync(User.Id());
+
+            int id = await _paintingService.AddPaintingAsync(model, authorId);
 
             return RedirectToAction(nameof(Details), new { id, model });
         }

@@ -5,17 +5,17 @@
         <form method="post">
             <div class="form-group">
                 <label asp-for="Title"></label>
-                <input asp-for="Title" class="form-control" placeholder="Title...">
+                <input asp-for="Title" class="form-control" placeholder="Заглавие...">
                 <span asp-validation-for="Title" class="small text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Year"></label>
-                <input asp-for="Year" class="form-control" placeholder="Year...">
+                <input asp-for="Year" class="form-control" placeholder="Година...">
                 <span asp-validation-for="Year" class="small text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="GenreId"></label>
-                <select asp-for="GenreId" class="form-GenreId">
+                <select asp-for="GenreId" class="form-control">
                     @foreach (var genre in Model.Genres)
                     {
                         <option value="@genre.Id">@genre.Name</option>
@@ -25,7 +25,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="ArtTypeId"></label>
-                <select asp-for="ArtTypeId" class="form-ArtTypeId">
+                <select asp-for="ArtTypeId" class="form-control">
                     @foreach (var artType in Model.ArtTypes)
                     {
                         <option value="@artType.Id">@artType.Name</option>
@@ -45,18 +45,22 @@
             </div>
             <div class="form-group">
                 <label asp-for="Description"></label>
-                <input asp-for="Description" class="form-control" placeholder="Description...">
+                <input asp-for="Description" class="form-control" placeholder="Описание...">
                 <span asp-validation-for="Description" class="small text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="HeightCm"></label>
-                <input asp-for="HeightCm" class="form-control" placeholder="HeightCm...">
+                <input asp-for="HeightCm" class="form-control" placeholder="Височина...">
                 <span asp-validation-for="HeightCm" class="small text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="WidthCm"></label>
-                <input asp-for="WidthCm" class="form-control" placeholder="WidthCm...">
+                <input asp-for="WidthCm" class="form-control" placeholder="Широчина...">
                 <span asp-validation-for="WidthCm" class="small text-danger"></span>
+            </div>
+            <div class="btn-group">
+                <label asp-for="IsAvailable" class="btn btn-outline-primary">Налично</label>
+                <input type="checkbox" asp-for="IsAvailable" class="btn-check" >
             </div>
 
             <div class="text-center">
