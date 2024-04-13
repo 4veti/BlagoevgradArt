@@ -1,4 +1,5 @@
 ﻿using BlagoevgradArt.Core.Contracts;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 using static BlagoevgradArt.Core.Constants.ErrorMessages;
 using static BlagoevgradArt.Infrastructure.Constants.DataConstants;
@@ -95,9 +96,9 @@ namespace BlagoevgradArt.Core.Models.Painting
         public IEnumerable<BaseTypeViewModel> BaseTypes = new List<BaseTypeViewModel>();
 
         /// <summary>
-        /// List of the selected material IDs.
+        /// Material unique identifier.
         /// </summary>
-        public IEnumerable<int> SelectedMaterialIds = new List<int>();
+        public int MaterialId { get; set; }
 
         /// <summary>
         /// List of available materials.
@@ -139,5 +140,7 @@ namespace BlagoevgradArt.Core.Models.Painting
         [Required]
         [Display(Name = "Наличност")]
         public bool IsAvailable { get; set; }
+
+        public IFormFile ImageFile { get; set; }
     }
 }
