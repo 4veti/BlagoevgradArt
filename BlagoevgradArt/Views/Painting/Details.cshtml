@@ -1,8 +1,10 @@
-﻿@model PaintingFormModel;
+﻿@model PaintingDetailsModel;
 
 @{
     ViewData["Title"] = "Details";
 }
+
+<partial name="_PaintingFormPartial" model="@Model" />
 
 <h2 class="text-center">@ViewData["Title"]</h2>
 <hr />
