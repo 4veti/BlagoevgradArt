@@ -11,20 +11,22 @@ namespace BlagoevgradArt.Controllers
         private readonly IPaintingService _paintingService;
         private readonly IPaintingHelperService _paintingHelperService;
         private readonly IAuthorService _authorService;
+        private readonly IWebHostEnvironment _hostingEnv;
 
         public PaintingController(IPaintingHelperService paintingHelperService,
             IAuthorService authorService,
-            IPaintingService paintingService)
+            IPaintingService paintingService,
+            IWebHostEnvironment hostingEnv)
         {
             _paintingService = paintingService;
             _paintingHelperService = paintingHelperService;
             _authorService = authorService;
+            _hostingEnv = hostingEnv;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-
             return RedirectToAction(nameof(Add));
         }
 
@@ -38,6 +40,7 @@ namespace BlagoevgradArt.Controllers
 
         [HttpGet]
         [MustBeAuthor]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add()
         {
             PaintingFormModel model = new(await _paintingHelperService.GetGenresAsync(),
@@ -50,7 +53,34 @@ namespace BlagoevgradArt.Controllers
 
         [HttpPost]
         [MustBeAuthor]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(PaintingFormModel model)
+        {
+            ValidateImageAttributes(model);
+
+            if (ModelState.IsValid == false)
+            {
+                return RedirectToAction(nameof(Add));
+            }
+
+            model.Materials = model.Materials.Where(m => m.IsSelected);
+
+            string filePath = Path.Combine(_hostingEnv.WebRootPath, "..\\Images\\Paintings");
+            filePath = Path.Combine(filePath, model.ImageFile.FileName);
+            
+            using (FileStream stream = System.IO.File.Create(filePath))
+            {
+                await model.ImageFile.CopyToAsync(stream);
+            }
+
+            int authorId = await _authorService.GetIdAsync(User.Id());
+
+            int id = await _paintingService.AddPaintingAsync(model, authorId, filePath);
+
+            return RedirectToAction(nameof(Details), new { id, model });
+        }
+
+        private async void ValidateImageAttributes(PaintingFormModel model)
         {
             if (await _paintingHelperService.GenreExistsAsync(model.GenreId) == false)
             {
@@ -71,17 +101,6 @@ namespace BlagoevgradArt.Controllers
             {
                 ModelState.AddModelError(nameof(PaintingFormModel.Materials), "One or more material types do not exist.");
             }
-
-            if (ModelState.IsValid == false)
-            {
-                return RedirectToAction(nameof(Add));                // See if this behaves as expected and keeps error messages displayed.
-            }
-
-            int authorId = await _authorService.GetIdAsync(User.Id());
-
-            int id = await _paintingService.AddPaintingAsync(model, authorId);
-
-            return RedirectToAction(nameof(Details), new { id, model });
         }
     }
 }

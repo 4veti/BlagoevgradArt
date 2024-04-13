@@ -99,9 +99,17 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         public BaseType BaseType { get; set; } = null!;
 
         /// <summary>
-        /// List of the used materials in the painting.
+        /// Material unique identifier.
         /// </summary>
-        public IEnumerable<Material> Materials { get; set; } = new List<Material>();
+        [Required]
+        [Comment("Painting's material unique identifier. | Уникален идентификатор на материала на картината.")]
+        public int MaterialId { get; set; }
+
+        /// <summary>
+        /// Material of the painting.
+        /// </summary>
+        [ForeignKey(nameof(MaterialId))]
+        public Material Material { get; set; } = null!;
 
         /// <summary>
         /// Description of the painting.

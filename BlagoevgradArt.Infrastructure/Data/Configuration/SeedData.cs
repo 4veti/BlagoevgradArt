@@ -24,7 +24,6 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
         public Gallery Gallery { get; set; }
 
         public AuthorExhibition[] AuthorsExhibitions { get; set; }
-        public PaintingMaterial[] PaintingsMaterials { get; set; }
 
         public SeedData()
         {
@@ -37,7 +36,6 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
             SeedAuthors();
             SeedGalleries();
             SeedExhibitions();
-            SeedPaintingsMaterials();
             SeedAuthorsExhibitions();
         }
 
@@ -163,15 +161,15 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
             Paintings = new Painting[]
             {
                 new Painting {Id = 1, Title = "Жена", AuthorId = 1, Year = 1920, GenreId = 1, ArtTypeId = 3, BaseTypeId = 1,
-                    Description = "Тази картина вероятно е от XXв.", ExhibitionId = 1,
+                    Description = "Тази картина вероятно е от XXв.", ExhibitionId = 1, MaterialId = 1,
                     HeightCm = 69, WidthCm = 42, IsAvailable = false, ImagePath = "BlagoevgradArt\\Images\\Paintings\\Vladimir_Woman.jpg"},
 
                 new Painting {Id = 2, Title = "Майка", AuthorId = 1, Year = 1923, GenreId = 1, ArtTypeId = 3, BaseTypeId = 2,
-                    Description = "Тази картина изобразява неизвестна жена от миналия век.", ExhibitionId = 1,
+                    Description = "Тази картина изобразява неизвестна жена от миналия век.", ExhibitionId = 1, MaterialId = 2,
                     HeightCm = 50, WidthCm = 30, IsAvailable = false, ImagePath = "BlagoevgradArt\\Images\\Paintings\\Vladimir_Mother.jpg"},
 
                 new Painting {Id = 3, Title = "Хилендарския манастир", AuthorId = 2, Year = 1945, GenreId = 2, ArtTypeId = 1, BaseTypeId = 1,
-                    Description = "Пейзаж на Хилендарския манастир.", ExhibitionId = 1,
+                    Description = "Пейзаж на Хилендарския манастир.", ExhibitionId = 1, MaterialId = 3,
                     HeightCm = 55, WidthCm = 73, IsAvailable = false,  ImagePath = "BlagoevgradArt\\Images\\Paintings\\Tsanko_Hilendarski.jpg"}
             };
         }
@@ -224,17 +222,6 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
             {
                 new AuthorExhibition() { AuthorId = 1, ExhibitionId = 1 },
                 new AuthorExhibition() { AuthorId = 2, ExhibitionId = 1 }
-            };
-        }
-
-        private void SeedPaintingsMaterials()
-        {
-            PaintingsMaterials = new PaintingMaterial[]
-            {
-                new PaintingMaterial() { PaintingId = 1, MaterialId = 1 },
-                new PaintingMaterial() { PaintingId = 2, MaterialId = 2 },
-                new PaintingMaterial() { PaintingId = 3, MaterialId = 1 },
-                new PaintingMaterial() { PaintingId = 3, MaterialId = 6 },
             };
         }
     }

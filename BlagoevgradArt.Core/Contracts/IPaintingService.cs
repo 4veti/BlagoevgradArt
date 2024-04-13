@@ -4,6 +4,6 @@ namespace BlagoevgradArt.Core.Contracts
 {
     public interface IPaintingService
     {
-        Task<int> AddPaintingAsync(PaintingFormModel model, int authorId);
+        Task<int> AddPaintingAsync(PaintingFormModel model, int authorId, string imagePath);
     }
 }
