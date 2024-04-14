@@ -2,6 +2,7 @@
 using BlagoevgradArt.Core.Contracts;
 using BlagoevgradArt.Core.Models.Painting;
 using BlagoevgradArt.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlagoevgradArt.Controllers
@@ -31,6 +32,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
 
@@ -62,8 +64,6 @@ namespace BlagoevgradArt.Controllers
             {
                 return RedirectToAction(nameof(Add));
             }
-
-            model.Materials = model.Materials.Where(m => m.IsSelected);
 
             string filePath = Path.Combine(_hostingEnv.WebRootPath, "..\\Images\\Paintings");
             filePath = Path.Combine(filePath, model.ImageFile.FileName);
