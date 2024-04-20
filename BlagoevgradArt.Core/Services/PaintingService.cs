@@ -2,6 +2,7 @@
 using BlagoevgradArt.Core.Models.Painting;
 using BlagoevgradArt.Infrastructure.Data.Common;
 using BlagoevgradArt.Infrastructure.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlagoevgradArt.Core.Services
 {
@@ -36,6 +37,31 @@ namespace BlagoevgradArt.Core.Services
             await _repository.SaveChangesAsync();
 
             return painting.Id;
+        }
+
+        public async Task<PaintingDetailsModel?> GetPaintingDetailsAsync(int id)
+        {
+            PaintingDetailsModel? model = await _repository
+                .AllAsReadOnlyAsync<Painting>()
+                .Where(p => p.Id == id)
+                .Select(p => new PaintingDetailsModel()
+                {
+                    Title = p.Title,
+                    AuthorName = string.Join(" ", new string[] { p.Author.FirstName, p.Author.LastName ?? string.Empty }),
+                    Year = p.Year,
+                    Genre = p.Genre.Name,
+                    ArtType = p.ArtType.Name,
+                    BaseType = p.BaseType.Name,
+                    Material = p.Material.Name,
+                    Description = p.Description,
+                    HeightCm = p.HeightCm,
+                    WidthCm = p.WidthCm,
+                    IsAvailable = p.IsAvailable,
+                    ImagePath = p.ImagePath
+                })
+                .FirstOrDefaultAsync();
+
+                return model;
         }
     }
 }

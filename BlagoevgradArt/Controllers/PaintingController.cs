@@ -35,14 +35,18 @@ namespace BlagoevgradArt.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
+            PaintingDetailsModel? model = await _paintingService.GetPaintingDetailsAsync(id);
 
+            if (model == null)
+            {
+                return NotFound();
+            }
 
-            return View();
+            return View(model);
         }
 
         [HttpGet]
         [MustBeAuthor]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add()
         {
             PaintingFormModel model = new(await _paintingHelperService.GetGenresAsync(),
@@ -65,7 +69,7 @@ namespace BlagoevgradArt.Controllers
                 return RedirectToAction(nameof(Add));
             }
 
-            string filePath = Path.Combine(_hostingEnv.WebRootPath, "..\\Images\\Paintings");
+            string filePath = Path.Combine(_hostingEnv.WebRootPath, "Images\\Paintings");
             filePath = Path.Combine(filePath, model.ImageFile.FileName);
             
             using (FileStream stream = System.IO.File.Create(filePath))
@@ -77,7 +81,7 @@ namespace BlagoevgradArt.Controllers
 
             int id = await _paintingService.AddPaintingAsync(model, authorId, filePath);
 
-            return RedirectToAction(nameof(Details), new { id, model });
+            return RedirectToAction(nameof(Details), new { id });
         }
 
         private async void ValidateImageAttributes(PaintingFormModel model)

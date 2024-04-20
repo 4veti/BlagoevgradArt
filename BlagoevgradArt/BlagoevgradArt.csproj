@@ -8,6 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\Images\Authors\Tsanko_Lavrenov.jpg" />
+    <None Include="wwwroot\Images\Authors\Vladimir_Dimitrov_Maistora.jpg" />
+    <None Include="wwwroot\Images\Paintings\Tsanko_Hilendarski.jpg" />
+    <None Include="wwwroot\Images\Paintings\Vladimir_Mother.jpg" />
+    <None Include="wwwroot\Images\Paintings\Vladimir_Woman.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.28" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.28" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.28" />

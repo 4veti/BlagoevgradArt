@@ -12,7 +12,7 @@ namespace BlagoevgradArt.Core.Models.Painting
         /// <summary>
         /// Name of the painting's author.
         /// </summary>
-        public int AuthorName { get; set; }
+        public string AuthorName { get; set; } = string.Empty;
 
         /// <summary>
         /// Year of finishing the painting.
@@ -22,22 +22,22 @@ namespace BlagoevgradArt.Core.Models.Painting
         /// <summary>
         /// The painting's genre.
         /// </summary>
-        public int Genre { get; set; }
+        public string Genre { get; set; } = string.Empty;
 
         /// <summary>
         /// The painting's art type.
         /// </summary>
-        public int ArtType { get; set; }
+        public string ArtType { get; set; } = string.Empty;
 
         /// <summary>
         /// The painting's base type.
         /// </summary>
-        public int BaseType { get; set; }
+        public string BaseType { get; set; } = string.Empty;
 
         /// <summary>
         /// Material of the painting.
         /// </summary>
-        public int Material { get; set; }
+        public string Material { get; set; } = string.Empty;
 
         /// <summary>
         /// Description of the painting.
@@ -62,6 +62,6 @@ namespace BlagoevgradArt.Core.Models.Painting
         /// <summary>
         /// Painting's file.
         /// </summary>
-        public IFormFile ImageFile { get; set; } = null!;
+        public string ImagePath { get; set; } = string.Empty;
     }
 }
