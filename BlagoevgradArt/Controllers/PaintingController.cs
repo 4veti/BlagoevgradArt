@@ -32,6 +32,22 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            PaintingFormModel model = await _paintingService.GetPaintingFormModel(id);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, PaintingFormModel model)
+        {
+            await _paintingService.EditPaintingAsync(model, id);
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
+        [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {

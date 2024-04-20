@@ -7,5 +7,9 @@ namespace BlagoevgradArt.Core.Contracts
         Task<int> AddPaintingAsync(PaintingFormModel model, int authorId, string imagePath);
 
         Task<PaintingDetailsModel?> GetPaintingDetailsAsync(int id);
+
+        Task EditPaintingAsync(PaintingFormModel model, int id);
+
+        Task<PaintingFormModel> GetPaintingFormModel(int id);
     }
 }
