@@ -98,6 +98,7 @@ namespace BlagoevgradArt.Core.Models.Painting
         /// <summary>
         /// Material unique identifier.
         /// </summary>
+        [Display(Name = "Материал")]
         public int MaterialId { get; set; }
 
         /// <summary>

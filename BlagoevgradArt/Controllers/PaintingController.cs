@@ -79,7 +79,7 @@ namespace BlagoevgradArt.Controllers
 
             int authorId = await _authorService.GetIdAsync(User.Id());
 
-            int id = await _paintingService.AddPaintingAsync(model, authorId, filePath);
+            int id = await _paintingService.AddPaintingAsync(model, authorId, $"~/Images/Paintings/{model.ImageFile.FileName}");
 
             return RedirectToAction(nameof(Details), new { id });
         }
