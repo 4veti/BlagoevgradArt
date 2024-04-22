@@ -2,7 +2,7 @@
 
 <div class="row">
     <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label asp-for="Title"></label>
                 <input asp-for="Title" class="form-control" placeholder="Заглавие...">
@@ -59,8 +59,27 @@
                 <span asp-validation-for="WidthCm" class="small text-danger"></span>
             </div>
             <div class="btn-group">
+                <label asp-for="MaterialId"></label>
+                <select asp-for="MaterialId" class="form-control">
+                    @foreach (var material in Model.BaseTypes)
+                    {
+                        <option value="@material.Id">@material.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="MaterialId" class="small text-danger"></span>
+            </div>
+            <hr />
+            <div class="btn-group">
+                <input asp-for="IsAvailable" type="checkbox" class="btn-check" autocomplete="off">
                 <label asp-for="IsAvailable" class="btn btn-outline-primary">Налично</label>
-                <input type="checkbox" asp-for="IsAvailable" class="btn-check" >
+            </div>
+
+            <hr />
+
+            <div class="form-group">
+                <label asp-for="ImageFile">Изберете снимка:</label>
+                <input asp-for="ImageFile" type="file" id="imageFile" name="imageFile" />
+                <span asp-validation-for="ImageFile" class="small text-danger"></span>
             </div>
 
             <div class="text-center">

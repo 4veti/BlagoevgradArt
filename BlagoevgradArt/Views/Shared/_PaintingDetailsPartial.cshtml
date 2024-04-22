@@ -1,0 +1,63 @@
+﻿@model PaintingDetailsModel;
+@inject IAuthorService authorService
+
+<div style="display: flex;">
+    <div style="flex: 1">
+        <img src="@Url.Content(Model.ImagePath)" alt="@Model.Title" style="max-width: 500px; max-height: 500px;" />
+    </div>
+
+    <div style="flex: 1;">
+        <table class="table">
+            <tr>
+                <th>Заглавие:</th>
+                <td>@Model.Title</td>
+            </tr>
+            <tr>
+                <th>Автор:</th>
+                <td>@Model.AuthorName</td>
+            </tr>
+            <tr>
+                <th>Година:</th>
+                <td>@Model.Year</td>
+            </tr>
+            <tr>
+                <th>Жанр:</th>
+                <td>@Model.Genre</td>
+            </tr>
+            <tr>
+                <th>Вид изкуство:</th>
+                <td>@Model.ArtType</td>
+            </tr>
+            <tr>
+                <th>Основа:</th>
+                <td>@Model.BaseType</td>
+            </tr>
+            <tr>
+                <th>Материал:</th>
+                <td>@Model.Material</td>
+            </tr>
+            <tr>
+                <th>Описание:</th>
+                <td>@Model.Description</td>
+            </tr>
+            <tr>
+                <th>Размери:</th>
+                <td>@Model.HeightCm cm x @Model.WidthCm cm</td>
+            </tr>
+            <tr>
+                <th>Наличност:</th>
+                <td>@(Model.IsAvailable ? "Налично" : "Не е налично")</td>
+
+            </tr>
+            <tr>
+                @if ((User?.Identity?.IsAuthenticated ?? false) && await authorService.ExistsByIdAsync(User.Id()))
+                {
+                    <th>
+                        <a class="btn btn-warning" asp-controller="Painting" asp-action="Edit"
+                        asp-route-id="@Model.Id">Edit</a>
+                    </th>
+                }
+            </tr>
+        </table>
+    </div>
+</div>

@@ -26,5 +26,8 @@ namespace BlagoevgradArt.Infrastructure.Data.Common
 
         private DbSet<T> DbSet<T>() where T : class
             => _context.Set<T>();
+
+        public async Task<T?> GetByIdAsync<T>(object id) where T : class
+            => await DbSet<T>().FindAsync(id);
     }
 }
