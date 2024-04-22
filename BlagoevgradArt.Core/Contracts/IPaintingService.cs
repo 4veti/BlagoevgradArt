@@ -11,5 +11,7 @@ namespace BlagoevgradArt.Core.Contracts
         Task EditPaintingAsync(PaintingFormModel model, int id);
 
         Task<PaintingFormModel> GetPaintingFormModel(int id);
+
+        Task<PaintingQueryServiceModel> AllAsync(int currentPage, int housesPerPage);
     }
 }

@@ -64,6 +64,31 @@ namespace BlagoevgradArt.Core.Services
             }
         }
 
+        public async Task<PaintingQueryServiceModel> AllAsync(int currentPage, int countPerPage)
+        {
+            IQueryable<Painting> paintingsToShow = _repository
+                .AllAsReadOnlyAsync<Painting>()
+                .Skip((currentPage - 1) * countPerPage)
+                .Take(countPerPage);
+
+            IEnumerable<PaintingThumbnailModel> thumbnailsToShow = await paintingsToShow
+                .Select(p => new PaintingThumbnailModel()
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    Height = p.HeightCm,
+                    Width = p.WidthCm,
+                    AuthorName = string.Join(" ", new { p.Author.FirstName, p.Author.LastName })
+                })
+                .ToListAsync();
+
+            return new PaintingQueryServiceModel()
+            {
+                Thumbnails = thumbnailsToShow,
+                TotalThumbnailsCount = thumbnailsToShow.Count()
+            };
+        }
+
         public async Task<PaintingDetailsModel?> GetPaintingDetailsAsync(int id)
         {
             PaintingDetailsModel? model = await _repository
