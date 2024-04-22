@@ -5,6 +5,11 @@ namespace BlagoevgradArt.Core.Models.Painting
     public class PaintingDetailsModel
     {
         /// <summary>
+        /// Unique identifier of the painting.
+        /// </summary>
+        public int Id { get; set; }
+
+        /// <summary>
         /// Title of the painting.
         /// </summary>
         public string Title { get; set; } = string.Empty;

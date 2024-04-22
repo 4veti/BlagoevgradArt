@@ -142,6 +142,9 @@ namespace BlagoevgradArt.Core.Models.Painting
         [Display(Name = "Наличност")]
         public bool IsAvailable { get; set; }
 
+        /// <summary>
+        /// File of the painting.
+        /// </summary>
         public IFormFile ImageFile { get; set; } = null!;
     }
 }
