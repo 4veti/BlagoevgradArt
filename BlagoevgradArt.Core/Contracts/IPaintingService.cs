@@ -8,7 +8,7 @@ namespace BlagoevgradArt.Core.Contracts
 
         Task<PaintingDetailsModel?> GetPaintingDetailsAsync(int id);
 
-        Task EditPaintingAsync(PaintingFormModel model, int id);
+        Task EditPaintingAsync(PaintingFormModel model, int id, string rootPath);
 
         Task<PaintingFormModel> GetPaintingFormModel(int id);
 

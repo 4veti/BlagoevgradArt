@@ -1,4 +1,5 @@
 ﻿@model PaintingDetailsModel;
+@inject IAuthorService authorService
 
 <div style="display: flex;">
     <div style="flex: 1">
@@ -46,6 +47,16 @@
             <tr>
                 <th>Наличност:</th>
                 <td>@(Model.IsAvailable ? "Налично" : "Не е налично")</td>
+
+            </tr>
+            <tr>
+                @if ((User?.Identity?.IsAuthenticated ?? false) && await authorService.ExistsByIdAsync(User.Id()))
+                {
+                    <th>
+                        <a class="btn btn-warning" asp-controller="Painting" asp-action="Edit"
+                        asp-route-id="@Model.Id">Edit</a>
+                    </th>
+                }
             </tr>
         </table>
     </div>

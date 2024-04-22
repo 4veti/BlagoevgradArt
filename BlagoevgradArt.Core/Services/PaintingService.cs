@@ -2,6 +2,7 @@
 using BlagoevgradArt.Core.Models.Painting;
 using BlagoevgradArt.Infrastructure.Data.Common;
 using BlagoevgradArt.Infrastructure.Data.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlagoevgradArt.Core.Services
@@ -42,7 +43,7 @@ namespace BlagoevgradArt.Core.Services
             return painting.Id;
         }
 
-        public async Task EditPaintingAsync(PaintingFormModel model, int id)
+        public async Task EditPaintingAsync(PaintingFormModel model, int id, string rootPath)
         {
             Painting? painting = await _repository
                 .GetByIdAsync<Painting>(id);
@@ -59,6 +60,21 @@ namespace BlagoevgradArt.Core.Services
                 painting.HeightCm = model.HeightCm;
                 painting.WidthCm = model.WidthCm;
                 painting.IsAvailable = model.IsAvailable;
+
+                if (model.ImageFile != null)
+                {
+                    string filePath = $"{rootPath}{painting.ImagePath.Trim('~').Replace("/", "\\")}";
+                    File.Delete(filePath);
+
+                    filePath = $"{rootPath}\\Images\\Paintings\\{model.ImageFile.FileName}";
+
+                    using (FileStream stream = File.Create(filePath))
+                    {
+                        await model.ImageFile.CopyToAsync(stream);
+                    }
+
+                    painting.ImagePath = $"~/Images/Paintings/{model.ImageFile.FileName}";
+                }
 
                 await _repository.SaveChangesAsync();
             }
@@ -78,7 +94,8 @@ namespace BlagoevgradArt.Core.Services
                     Title = p.Title,
                     Height = p.HeightCm,
                     Width = p.WidthCm,
-                    AuthorName = string.Join(" ", new { p.Author.FirstName, p.Author.LastName })
+                    AuthorName = (p.Author.FirstName + " " + p.Author.LastName ?? "").Trim(),
+                    ImagePath = p.ImagePath
                 })
                 .ToListAsync();
 
@@ -96,6 +113,7 @@ namespace BlagoevgradArt.Core.Services
                 .Where(p => p.Id == id)
                 .Select(p => new PaintingDetailsModel()
                 {
+                    Id = p.Id,
                     Title = p.Title,
                     AuthorName = string.Join(" ", new string[] { p.Author.FirstName, p.Author.LastName ?? string.Empty }),
                     Year = p.Year,

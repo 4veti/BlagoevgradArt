@@ -14,4 +14,36 @@
 <h2 class="text-center">@ViewData["Title"]</h2>
 <hr />
 
-<partial name="_PaintingAllPartial" model="@Model" />
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        <li class="page-item @(Model.CurrentPage == 1 ? " disabled" : string.Empty)">
+            <a asp-area="" asp-action="All" asp-controller="Painting" asp-route-CurrentPage="@(Model.CurrentPage - 1)"
+               class="page-link" tabindex="-1" aria-disabled="true">Предишна страница</a>
+        </li>
+
+        @foreach (PaintingThumbnailModel painting in Model.Thumbnails.Thumbnails)
+        {
+            <li>
+                <div class="card" style="min-width: 300px; max-width: 300px; margin-left: 20px; margin-right: 20px;
+                        flex-direction: column; justify-content: space-between;">
+                    <img src="@Url.Content(painting.ImagePath)" alt="@painting.Title"
+                         align-content: center" />
+
+                    <p style="font-weight: bold; font-size:large; margin-left: 10px">@painting.Title</p>
+
+                    <p style="margin-left: 10px; margin-top: -10px;">@painting.AuthorName</p>
+
+                    <p style="margin-left: 10px; margin-top: -10px;">@($"Размери: {@painting.Height}х{@painting.Width}см")</p>
+
+                    <a asp-area="" asp-action="Details" asp-controller="Painting" asp-route-id="@painting.Id"
+                       class="btn btn-success" style="align-content:flex-end">Детайли</a>
+                </div>
+            </li>
+        }
+
+        <li>
+            <a asp-area="" asp-action="All" asp-controller="Painting" asp-route-CurrentPage="@(Model.CurrentPage + 1)"
+               tabindex="-1" aria-disabled="true" class="page-link">Следваща страница</a>
+        </li>
+    </ul>
+</nav>

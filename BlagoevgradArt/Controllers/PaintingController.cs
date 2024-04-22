@@ -51,7 +51,7 @@ namespace BlagoevgradArt.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(int id, PaintingFormModel model)
         {
-            await _paintingService.EditPaintingAsync(model, id);
+            await _paintingService.EditPaintingAsync(model, id, _hostingEnv.WebRootPath);
 
             return RedirectToAction(nameof(Details), new { id });
         }

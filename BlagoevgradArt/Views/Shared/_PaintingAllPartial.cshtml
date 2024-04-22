@@ -1,23 +1,2 @@
 ﻿@model AllPaintingsQueryModel;
 
-<nav aria-label="Page navigation example">
-    <ul class="pagination justify-content-center">
-        <li class="page-item @(Model.CurrentPage == 1 ? " disabled" : string.Empty)">
-            <a asp-area="" asp-action="All" asp-controller="Painting" asp-route-CurrentPage="@(Model.CurrentPage - 1)"
-            class="page-link" tabindex="-1" aria-disabled="true">Предишна страница</a>
-        </li>
-
-        @foreach (PaintingThumbnailModel painting in Model.Thumbnails.Thumbnails)
-        {
-            <li>
-                <a asp-area="" asp-action="Details" asp-controller="Painting" asp-route-id="@painting.Id"
-                   class="btn btn-success">Детайли</a>
-            </li>
-        }
-
-        <li>
-            <a asp-area="" asp-action="All" asp-controller="Painting" asp-route-CurrentPage="@(Model.CurrentPage + 1)" 
-            tabindex="-1" aria-disabled="true" class="page-link">Следваща страница</a>
-        </li>
-    </ul>
-</nav>
