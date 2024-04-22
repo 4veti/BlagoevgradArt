@@ -1,0 +1,17 @@
+﻿@model AllPaintingsQueryModel;
+
+@{
+    ViewData["Title"] = "Налични картини";
+
+    ViewData["DisablePrevious"] = string.Empty;
+
+    if (Model.CurrentPage == 1)
+    {
+        ViewData["DisablePrevious"] = " disabled";
+    }
+}
+
+<h2 class="text-center">@ViewData["Title"]</h2>
+<hr />
+
+<partial name="_PaintingAllPartial" model="@Model" />
