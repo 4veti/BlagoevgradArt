@@ -9,10 +9,43 @@
     {
         ViewData["DisablePrevious"] = " disabled";
     }
+
+    bool disableNextPage = false;
+
+    if (Model.CurrentPage >= Math.Ceiling((double)Model.Thumbnails.TotalThumbnailsCount / Model.CountPerPage))
+    {
+        disableNextPage = true;
+    }
 }
 
 <h2 class="text-center">@ViewData["Title"]</h2>
 <hr />
+
+<form method="get">
+    <div class="form-group col-md-3">
+        <label asp-for="AuthorFirstName"></label>
+        <input asp-for="AuthorFirstName" class="form-control" placeholder="...">
+    </div>
+
+    <div class="form-group col-md-3 d-flex justify-content-between">
+        <div class="form-group">
+            <label asp-for="ArtType"></label>
+            <select asp-for="ArtType" class="form-control">
+                <option value="">Изберете вид изкуство</option>
+                @foreach (var artType in Model.ArtTypes)
+                {
+                    <option value="@artType.Name">@artType.Name</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="form-group mt-4 p-2">
+            <input type="submit" value="Search" class="btn btn-primary" />
+        </div>
+    </div> 
+</form>
 
 <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center">
@@ -41,7 +74,7 @@
             </li>
         }
 
-        <li>
+        <li class="page-item @(disableNextPage ? " disabled" : string.Empty)">
             <a asp-area="" asp-action="All" asp-controller="Painting" asp-route-CurrentPage="@(Model.CurrentPage + 1)"
                tabindex="-1" aria-disabled="true" class="page-link">Следваща страница</a>
         </li>
