@@ -78,12 +78,27 @@ namespace BlagoevgradArt.Core.Services
             }
         }
 
-        public async Task<PaintingQueryServiceModel> AllAsync(int currentPage, int countPerPage)
+        public async Task<PaintingQueryServiceModel> AllAsync(int currentPage, 
+            int countPerPage,
+            string? authorFirstName,
+            string? artType)
         {
-            IQueryable<Painting> paintingsToShow = _repository
-                .AllAsReadOnlyAsync<Painting>()
-                .Skip((currentPage - 1) * countPerPage)
-                .Take(countPerPage);
+            var paintingsToShow = _repository
+                .AllAsReadOnly<Painting>();
+
+            if (authorFirstName != null)
+            {
+                string normalizedAuthorFirstName = authorFirstName.ToLower();
+                paintingsToShow = paintingsToShow
+                    .Where(p => p.Author.FirstName.ToLower().Contains(normalizedAuthorFirstName));
+            }
+
+            if (artType != null)
+            {
+                string normalizedArtType = artType.ToLower();
+                paintingsToShow = paintingsToShow
+                    .Where(p => p.ArtType.Name.ToLower().Contains(normalizedArtType));
+            }
 
             IEnumerable<PaintingThumbnailModel> thumbnailsToShow = await paintingsToShow
                 .Select(p => new PaintingThumbnailModel()
@@ -95,6 +110,8 @@ namespace BlagoevgradArt.Core.Services
                     AuthorName = (p.Author.FirstName + " " + p.Author.LastName ?? "").Trim(),
                     ImagePath = p.ImagePath
                 })
+                .Skip((currentPage - 1) * countPerPage)
+                .Take(countPerPage)
                 .ToListAsync();
 
             return new PaintingQueryServiceModel()
@@ -107,7 +124,7 @@ namespace BlagoevgradArt.Core.Services
         public async Task<PaintingDetailsModel?> GetPaintingDetailsAsync(int id)
         {
             PaintingDetailsModel? model = await _repository
-                .AllAsReadOnlyAsync<Painting>()
+                .AllAsReadOnly<Painting>()
                 .Where(p => p.Id == id)
                 .Select(p => new PaintingDetailsModel()
                 {
@@ -133,7 +150,7 @@ namespace BlagoevgradArt.Core.Services
         public async Task<PaintingFormModel> GetPaintingFormModel(int id)
         {
             Painting painting = await _repository
-                .AllAsReadOnlyAsync<Painting>()
+                .AllAsReadOnly<Painting>()
                 .FirstAsync(p => p.Id == id);
 
 

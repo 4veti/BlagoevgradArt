@@ -35,7 +35,12 @@ namespace BlagoevgradArt.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> All([FromQuery]AllPaintingsQueryModel model)
         {
-            model.Thumbnails = await _paintingService.AllAsync(model.CurrentPage, model.CountPerPage);
+            model.ArtTypes = await _paintingHelperService.GetArtTypesAsync();
+
+            model.Thumbnails = await _paintingService.AllAsync(model.CurrentPage, 
+                model.CountPerPage,
+                model.AuthorFirstName,
+                model.ArtType);
 
             return View(model);
         }

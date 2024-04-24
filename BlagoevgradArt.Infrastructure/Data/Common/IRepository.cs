@@ -2,9 +2,9 @@
 {
     public interface IRepository
     {
-        IQueryable<T> AllAsync<T>() where T : class;
+        IQueryable<T> All<T>() where T : class;
 
-        IQueryable<T> AllAsReadOnlyAsync<T>() where T : class;
+        IQueryable<T> AllAsReadOnly<T>() where T : class;
 
         Task<T?> GetByIdAsync<T>(object id) where T : class;
 
