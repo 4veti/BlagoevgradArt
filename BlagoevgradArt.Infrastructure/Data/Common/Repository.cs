@@ -24,10 +24,13 @@ namespace BlagoevgradArt.Infrastructure.Data.Common
         public async Task<int> SaveChangesAsync()
             => await _context.SaveChangesAsync();
 
-        private DbSet<T> DbSet<T>() where T : class
-            => _context.Set<T>();
-
         public async Task<T?> GetByIdAsync<T>(object id) where T : class
             => await DbSet<T>().FindAsync(id);
+
+        public void Remove<T>(T entity) where T : class
+            => DbSet<T>().Remove(entity);
+
+        private DbSet<T> DbSet<T>() where T : class
+            => _context.Set<T>();
     }
 }

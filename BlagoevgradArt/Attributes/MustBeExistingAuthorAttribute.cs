@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace BlagoevgradArt.Attributes
 {
-    public class MustBeAuthorAttribute : ActionFilterAttribute
+    public class MustBeExistingAuthorAttribute : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {

@@ -71,7 +71,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpGet]
-        [MustBeAuthor]
+        [MustBeExistingAuthor]
         public async Task<IActionResult> Add()
         {
             PaintingFormModel model = new(await _paintingHelperService.GetGenresAsync(),
@@ -83,7 +83,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpPost]
-        [MustBeAuthor]
+        [MustBeExistingAuthor]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(PaintingFormModel model)
         {
@@ -107,6 +107,15 @@ namespace BlagoevgradArt.Controllers
             int id = await _paintingService.AddPaintingAsync(model, authorId, $"~/Images/Paintings/{model.ImageFile.FileName}");
 
             return RedirectToAction(nameof(Details), new { id });
+        }
+
+        [HttpPost]
+        [MustBeExistingAuthor]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _paintingService.DeleteImageAsync(id, _hostingEnv.WebRootPath);
+
+            return RedirectToAction(nameof(All), new { id });
         }
 
         private async void ValidateImageAttributes(PaintingFormModel model)

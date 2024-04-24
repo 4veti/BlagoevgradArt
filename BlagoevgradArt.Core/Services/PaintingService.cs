@@ -2,7 +2,6 @@
 using BlagoevgradArt.Core.Models.Painting;
 using BlagoevgradArt.Infrastructure.Data.Common;
 using BlagoevgradArt.Infrastructure.Data.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlagoevgradArt.Core.Services
@@ -63,12 +62,11 @@ namespace BlagoevgradArt.Core.Services
 
                 if (model.ImageFile != null)
                 {
-                    string filePath = $"{rootPath}{painting.ImagePath.Trim('~').Replace("/", "\\")}";
-                    File.Delete(filePath);
+                    DeleteImageByPath(painting.ImagePath, rootPath);
 
-                    filePath = $"{rootPath}\\Images\\Paintings\\{model.ImageFile.FileName}";
+                    string newFilePath = $"{rootPath}\\Images\\Paintings\\{model.ImageFile.FileName}";
 
-                    using (FileStream stream = File.Create(filePath))
+                    using (FileStream stream = File.Create(newFilePath))
                     {
                         await model.ImageFile.CopyToAsync(stream);
                     }
@@ -157,6 +155,25 @@ namespace BlagoevgradArt.Core.Services
                 WidthCm = painting.WidthCm,
                 IsAvailable = painting.IsAvailable
             };
+        }
+
+        public async Task DeleteImageAsync(int id, string rootPath)
+        {
+            Painting? painting = await _repository.GetByIdAsync<Painting>(id);
+            
+            if (painting != null)
+            {
+                DeleteImageByPath(painting.ImagePath, rootPath);
+
+                _repository.Remove(painting);
+                await _repository.SaveChangesAsync();
+            }
+        }        
+
+        private void DeleteImageByPath(string imagePath, string rootPath)
+        {
+            string filePath = $"{rootPath}{imagePath.Trim('~').Replace("/", "\\")}";
+            File.Delete(filePath);
         }
     }
 }
