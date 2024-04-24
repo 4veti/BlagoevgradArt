@@ -16,19 +16,19 @@ namespace BlagoevgradArt.Core.Services
         }
 
         public async Task<bool> ArtTypeExistsAsync(int id)
-            => await _repository.AllAsReadOnlyAsync<ArtType>().AnyAsync(a => a.Id == id);
+            => await _repository.AllAsReadOnly<ArtType>().AnyAsync(a => a.Id == id);
 
         public async Task<bool> BaseTypeExistsAsync(int id)
-            => await _repository.AllAsReadOnlyAsync<BaseType>().AnyAsync(b => b.Id == id);
+            => await _repository.AllAsReadOnly<BaseType>().AnyAsync(b => b.Id == id);
 
         public async Task<bool> GenreExistsAsync(int id)
-            => await _repository.AllAsReadOnlyAsync<Genre>().AnyAsync(g => g.Id == id);
+            => await _repository.AllAsReadOnly<Genre>().AnyAsync(g => g.Id == id);
 
         public async Task<bool> MaterialExistsAsync(int id)
-            => await _repository.AllAsReadOnlyAsync<Material>().AnyAsync(m => m.Id == id);
+            => await _repository.AllAsReadOnly<Material>().AnyAsync(m => m.Id == id);
 
         public async Task<IEnumerable<ArtTypeViewModel>> GetArtTypesAsync()
-            => await _repository.AllAsReadOnlyAsync<ArtType>()
+            => await _repository.AllAsReadOnly<ArtType>()
                 .Select(g => new ArtTypeViewModel()
                 {
                     Id = g.Id,
@@ -36,7 +36,7 @@ namespace BlagoevgradArt.Core.Services
                 }).ToListAsync();
 
         public async Task<IEnumerable<BaseTypeViewModel>> GetBaseTypesAsync()
-            => await _repository.AllAsReadOnlyAsync<BaseType>()
+            => await _repository.AllAsReadOnly<BaseType>()
                 .Select(g => new BaseTypeViewModel()
                 {
                     Id = g.Id,
@@ -44,7 +44,7 @@ namespace BlagoevgradArt.Core.Services
                 }).ToListAsync();
 
         public async Task<IEnumerable<GenreViewModel>> GetGenresAsync()
-            => await _repository.AllAsReadOnlyAsync<Genre>()
+            => await _repository.AllAsReadOnly<Genre>()
                 .Select(g => new GenreViewModel()
                 {
                     Id = g.Id,
@@ -52,7 +52,7 @@ namespace BlagoevgradArt.Core.Services
                 }).ToListAsync();
 
         public async Task<IEnumerable<MaterialViewModel>> GetMaterialsAsync()
-            => await _repository.AllAsReadOnlyAsync<Material>()
+            => await _repository.AllAsReadOnly<Material>()
                 .Select(g => new MaterialViewModel()
                 {
                     Id = g.Id,

@@ -1,12 +1,10 @@
-﻿using BlagoevgradArt.Controllers;
-using BlagoevgradArt.Core.Contracts;
-using BlagoevgradArt.Extensions;
+﻿using BlagoevgradArt.Core.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace BlagoevgradArt.Attributes
 {
-    public class MustBeAuthorAttribute : ActionFilterAttribute
+    public class MustBeExistingAuthorAttribute : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
@@ -18,11 +16,6 @@ namespace BlagoevgradArt.Attributes
             {
                 context.Result = new StatusCodeResult(StatusCodes.Status500InternalServerError);
                 return;
-            }
-
-            if (_authorService.ExistsByIdAsync(context.HttpContext.User.Id()).Result == false)
-            {
-                context.Result = new RedirectToActionResult(nameof(AuthorController.Become), "Author", null);
             }
         }
     }

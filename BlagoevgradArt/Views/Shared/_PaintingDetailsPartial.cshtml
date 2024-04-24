@@ -53,11 +53,24 @@
                 @if ((User?.Identity?.IsAuthenticated ?? false) && await authorService.ExistsByIdAsync(User.Id()))
                 {
                     <th>
-                        <a class="btn btn-warning" asp-controller="Painting" asp-action="Edit"
-                        asp-route-id="@Model.Id">Edit</a>
+                        <a class="btn btn-primary" asp-controller="Painting" asp-action="Edit"
+                           asp-route-id="@Model.Id">Edit</a>
+                    </th>
+                    <th>
+                        <form method="post">
+                            <button class="btn btn-warning" asp-controller="Painting" asp-action="Delete"
+                               asp-route-id="@Model.Id" onclick="return confirmDelete()">Delete</button>
+
+                        </form>
                     </th>
                 }
             </tr>
         </table>
     </div>
 </div>
+
+<script>
+    function confirmDelete() {
+        return confirm("Are you sure you want to delete this painting?");
+    }
+</script>

@@ -10,13 +10,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpGet]
-        public IActionResult Become()
-        {
-            return View();
-        }
-
-        [HttpGet]
-        public IActionResult AllPaintings()
+        public IActionResult AllMyPaintings()
         {
             return View();
         }

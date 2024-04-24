@@ -2,7 +2,6 @@
 using BlagoevgradArt.Core.Models.Painting;
 using BlagoevgradArt.Infrastructure.Data.Common;
 using BlagoevgradArt.Infrastructure.Data.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlagoevgradArt.Core.Services
@@ -63,12 +62,11 @@ namespace BlagoevgradArt.Core.Services
 
                 if (model.ImageFile != null)
                 {
-                    string filePath = $"{rootPath}{painting.ImagePath.Trim('~').Replace("/", "\\")}";
-                    File.Delete(filePath);
+                    DeleteImageByPath(painting.ImagePath, rootPath);
 
-                    filePath = $"{rootPath}\\Images\\Paintings\\{model.ImageFile.FileName}";
+                    string newFilePath = $"{rootPath}\\Images\\Paintings\\{model.ImageFile.FileName}";
 
-                    using (FileStream stream = File.Create(filePath))
+                    using (FileStream stream = File.Create(newFilePath))
                     {
                         await model.ImageFile.CopyToAsync(stream);
                     }
@@ -80,12 +78,27 @@ namespace BlagoevgradArt.Core.Services
             }
         }
 
-        public async Task<PaintingQueryServiceModel> AllAsync(int currentPage, int countPerPage)
+        public async Task<PaintingQueryServiceModel> AllAsync(int currentPage, 
+            int countPerPage,
+            string? authorFirstName,
+            string? artType)
         {
-            IQueryable<Painting> paintingsToShow = _repository
-                .AllAsReadOnlyAsync<Painting>()
-                .Skip((currentPage - 1) * countPerPage)
-                .Take(countPerPage);
+            var paintingsToShow = _repository
+                .AllAsReadOnly<Painting>();
+
+            if (authorFirstName != null)
+            {
+                string normalizedAuthorFirstName = authorFirstName.ToLower();
+                paintingsToShow = paintingsToShow
+                    .Where(p => p.Author.FirstName.ToLower().Contains(normalizedAuthorFirstName));
+            }
+
+            if (artType != null)
+            {
+                string normalizedArtType = artType.ToLower();
+                paintingsToShow = paintingsToShow
+                    .Where(p => p.ArtType.Name.ToLower().Contains(normalizedArtType));
+            }
 
             IEnumerable<PaintingThumbnailModel> thumbnailsToShow = await paintingsToShow
                 .Select(p => new PaintingThumbnailModel()
@@ -97,6 +110,8 @@ namespace BlagoevgradArt.Core.Services
                     AuthorName = (p.Author.FirstName + " " + p.Author.LastName ?? "").Trim(),
                     ImagePath = p.ImagePath
                 })
+                .Skip((currentPage - 1) * countPerPage)
+                .Take(countPerPage)
                 .ToListAsync();
 
             return new PaintingQueryServiceModel()
@@ -109,7 +124,7 @@ namespace BlagoevgradArt.Core.Services
         public async Task<PaintingDetailsModel?> GetPaintingDetailsAsync(int id)
         {
             PaintingDetailsModel? model = await _repository
-                .AllAsReadOnlyAsync<Painting>()
+                .AllAsReadOnly<Painting>()
                 .Where(p => p.Id == id)
                 .Select(p => new PaintingDetailsModel()
                 {
@@ -135,7 +150,7 @@ namespace BlagoevgradArt.Core.Services
         public async Task<PaintingFormModel> GetPaintingFormModel(int id)
         {
             Painting painting = await _repository
-                .AllAsReadOnlyAsync<Painting>()
+                .AllAsReadOnly<Painting>()
                 .FirstAsync(p => p.Id == id);
 
 
@@ -157,6 +172,25 @@ namespace BlagoevgradArt.Core.Services
                 WidthCm = painting.WidthCm,
                 IsAvailable = painting.IsAvailable
             };
+        }
+
+        public async Task DeleteImageAsync(int id, string rootPath)
+        {
+            Painting? painting = await _repository.GetByIdAsync<Painting>(id);
+            
+            if (painting != null)
+            {
+                DeleteImageByPath(painting.ImagePath, rootPath);
+
+                _repository.Remove(painting);
+                await _repository.SaveChangesAsync();
+            }
+        }        
+
+        private void DeleteImageByPath(string imagePath, string rootPath)
+        {
+            string filePath = $"{rootPath}{imagePath.Trim('~').Replace("/", "\\")}";
+            File.Delete(filePath);
         }
     }
 }
