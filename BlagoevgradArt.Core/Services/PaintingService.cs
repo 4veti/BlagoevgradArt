@@ -111,12 +111,11 @@ namespace BlagoevgradArt.Core.Services
                     ImagePath = p.ImagePath
                 })
                 .Skip((currentPage - 1) * countPerPage)
-                .Take(countPerPage)
                 .ToListAsync();
 
             return new PaintingQueryServiceModel()
             {
-                Thumbnails = thumbnailsToShow,
+                Thumbnails = thumbnailsToShow.Take(countPerPage),
                 TotalThumbnailsCount = thumbnailsToShow.Count()
             };
         }

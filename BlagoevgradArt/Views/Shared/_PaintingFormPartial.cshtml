@@ -58,10 +58,10 @@
                 <input asp-for="WidthCm" class="form-control" placeholder="Широчина...">
                 <span asp-validation-for="WidthCm" class="small text-danger"></span>
             </div>
-            <div class="btn-group">
+            <div class="form-group">
                 <label asp-for="MaterialId"></label>
                 <select asp-for="MaterialId" class="form-control">
-                    @foreach (var material in Model.BaseTypes)
+                    @foreach (var material in Model.Materials)
                     {
                         <option value="@material.Id">@material.Name</option>
                     }
