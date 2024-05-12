@@ -1,0 +1,21 @@
+﻿@model AuthorProfileInfoModel;
+
+@{
+    ViewData["Title"] = "Авторски профил";
+}
+
+<h2 class="text-center">@ViewData["Title"]</h2>
+<hr />
+
+<div style="display: flex;">
+    <div style="flex: 1">
+        <img src="@Url.Content(Model.ProfilePicturePath)" alt="Profile Picture" style="max-width: 500px; max-height: 500px;" />
+    </div>
+
+    <div style="flex: 1">
+        <p style="font-size:large; font-weight: 500">Име: @Model.FirstName</p>
+        <p style="font-size:large; font-weight: 500">Фамилия: @Model.LastName</p>
+        <p style="font-size:large; font-weight: 500">Тел. номер: @Model.PhoneNumber</p>
+        <p style="font-size:large; font-weight: 500">Ел. поща: @Model.Email</p>
+    </div>
+</div>
