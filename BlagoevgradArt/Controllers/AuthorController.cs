@@ -29,5 +29,32 @@ namespace BlagoevgradArt.Controllers
 
             return View(model);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> EditProfile()
+        {
+            AuthorProfileInfoModel model = await _authorService
+                .GetAuthorProfileInfo(User.Id());
+
+            return View(new AuthorFormModel()
+            {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                PhoneNumber = model.PhoneNumber
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditProfile(AuthorFormModel model)
+        {
+            if (ModelState.IsValid == false)
+            {
+                return RedirectToAction(nameof(EditProfile));
+            }
+
+            await _authorService.SetAuthorProfileInfo(model, User.Id());
+
+            return RedirectToAction(nameof(Profile));
+        }
     }
 }

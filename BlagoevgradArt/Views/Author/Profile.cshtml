@@ -1,4 +1,5 @@
 ﻿@model AuthorProfileInfoModel;
+@inject IAuthorService authorService
 
 @{
     ViewData["Title"] = "Авторски профил";
@@ -13,9 +14,31 @@
     </div>
 
     <div style="flex: 1">
-        <p style="font-size:large; font-weight: 500">Име: @Model.FirstName</p>
-        <p style="font-size:large; font-weight: 500">Фамилия: @Model.LastName</p>
-        <p style="font-size:large; font-weight: 500">Тел. номер: @Model.PhoneNumber</p>
-        <p style="font-size:large; font-weight: 500">Ел. поща: @Model.Email</p>
+        <table class="table table-borderless">
+            <tr>
+                <th>Име: </th>
+                <td style="font-size:large; font-weight: 500">@Model.FirstName</td>
+            </tr>
+            <tr>
+                <th>Фамилия: </th>
+                <td style="font-size:large; font-weight: 500">@Model.LastName</td>
+            </tr>
+            <tr>
+                <th>Тел.номер: </th>
+                <td style="font-size:large; font-weight: 500">@Model.PhoneNumber</td>
+            </tr>
+            <tr>
+                <th>Ел. поща: </th>
+                <td style="font-size:large; font-weight: 500">@Model.Email</td>
+            </tr>
+            @if ((User?.Identity?.IsAuthenticated ?? false) && await authorService.ExistsByIdAsync(User.Id()))
+            {
+                <tr>
+                    <td style="flex: 1">
+                        <a class="btn btn-primary" method="get" asp-controller="Author" asp-action="EditProfile">Редактирай Профила</a>
+                    </td>
+                </tr>
+            }
+        </table>
     </div>
 </div>

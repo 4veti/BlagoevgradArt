@@ -7,5 +7,6 @@ namespace BlagoevgradArt.Core.Contracts
         Task<bool> ExistsByIdAsync(string userId);
         Task<int> GetIdAsync(string userId);
         Task<AuthorProfileInfoModel> GetAuthorProfileInfo(string userId);
+        Task SetAuthorProfileInfo(AuthorFormModel authorProfileInfo, string userId);
     }
 }

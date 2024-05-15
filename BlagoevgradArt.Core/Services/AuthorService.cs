@@ -44,5 +44,18 @@ namespace BlagoevgradArt.Core.Services
 
             return model;
         }
+
+        public async Task SetAuthorProfileInfo(AuthorFormModel pInfo, string userId)
+        {
+            Author author = await _repository
+                .All<Author>()
+                .FirstAsync(a => a.UserId == userId);
+
+            author.FirstName = pInfo.FirstName;
+            author.LastName = pInfo.LastName;
+            author.PhoneNumber = pInfo.PhoneNumber;
+
+            await _repository.SaveChangesAsync();
+        }
     }
 }
