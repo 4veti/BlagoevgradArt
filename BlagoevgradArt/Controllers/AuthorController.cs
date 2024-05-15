@@ -1,6 +1,7 @@
 ﻿using BlagoevgradArt.Core.Contracts;
 using BlagoevgradArt.Core.Models.Author;
 using BlagoevgradArt.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlagoevgradArt.Controllers
@@ -20,12 +21,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpGet]
-        public IActionResult All()
-        {
-            return View();
-        }
-
-        [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Profile()
         {
             AuthorProfileInfoModel model = await _authorService
