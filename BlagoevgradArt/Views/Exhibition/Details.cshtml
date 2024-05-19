@@ -1,0 +1,40 @@
+﻿@model ExhibitionDetailsModel;
+
+@{
+    ViewData["Title"] = "Изложба";
+}
+
+<h2 class="text-center">@ViewData["Title"]</h2>
+<hr />
+
+<div style="display: flex;">
+    <div style="flex: 1">
+        <table class="table table-borderless">
+            <tr>
+                <th>Заглавие: </th>
+                <td style="font-size:large; font-weight: 500">@Model.Name</td>
+            </tr>
+            <tr>
+                <th>Откриване: </th>
+                <td style="font-size:large; font-weight: 500">@Model.OpeningDate.ToString("MM/dd/yyyy - HH:mm")</td>
+            </tr>
+            <tr>
+                <th>Описание: </th>
+                <td style="font-size:large; font-weight: 400; font-style: italic">@Model.Description</td>
+            </tr>
+            <tr>
+                <th>Галерия: </th>
+                <td style="font-size:large; font-weight: 500">@Model.HostGalleryName</td>
+            </tr>
+            <tr>
+                <th style="font-size:large; font-weight: 550">Участници:</th>
+                <td>
+                    @foreach (string authorName in Model.Participants)
+                    {
+                        <p style="font-size:large; font-weight: 450; font-style: italic">@authorName</p>
+                    }
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
