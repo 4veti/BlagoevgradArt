@@ -1,6 +1,5 @@
 ﻿using BlagoevgradArt.Core.Contracts;
 using BlagoevgradArt.Core.Models.Exhibition;
-using BlagoevgradArt.Core.Models.Painting;
 using BlagoevgradArt.Infrastructure.Data.Common;
 using BlagoevgradArt.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +15,25 @@ namespace BlagoevgradArt.Core.Services
             _repository = repository;
         }
 
+        public async Task<bool> ExistsByIdAsync(string userId)
+        {
+            Gallery? gallery = await _repository.AllAsReadOnly<Gallery>().FirstOrDefaultAsync(g => g.UserId == userId);
+
+            if (gallery == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<int> GetIdAsync(string userId)
+        {
+            Gallery gallery = await _repository.AllAsReadOnly<Gallery>().FirstAsync(g => g.UserId == userId);
+
+            return gallery.Id;
+        }
+
         public async Task<ExhibitionDetailsModel?> GetInfoAsync(int id)
         {
             Exhibition? exhibition = await _repository
@@ -23,7 +41,8 @@ namespace BlagoevgradArt.Core.Services
                 .Include(e => e.AuthorExhibitions)
                     .ThenInclude(ae => ae.Author)
                 .Include(e => e.Gallery)
-                .FirstAsync();
+                .Where(e => e.Id ==  id)
+                .FirstOrDefaultAsync();
 
             if (exhibition == null)
             {
@@ -43,6 +62,22 @@ namespace BlagoevgradArt.Core.Services
             };
 
             return infoModel;
+        }
+
+        public async Task<int> SaveExhibitionAsync(int galleryId, ExhibitionFormModel model)
+        {
+            Exhibition exhibition = new Exhibition
+            {
+                Name = model.Name,
+                OpeningDate = model.OpeningDate,
+                Description = model.Description,
+                GalleryId = galleryId
+            };
+
+            await _repository.AddAsync<Exhibition>(exhibition);
+            await _repository.SaveChangesAsync();
+
+            return exhibition.Id;
         }
     }
 }

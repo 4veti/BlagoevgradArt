@@ -1,6 +1,6 @@
 ﻿using BlagoevgradArt.Core.Contracts;
 using BlagoevgradArt.Core.Models.Exhibition;
-using BlagoevgradArt.Core.Services;
+using BlagoevgradArt.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,6 +27,37 @@ namespace BlagoevgradArt.Controllers
             }
 
             return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Add()
+        {
+            if (!await _exhibitionService.ExistsByIdAsync(User.Id()))
+            {
+                return Unauthorized();
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add(ExhibitionFormModel model)
+        {
+            int galleryId = await _exhibitionService.GetIdAsync(User.Id());
+
+            if (!await _exhibitionService.ExistsByIdAsync(User.Id()))
+            {
+                return Unauthorized();
+            }
+
+            if (ModelState.IsValid == false)
+            {
+                return View();
+            }
+
+            int exhibitionId = await _exhibitionService.SaveExhibitionAsync(galleryId, model);
+
+            return RedirectToAction(nameof(Details), new { id = exhibitionId });
         }
     }
 }
