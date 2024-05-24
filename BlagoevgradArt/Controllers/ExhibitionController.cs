@@ -9,10 +9,13 @@ namespace BlagoevgradArt.Controllers
     public class ExhibitionController : BaseController
     {
         IExhibitionService _exhibitionService;
+        IGalleryService _galleryService;
 
-        public ExhibitionController(IExhibitionService exhibitionService)
+        public ExhibitionController(IExhibitionService exhibitionService
+            , IGalleryService galleryService)
         {
             _exhibitionService = exhibitionService;
+            _galleryService = galleryService;
         }
 
         [HttpGet]
@@ -32,7 +35,7 @@ namespace BlagoevgradArt.Controllers
         [HttpGet]
         public async Task<IActionResult> Add()
         {
-            if (!await _exhibitionService.ExistsByIdAsync(User.Id()))
+            if (!await _galleryService.ExistsByIdAsync(User.Id()))
             {
                 return Unauthorized();
             }
@@ -43,9 +46,9 @@ namespace BlagoevgradArt.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(ExhibitionFormModel model)
         {
-            int galleryId = await _exhibitionService.GetIdAsync(User.Id());
+            int galleryId = await _galleryService.GetIdAsync(User.Id());
 
-            if (!await _exhibitionService.ExistsByIdAsync(User.Id()))
+            if (!await _galleryService.ExistsByIdAsync(User.Id()))
             {
                 return Unauthorized();
             }
