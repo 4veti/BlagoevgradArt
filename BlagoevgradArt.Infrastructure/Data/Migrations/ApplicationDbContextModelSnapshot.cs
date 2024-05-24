@@ -39,7 +39,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ArtTypes");
+                    b.ToTable("ArtTypes", (string)null);
 
                     b.HasData(
                         new
@@ -143,7 +143,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Authors");
+                    b.ToTable("Authors", (string)null);
 
                     b.HasData(
                         new
@@ -180,7 +180,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
 
                     b.HasIndex("ExhibitionId");
 
-                    b.ToTable("AuthorsExhibitions");
+                    b.ToTable("AuthorsExhibitions", (string)null);
 
                     b.HasData(
                         new
@@ -212,7 +212,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BaseTypes");
+                    b.ToTable("BaseTypes", (string)null);
 
                     b.HasData(
                         new
@@ -275,7 +275,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
 
                     b.HasIndex("GalleryId");
 
-                    b.ToTable("Exhibitions");
+                    b.ToTable("Exhibitions", (string)null);
 
                     b.HasData(
                         new
@@ -345,7 +345,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Galleries");
+                    b.ToTable("Galleries", (string)null);
 
                     b.HasData(
                         new
@@ -377,7 +377,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genres");
+                    b.ToTable("Genres", (string)null);
 
                     b.HasData(
                         new
@@ -424,7 +424,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Materials");
+                    b.ToTable("Materials", (string)null);
 
                     b.HasData(
                         new
@@ -553,7 +553,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
 
                     b.HasIndex("MaterialId");
 
-                    b.ToTable("Paintings");
+                    b.ToTable("Paintings", (string)null);
 
                     b.HasComment("The painting table. | Таблица за картина.");
 
@@ -633,7 +633,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
 
                     b.HasIndex("PaintingId");
 
-                    b.ToTable("Techniques");
+                    b.ToTable("Techniques", (string)null);
 
                     b.HasData(
                         new
