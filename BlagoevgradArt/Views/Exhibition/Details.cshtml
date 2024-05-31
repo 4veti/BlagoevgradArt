@@ -11,6 +11,15 @@
     <div style="flex: 1">
         <table class="table table-borderless">
             <tr>
+                <th>Опции:</th>
+                <td>
+                    <form method="get">
+                        <button class="btn btn-info" asp-controller="Exhibition" 
+                            asp-action="Edit" asp-route-id="@Model.Id">Редактиране</button>
+                    </form>
+                </td>
+            </tr>
+            <tr>
                 <th>Заглавие: </th>
                 <td style="font-size:large; font-weight: 500">@Model.Name</td>
             </tr>

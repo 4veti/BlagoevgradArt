@@ -15,6 +15,35 @@ namespace BlagoevgradArt.Core.Services
             _repository = repository;
         }
 
+        public async Task EditExhibitionAsync(int id, ExhibitionFormModel model)
+        {
+            Exhibition exhibition = await _repository
+                .All<Exhibition>()
+                .Where(e => e.Id == id)
+                .FirstAsync();
+
+            exhibition.Name = model.Name;
+            exhibition.Description = model.Description;
+            exhibition.OpeningDate = model.OpeningDate;
+
+            await _repository.SaveChangesAsync();
+        }
+
+        public async Task<ExhibitionFormModel> GetFormDataByIdAsync(int id)
+        {
+            Exhibition exhibition = await _repository
+                .AllAsReadOnly<Exhibition>()
+                .Where(e => e.Id == id)
+                .FirstAsync();
+
+            return new ExhibitionFormModel()
+            {
+                Name = exhibition.Name,
+                Description = exhibition.Description,
+                OpeningDate = exhibition.OpeningDate
+            };
+        }
+
         public async Task<ExhibitionDetailsModel?> GetInfoAsync(int id)
         {
             Exhibition? exhibition = await _repository
@@ -32,6 +61,7 @@ namespace BlagoevgradArt.Core.Services
 
             ExhibitionDetailsModel infoModel = new ExhibitionDetailsModel()
             {
+                Id = id,
                 Name = exhibition.Name,
                 OpeningDate = exhibition.OpeningDate,
                 Description = exhibition.Description,

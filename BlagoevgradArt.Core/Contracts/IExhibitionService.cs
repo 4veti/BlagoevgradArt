@@ -7,5 +7,9 @@ namespace BlagoevgradArt.Core.Contracts
         public Task<ExhibitionDetailsModel?> GetInfoAsync(int id);
 
         public Task<int> SaveExhibitionAsync(int galleryId, ExhibitionFormModel model);
+
+        public Task EditExhibitionAsync(int id, ExhibitionFormModel model);
+
+        public Task<ExhibitionFormModel> GetFormDataByIdAsync(int id); 
     }
 }
