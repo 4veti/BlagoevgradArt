@@ -29,6 +29,30 @@ namespace BlagoevgradArt.Core.Services
             await _repository.SaveChangesAsync();
         }
 
+        public async Task<ExhibitionAllServiceModel> GetAllAsync(int currentPage,
+            int countPerPage)
+        {
+            List<ExhibitionThumbnailModel> exhibitions = await _repository
+                .AllAsReadOnly<Exhibition>()
+                .Select(e => new ExhibitionThumbnailModel()
+                {
+                    Id = e.Id,
+                    Name = e.Name,
+                    OpeningDate = e.OpeningDate,
+                    HostGalleryName = e.Gallery.Name,
+                    CountArtworks = e.Paintings.Count
+                })
+                .ToListAsync();
+
+            ExhibitionAllServiceModel model = new ExhibitionAllServiceModel()
+            {
+                TotalExhibitions = exhibitions.Count,
+                Thumbnails = exhibitions.Skip((currentPage - 1) * countPerPage).Take(countPerPage).ToList()
+            };
+
+            return model;
+        }
+
         public async Task<ExhibitionFormModel> GetFormDataByIdAsync(int id)
         {
             Exhibition exhibition = await _repository

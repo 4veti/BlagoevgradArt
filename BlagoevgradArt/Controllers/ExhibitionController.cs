@@ -1,4 +1,5 @@
-﻿using BlagoevgradArt.Core.Contracts;
+﻿using BlagoevgradArt.Attributes;
+using BlagoevgradArt.Core.Contracts;
 using BlagoevgradArt.Core.Models.Exhibition;
 using BlagoevgradArt.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -12,13 +13,22 @@ namespace BlagoevgradArt.Controllers
         IGalleryService _galleryService;
 
         public ExhibitionController(IExhibitionService exhibitionService
-            , IGalleryService galleryService)
+            ,IGalleryService galleryService)
         {
             _exhibitionService = exhibitionService;
             _galleryService = galleryService;
         }
 
         [HttpGet]
+        public async Task<IActionResult> All([FromQuery]ExhibitionAllModel model)
+        {
+            model.Exhibitions = await _exhibitionService.GetAllAsync(model.CurrentPage, model.CountPerPage);
+
+            return View(model);
+        }
+
+        [HttpGet]
+        [MustBeExistingGallery]
         public async Task<IActionResult> Edit(int id)
         {
             ExhibitionFormModel model = await _exhibitionService.GetFormDataByIdAsync(id);
@@ -27,6 +37,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpPost]
+        [MustBeExistingGallery]
         public async Task<IActionResult> Edit(int id, ExhibitionFormModel model)
         {
             await _exhibitionService.EditExhibitionAsync(id, model);
@@ -49,6 +60,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpGet]
+        [MustBeExistingGallery]
         public async Task<IActionResult> Add()
         {
             if (!await _galleryService.ExistsByIdAsync(User.Id()))
@@ -60,6 +72,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpPost]
+        [MustBeExistingGallery]
         public async Task<IActionResult> Add(ExhibitionFormModel model)
         {
             int galleryId = await _galleryService.GetIdAsync(User.Id());

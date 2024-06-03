@@ -46,6 +46,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpGet]
+        [MustBeExistingAuthor]
         public async Task<IActionResult> Edit(int id)
         {
             PaintingFormModel model = await _paintingService.GetPaintingFormModel(id);
@@ -54,6 +55,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpPost]
+        [MustBeExistingAuthor]
         public async Task<IActionResult> Edit(int id, PaintingFormModel model)
         {
             await _paintingService.EditPaintingAsync(model, id, _hostingEnv.WebRootPath);
