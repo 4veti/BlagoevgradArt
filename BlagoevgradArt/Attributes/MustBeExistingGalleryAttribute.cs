@@ -5,21 +5,21 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace BlagoevgradArt.Attributes
 {
-    public class MustBeExistingAuthorAttribute : ActionFilterAttribute
+    public class MustBeExistingGalleryAttribute : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             base.OnActionExecuting(context);
 
-            IAuthorService? _authorService = context.HttpContext.RequestServices.GetService<IAuthorService>();
+            IGalleryService? _galleryService = context.HttpContext.RequestServices.GetService<IGalleryService>();
 
-            if (_authorService == null)
+            if (_galleryService == null)
             {
                 context.Result = new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
 
-            if (_authorService != null &&
-                _authorService.ExistsByIdAsync(context.HttpContext.User.Id()).Result == false)
+            if (_galleryService != null &&
+                _galleryService.ExistsByIdAsync(context.HttpContext.User.Id()).Result == false)
             {
                 context.Result = new StatusCodeResult(StatusCodes.Status401Unauthorized);
             }
