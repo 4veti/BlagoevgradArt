@@ -1,0 +1,44 @@
+﻿@model AuthorProfileInfoModel;
+@inject IAuthorService authorService
+
+@{
+    ViewData["Title"] = "Авторски профил";
+}
+
+<h2 class="text-center">@ViewData["Title"]</h2>
+<hr />
+
+<div style="display: flex;">
+    <div style="flex: 1">
+        <img src="@Url.Content(Model.ProfilePicturePath)" alt="Profile Picture" style="max-width: 500px; max-height: 500px;" />
+    </div>
+
+    <div style="flex: 1">
+        <table class="table table-borderless">
+            <tr>
+                <th>Име: </th>
+                <td style="font-size:large; font-weight: 500">@Model.FirstName</td>
+            </tr>
+            <tr>
+                <th>Фамилия: </th>
+                <td style="font-size:large; font-weight: 500">@Model.LastName</td>
+            </tr>
+            <tr>
+                <th>Тел.номер: </th>
+                <td style="font-size:large; font-weight: 500">@Model.PhoneNumber</td>
+            </tr>
+            <tr>
+                <th>Ел. поща: </th>
+                <td style="font-size:large; font-weight: 500">@Model.Email</td>
+            </tr>
+            @if ((User?.Identity?.IsAuthenticated ?? false) && await authorService.ExistsByIdAsync(User.Id()))
+            {
+                <tr>
+                    <td style="flex: 1">
+                        <a class="btn btn-primary" method="get" asp-controller="Author" asp-action="EditProfile">Редактирай Профила</a>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

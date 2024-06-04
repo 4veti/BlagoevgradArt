@@ -142,7 +142,7 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
                 FirstName = "Vladimir",
                 LastName = "Maistora",
                 PhoneNumber = "+359888123456",
-                ProfilePicturePath = "BlagoevgradArt\\Images\\Authors\\Tsanko_Lavrenov.jpg"
+                ProfilePicturePath = "~/Images/Authors/Tsanko_Lavrenov.jpg"
             };
 
             Author2 = new Author()
@@ -152,7 +152,7 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
                 FirstName = "Tsanko",
                 LastName = "Lavrenov",
                 PhoneNumber = "+359888654321",
-                ProfilePicturePath = "BlagoevgradArt\\Images\\Authors\\Tsanko_Lavrenov.jpg"
+                ProfilePicturePath = "~/Images/Authors/Tsanko_Lavrenov.jpg"
             };
         }
 
@@ -162,15 +162,15 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
             {
                 new Painting {Id = 1, Title = "Жена", AuthorId = 1, Year = 1920, GenreId = 1, ArtTypeId = 3, BaseTypeId = 1,
                     Description = "Тази картина вероятно е от XXв.", ExhibitionId = 1, MaterialId = 1,
-                    HeightCm = 69, WidthCm = 42, IsAvailable = false, ImagePath = "BlagoevgradArt\\Images\\Paintings\\Vladimir_Woman.jpg"},
+                    HeightCm = 69, WidthCm = 42, IsAvailable = false, ImagePath = "~/Images/Paintings/Vladimir_Woman.jpg"},
 
                 new Painting {Id = 2, Title = "Майка", AuthorId = 1, Year = 1923, GenreId = 1, ArtTypeId = 3, BaseTypeId = 2,
                     Description = "Тази картина изобразява неизвестна жена от миналия век.", ExhibitionId = 1, MaterialId = 2,
-                    HeightCm = 50, WidthCm = 30, IsAvailable = false, ImagePath = "BlagoevgradArt\\Images\\Paintings\\Vladimir_Mother.jpg"},
+                    HeightCm = 50, WidthCm = 30, IsAvailable = false, ImagePath = "~/Images/Paintings/Vladimir_Mother.jpg"},
 
                 new Painting {Id = 3, Title = "Хилендарския манастир", AuthorId = 2, Year = 1945, GenreId = 2, ArtTypeId = 1, BaseTypeId = 1,
                     Description = "Пейзаж на Хилендарския манастир.", ExhibitionId = 1, MaterialId = 3,
-                    HeightCm = 55, WidthCm = 73, IsAvailable = false,  ImagePath = "BlagoevgradArt\\Images\\Paintings\\Tsanko_Hilendarski.jpg"}
+                    HeightCm = 55, WidthCm = 73, IsAvailable = false,  ImagePath = "~/Images/Paintings/Tsanko_Hilendarski.jpg"}
             };
         }
 

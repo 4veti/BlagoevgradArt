@@ -1,0 +1,32 @@
+﻿@inject IAuthorService authorService;
+@inject IGalleryService galleryService;
+
+@{
+    bool isAuthor = await authorService.ExistsByIdAsync(User.Id());
+    bool isGallery = await galleryService.ExistsByIdAsync(User.Id());
+}
+
+<li class="nav-item">
+    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Начало</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link text-dark" asp-area="" asp-controller="Painting" asp-action="All">Всички картини</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link text-dark" asp-area="" asp-controller="Exhibition" asp-action="All">Всички изложби</a>
+</li>
+@if (User?.Identity?.IsAuthenticated == true)
+{
+    if (isAuthor)
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Painting" asp-action="Add">Добави картина</a>
+        </li>
+    }
+    else if (isGallery)
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Exhibition" asp-action="Add">Добави изложба</a>
+        </li>
+    }
+}

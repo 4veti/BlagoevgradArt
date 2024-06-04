@@ -4,6 +4,7 @@ using BlagoevgradArt.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlagoevgradArt.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240603110204_ChangedImagesPathString")]
+    partial class ChangedImagesPathString
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -152,7 +154,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                             FirstName = "Vladimir",
                             LastName = "Maistora",
                             PhoneNumber = "+359888123456",
-                            ProfilePicturePath = "~/Images/Authors/Tsanko_Lavrenov.jpg",
+                            ProfilePicturePath = "~/BlagoevgradArt/Images/Authors/Tsanko_Lavrenov.jpg",
                             UserId = "7d7a4b74-dd27-4262-b932-ee5cd63a519d"
                         },
                         new
@@ -161,7 +163,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                             FirstName = "Tsanko",
                             LastName = "Lavrenov",
                             PhoneNumber = "+359888654321",
-                            ProfilePicturePath = "~/Images/Authors/Tsanko_Lavrenov.jpg",
+                            ProfilePicturePath = "~/BlagoevgradArt/Images/Authors/Tsanko_Lavrenov.jpg",
                             UserId = "1b6e897e-6594-4453-ade4-305d69ae8391"
                         });
                 });
@@ -568,7 +570,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                             ExhibitionId = 1,
                             GenreId = 1,
                             HeightCm = (byte)69,
-                            ImagePath = "~/Images/Paintings/Vladimir_Woman.jpg",
+                            ImagePath = "~/BlagoevgradArt/Images/Paintings/Vladimir_Woman.jpg",
                             IsAvailable = false,
                             MaterialId = 1,
                             Title = "Жена",
@@ -585,7 +587,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                             ExhibitionId = 1,
                             GenreId = 1,
                             HeightCm = (byte)50,
-                            ImagePath = "~/Images/Paintings/Vladimir_Mother.jpg",
+                            ImagePath = "~/BlagoevgradArt/Paintings/Vladimir_Mother.jpg",
                             IsAvailable = false,
                             MaterialId = 2,
                             Title = "Майка",
@@ -602,7 +604,7 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                             ExhibitionId = 1,
                             GenreId = 2,
                             HeightCm = (byte)55,
-                            ImagePath = "~/Images/Paintings/Tsanko_Hilendarski.jpg",
+                            ImagePath = "~/BlagoevgradArt/Images/Paintings/Tsanko_Hilendarski.jpg",
                             IsAvailable = false,
                             MaterialId = 3,
                             Title = "Хилендарския манастир",
@@ -882,15 +884,15 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                         {
                             Id = "7d7a4b74-dd27-4262-b932-ee5cd63a519d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7ab88275-24bd-41b0-b905-67281abb9cab",
+                            ConcurrencyStamp = "3bb04b26-3a13-46c1-a412-d5b22b7657d0",
                             Email = "vladimaistora@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "vladimaistora@mail.com",
                             NormalizedUserName = "vladimaistora@mail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEHXLhFyrRcTnOscXR0oW9t3CHYRB7oAs3CA49oit7kbqVn2IF1I1dpIWIj+uDjMTFg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHpR1puZPHo/36YjIbpGgVQnM8iFeGXlxCALkycQzyXwfFN5nzTo3YDW30RyhbWNPw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "e9d61841-cd8e-424b-8ab4-56c969a98e5c",
+                            SecurityStamp = "c5a1a6cf-a89b-4ca3-b79c-c78f81b9270b",
                             TwoFactorEnabled = false,
                             UserName = "vladimaistora@mail.com"
                         },
@@ -898,15 +900,15 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                         {
                             Id = "1b6e897e-6594-4453-ade4-305d69ae8391",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "52c4e6b5-605e-4ab9-890e-9e8ea82c9186",
+                            ConcurrencyStamp = "66fce671-2b43-41c1-8f55-0fdd3442cd13",
                             Email = "tsankolavrenov@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "tsankolavrenov@mail.com",
                             NormalizedUserName = "tsankolavrenov@mail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEICLEw0mB+6MXCsWf6O0QYOFpTRui7wRDZSHOU2zI9sYNDAYD9mdb66SXRjN9T3hsQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAELphcpLiTrD/bvnnk43IXQzQ5WOgKAZ+I/olXotA5/ryviOGugxjdvMcCc+bTvMYpQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "623386b3-a567-48c8-abc9-fc968e308222",
+                            SecurityStamp = "7493fe7d-f2e7-4fde-99b7-6eb5c5056293",
                             TwoFactorEnabled = false,
                             UserName = "tsankolavrenov@mail.com"
                         });
@@ -923,15 +925,15 @@ namespace BlagoevgradArt.Infrastructure.Migrations
                         {
                             Id = "a9d96207-30f8-40cb-a670-adc6acd76fba",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "feae7399-c154-462c-8160-dd891db0ef82",
+                            ConcurrencyStamp = "db6de1ba-c348-471b-a29f-283b201cc643",
                             Email = "gallery@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "gallery@mail.com",
                             NormalizedUserName = "gallery@mail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEEIdjGbv9MGjqNelifoEUQcGvr+amDmGdBlEWyww1xbh9TQaj18mWm51tqooM///DQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFPiACWOUNCxgIi8dzyd+tFxNABzB1/Gbavxu2L/XbKcwXoRW/Mn8SL4NmqNNA5PZQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6f21eda4-5425-4cac-ab77-90a4fc5d56d3",
+                            SecurityStamp = "7635b3b5-36b5-496a-a99e-b40dc7d786be",
                             TwoFactorEnabled = false,
                             UserName = "gallery@mail.com"
                         });
