@@ -7,10 +7,8 @@ namespace BlagoevgradArt.Attributes
 {
     public class MustBeExistingAuthorAttribute : ActionFilterAttribute
     {
-        public override void OnActionExecuting(ActionExecutingContext context)
+        public override async void OnActionExecuting(ActionExecutingContext context)
         {
-            base.OnActionExecuting(context);
-
             IAuthorService? _authorService = context.HttpContext.RequestServices.GetService<IAuthorService>();
 
             if (_authorService == null)
@@ -19,10 +17,12 @@ namespace BlagoevgradArt.Attributes
             }
 
             if (_authorService != null &&
-                _authorService.ExistsByIdAsync(context.HttpContext.User.Id()).Result == false)
+                await _authorService.ExistsByIdAsync(context.HttpContext.User.Id()) == false)
             {
                 context.Result = new StatusCodeResult(StatusCodes.Status401Unauthorized);
             }
+
+            base.OnActionExecuting(context);
         }
     }
 }

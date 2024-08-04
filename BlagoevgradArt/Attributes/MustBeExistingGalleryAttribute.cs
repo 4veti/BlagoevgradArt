@@ -7,10 +7,8 @@ namespace BlagoevgradArt.Attributes
 {
     public class MustBeExistingGalleryAttribute : ActionFilterAttribute
     {
-        public override void OnActionExecuting(ActionExecutingContext context)
+        public override async void OnActionExecuting(ActionExecutingContext context)
         {
-            base.OnActionExecuting(context);
-
             IGalleryService? _galleryService = context.HttpContext.RequestServices.GetService<IGalleryService>();
 
             if (_galleryService == null)
@@ -19,10 +17,12 @@ namespace BlagoevgradArt.Attributes
             }
 
             if (_galleryService != null &&
-                _galleryService.ExistsByIdAsync(context.HttpContext.User.Id()).Result == false)
+                await _galleryService.ExistsByIdAsync(context.HttpContext.User.Id()) == false)
             {
                 context.Result = new StatusCodeResult(StatusCodes.Status401Unauthorized);
             }
+
+            base.OnActionExecuting(context);
         }
     }
 }
