@@ -86,6 +86,8 @@ namespace BlagoevgradArt.Controllers
                 await _paintingHelperService.GetBaseTypesAsync(),
                 await _paintingHelperService.GetMaterialsAsync());
 
+            ViewBag.IsNewPainting = true;
+
             return View(model);
         }
 

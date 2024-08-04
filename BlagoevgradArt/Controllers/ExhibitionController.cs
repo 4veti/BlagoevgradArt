@@ -32,6 +32,7 @@ namespace BlagoevgradArt.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             ExhibitionFormModel model = await _exhibitionService.GetFormDataByIdAsync(id);
+            ViewBag.IsEditing = true;
 
             return View(model);
         }
@@ -41,6 +42,7 @@ namespace BlagoevgradArt.Controllers
         public async Task<IActionResult> Edit(int id, ExhibitionFormModel model)
         {
             await _exhibitionService.EditExhibitionAsync(id, model);
+            ViewBag.IsNewExhibition = false;
 
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -68,7 +70,7 @@ namespace BlagoevgradArt.Controllers
                 return Unauthorized();
             }
 
-            return View();
+            return View(new ExhibitionFormModel());
         }
 
         [HttpPost]

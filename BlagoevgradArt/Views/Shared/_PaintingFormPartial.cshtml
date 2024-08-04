@@ -84,7 +84,11 @@
 
             <div class="text-center">
                 <input class="btn btn-primary mt-3" type="submit" value="Запази" />
-                <input class="btn btn-primary mt-3" type="reset" value="Върни промените" />
+
+                @if (ViewBag.IsNewPainting == false)
+                {
+                    <input class="btn btn-primary mt-3" type="reset" value="Върни промените" />
+                }
             </div>
         </form>
     </div>
