@@ -7,7 +7,7 @@ namespace BlagoevgradArt.Attributes
 {
     public class MustBeExistingGalleryAttribute : ActionFilterAttribute
     {
-        public override async void OnActionExecuting(ActionExecutingContext context)
+        public override void OnActionExecuting(ActionExecutingContext context)
         {
             IGalleryService? _galleryService = context.HttpContext.RequestServices.GetService<IGalleryService>();
 
@@ -17,7 +17,7 @@ namespace BlagoevgradArt.Attributes
             }
 
             if (_galleryService != null &&
-                await _galleryService.ExistsByIdAsync(context.HttpContext.User.Id()) == false)
+                _galleryService.ExistsByIdAsync(context.HttpContext.User.Id()).Result == false)
             {
                 context.Result = new StatusCodeResult(StatusCodes.Status401Unauthorized);
             }

@@ -7,7 +7,7 @@ namespace BlagoevgradArt.Attributes
 {
     public class MustBeExistingAuthorAttribute : ActionFilterAttribute
     {
-        public override async void OnActionExecuting(ActionExecutingContext context)
+        public override void OnActionExecuting(ActionExecutingContext context)
         {
             IAuthorService? _authorService = context.HttpContext.RequestServices.GetService<IAuthorService>();
 
@@ -17,7 +17,7 @@ namespace BlagoevgradArt.Attributes
             }
 
             if (_authorService != null &&
-                await _authorService.ExistsByIdAsync(context.HttpContext.User.Id()) == false)
+                _authorService.ExistsByIdAsync(context.HttpContext.User.Id()).Result == false)
             {
                 context.Result = new StatusCodeResult(StatusCodes.Status401Unauthorized);
             }
