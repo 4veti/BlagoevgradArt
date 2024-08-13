@@ -93,7 +93,6 @@ namespace BlagoevgradArt.Controllers
 
         [HttpPost]
         [MustBeExistingAuthor]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(PaintingFormModel model)
         {
             ValidateImageAttributes(model);
