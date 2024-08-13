@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using static BlagoevgradArt.Core.Constants.AdministratorConstants;
+using static BlagoevgradArt.Core.Constants.RoleConstants;
 
 namespace BlagoevgradArt.Extensions
 {
@@ -12,9 +12,9 @@ namespace BlagoevgradArt.Extensions
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            if (userManager != null && roleManager != null && await roleManager.RoleExistsAsync(AdminRole) == false)
+            if (userManager != null && roleManager != null && await roleManager.RoleExistsAsync(AdministratorRole) == false)
             {
-                IdentityRole? adminRole = new IdentityRole(AdminRole);
+                IdentityRole? adminRole = new IdentityRole(AdministratorRole);
                 await roleManager.CreateAsync(adminRole);
 
                 IdentityUser? admin = await userManager.FindByEmailAsync("admin@mail.com");
