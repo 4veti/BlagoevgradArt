@@ -1,4 +1,6 @@
 using BlagoevgradArt.Extensions;
+using Microsoft.AspNetCore.Mvc;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -39,5 +41,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+await app.CreateAdminRoleAsync();
 
 await app.RunAsync();
