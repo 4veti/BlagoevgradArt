@@ -20,6 +20,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> All([FromQuery]ExhibitionAllModel model)
         {
             model.Exhibitions = await _exhibitionService.GetAllAsync(model.CurrentPage, model.CountPerPage);

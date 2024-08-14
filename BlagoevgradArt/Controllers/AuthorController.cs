@@ -22,10 +22,20 @@ namespace BlagoevgradArt.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> Profile()
+        public async Task<IActionResult> Profile(int id = -1)
         {
+            if (id == -1)
+            {
+                id = await _authorService.GetIdAsync(User.Id());
+            }
+
+            if (await _authorService.ExistsByIdAsync(id) == false)
+            {
+                return NotFound();
+            }
+
             AuthorProfileInfoModel model = await _authorService
-                .GetAuthorProfileInfo(User.Id());
+                .GetAuthorProfileInfo(id);
 
             return View(model);
         }
@@ -34,7 +44,7 @@ namespace BlagoevgradArt.Controllers
         public async Task<IActionResult> EditProfile()
         {
             AuthorProfileInfoModel model = await _authorService
-                .GetAuthorProfileInfo(User.Id());
+                .GetAuthorProfileInfo(await _authorService.GetIdAsync(User.Id()));
 
             return View(new AuthorFormModel()
             {

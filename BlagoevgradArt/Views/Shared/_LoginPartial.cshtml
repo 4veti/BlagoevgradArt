@@ -1,29 +1,45 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
+@inject IAuthorService authorService;
+@inject IGalleryService galleryService;
+
+@{
+    bool isAuthor = await authorService.ExistsByIdAsync(User.Id());
+    bool isGallery = await galleryService.ExistsByIdAsync(User.Id());
+}
 
 <ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
-{
-    <li class="nav-item">
-        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Здравейте, @User.Identity?.Name!</a>
-    </li>
+    @if (SignInManager.IsSignedIn(User))
+    {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="Author" asp-action="Profile" >Авторски профил</a>
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Здравейте, @User.Identity?.Name!</a>
         </li>
-    <li class="nav-item">
-        <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button  type="submit" class="nav-link btn btn-link text-dark">Изход</button>
-        </form>
-    </li>
-}
-else
-{
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Регистрирай се</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Вход</a>
-    </li>
-}
+            if (isAuthor)
+            {
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-controller="Author" asp-action="Profile">Авторски профил</a>
+                </li>
+            }
+            else if (isGallery)
+            {
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-controller="Gallery" asp-action="Profile">Профил на галерията</a>
+                </li>
+            }
+        <li class="nav-item">
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button type="submit" class="nav-link btn btn-link text-dark">Изход</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Регистрирай се</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Вход</a>
+        </li>
+    }
 </ul>
