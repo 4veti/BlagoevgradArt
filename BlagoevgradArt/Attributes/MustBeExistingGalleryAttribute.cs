@@ -9,8 +9,6 @@ namespace BlagoevgradArt.Attributes
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            base.OnActionExecuting(context);
-
             IGalleryService? _galleryService = context.HttpContext.RequestServices.GetService<IGalleryService>();
 
             if (_galleryService == null)
@@ -23,6 +21,8 @@ namespace BlagoevgradArt.Attributes
             {
                 context.Result = new StatusCodeResult(StatusCodes.Status401Unauthorized);
             }
+
+            base.OnActionExecuting(context);
         }
     }
 }

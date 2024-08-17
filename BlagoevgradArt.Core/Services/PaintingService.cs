@@ -1,4 +1,5 @@
 ﻿using BlagoevgradArt.Core.Contracts;
+using BlagoevgradArt.Core.Extensions;
 using BlagoevgradArt.Core.Models.Painting;
 using BlagoevgradArt.Infrastructure.Data.Common;
 using BlagoevgradArt.Infrastructure.Data.Models;
@@ -105,8 +106,9 @@ namespace BlagoevgradArt.Core.Services
                 {
                     Id = p.Id,
                     Title = p.Title,
-                    Height = p.HeightCm,
-                    Width = p.WidthCm,
+                    Description = p.Description == null ? null : p.Description.Substring(0, 100),
+                    HeightCm = p.HeightCm,
+                    WidthCm = p.WidthCm,
                     AuthorName = (p.Author.FirstName + " " + p.Author.LastName ?? "").Trim(),
                     ImagePath = p.ImagePath
                 })
@@ -146,17 +148,23 @@ namespace BlagoevgradArt.Core.Services
             return model;
         }
 
-        public async Task<PaintingFormModel> GetPaintingFormModel(int id)
+        public async Task<PaintingFormModel?> GetPaintingFormModel(int id)
         {
-            Painting painting = await _repository
+            Painting? painting = await _repository
                 .AllAsReadOnly<Painting>()
-                .FirstAsync(p => p.Id == id);
+                .Include(p => p.Author)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
+            if (painting == null)
+            {
+                return null;
+            }
 
             return new PaintingFormModel()
             {
                 Title = painting.Title,
                 AuthorId = painting.AuthorId,
+                AuthorName = string.Join(" ", new string[] { painting.Author.FirstName, painting.Author.LastName ?? string.Empty }),
                 Year = painting.Year,
                 GenreId = painting.GenreId,
                 Genres = await _paintingHelperService.GetGenresAsync(),
@@ -190,6 +198,31 @@ namespace BlagoevgradArt.Core.Services
         {
             string filePath = $"{rootPath}{imagePath.Trim('~').Replace("/", "\\")}";
             File.Delete(filePath);
+        }
+
+        public async Task<string?> GetInformationById(int id)
+        {
+            IPaintingInformationModel? model = await _repository
+                .AllAsReadOnly<Painting>()
+                .Where(p => p.Id == id)
+                .Select(p => new PaintingDetailsModel()
+                {
+                    AuthorName = string.Join(" ", new string[] { p.Author.FirstName, p.Author.LastName ?? string.Empty }),
+                    Title = p.Title,
+                    Description = p.Description,
+                    HeightCm = p.HeightCm,
+                    WidthCm = p.WidthCm
+                })
+                .FirstOrDefaultAsync();
+
+            return model?.GetInformation();
+        }
+
+        public async Task<bool> ExistsByIdAsync(int id)
+        {
+            Painting? painting = await _repository.AllAsReadOnly<Painting>().FirstOrDefaultAsync();
+
+            return painting == null ? false : true;
         }
     }
 }

@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BlagoevgradArt.Core.Contracts;
 
 namespace BlagoevgradArt.Core.Models.Painting
 {
-    public class PaintingDetailsModel
+    public class PaintingDetailsModel : IPaintingInformationModel
     {
         /// <summary>
         /// Unique identifier of the painting.

@@ -1,0 +1,53 @@
+﻿@model ManageUserRolesModel
+@{
+    ViewData["Title"] = "Управление на роли";
+    int userCounter = 0;
+}
+
+<h2 class="text-center">@ViewData["Title"]</h2>
+<hr />
+
+<div class="row">
+    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+        <form method="post">
+            <input hidden name="count" value="@Model.UsersBasicInfo.Count()"/>
+
+            <div class="form-group">
+                <label asp-for="SelectedRoleName">Избери роля за задаване:</label>
+                <select asp-for="SelectedRoleName" class="form-control">
+                    @foreach (string roleName in Model.RolesNames)
+                    {
+                        <option value="@roleName">@roleName</option>
+                    }
+                </select>
+                <span asp-validation-for="SelectedRoleName" class="small text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <table>
+                    @foreach (var user in Model.UsersBasicInfo)
+                    {
+                        <tr>
+                            <th>
+                                <input asp-for="@user.IsSelected" class="form-check-input" name="UsersBasicInfo[@userCounter].IsSelected" type="checkbox" value="">
+                                <label class="form-check-label" for="@user.Email">@user.Email</label>
+                                <input hidden name="UsersBasicInfo[@userCounter++].Email" />
+                            </th>
+                            <td>
+                                <p>@user.InRoles</p>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+
+            <div class="text-center">
+                <input class="btn btn-primary mt-3" type="submit" value="Задай избраната роля на  всички маркирани потребители." />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

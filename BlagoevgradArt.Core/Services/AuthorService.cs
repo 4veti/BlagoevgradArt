@@ -19,6 +19,10 @@ namespace BlagoevgradArt.Core.Services
             => await _repository.AllAsReadOnly<Author>()
             .AnyAsync(a => a.UserId ==  userId);
 
+        public async Task<bool> ExistsByIdAsync(int id)
+            => await _repository.AllAsReadOnly<Author>()
+            .AnyAsync(a => a.Id == id);
+
         public async Task<int> GetIdAsync(string userId)
         {
             Author author = await _repository.AllAsReadOnly<Author>().FirstAsync(a => a.UserId == userId);
@@ -26,12 +30,12 @@ namespace BlagoevgradArt.Core.Services
             return author.Id;
         }
 
-        public async Task<AuthorProfileInfoModel> GetAuthorProfileInfo(string userId)
+        public async Task<AuthorProfileInfoModel> GetAuthorProfileInfo(int id)
         {
             Author author = await _repository
                 .AllAsReadOnly<Author>()
                 .Include(a => a.User)
-                .FirstAsync(a => a.UserId == userId);
+                .FirstAsync(a => a.Id == id);
 
             AuthorProfileInfoModel model = new AuthorProfileInfoModel()
             {
@@ -56,6 +60,14 @@ namespace BlagoevgradArt.Core.Services
             author.PhoneNumber = pInfo.PhoneNumber;
 
             await _repository.SaveChangesAsync();
+        }
+
+        public async Task<string> GetFullNameAsync(string userId)
+        {
+            Author author = await _repository.AllAsReadOnly<Author>()
+                .FirstAsync(a => a.UserId == userId);
+
+            return string.Join(" ", new string[] { author.FirstName, author.LastName ?? string.Empty });
         }
     }
 }
