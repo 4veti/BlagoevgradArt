@@ -191,5 +191,11 @@ namespace BlagoevgradArt.Core.Services
             string filePath = $"{rootPath}{imagePath.Trim('~').Replace("/", "\\")}";
             File.Delete(filePath);
         }
+        public async Task<bool> ExistsByIdAsync(int id)
+        {
+            Painting? painting = await _repository.AllAsReadOnly<Painting>().FirstOrDefaultAsync();
+
+            return painting == null ? false : true;
     }
+}
 }

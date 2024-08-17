@@ -61,5 +61,13 @@ namespace BlagoevgradArt.Core.Services
 
             await _repository.SaveChangesAsync();
         }
+
+        public async Task<string> GetFullNameAsync(string userId)
+        {
+            Author author = await _repository.AllAsReadOnly<Author>()
+                .FirstAsync(a => a.UserId == userId);
+
+            return string.Join(" ", new string[] { author.FirstName, author.LastName ?? string.Empty });
+        }
     }
 }

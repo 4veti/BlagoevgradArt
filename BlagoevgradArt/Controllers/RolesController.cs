@@ -29,7 +29,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AssignRoles(ManageUserRolesModel model) // [ModelBinder(BinderType = typeof(ManageUserRolesModelBinder))] 
+        public async Task<IActionResult> AssignRoles(ManageUserRolesModel model)
         {
             if (ModelState.IsValid == false)
             {
