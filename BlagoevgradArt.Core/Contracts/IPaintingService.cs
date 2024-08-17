@@ -19,6 +19,8 @@ namespace BlagoevgradArt.Core.Contracts
 
         Task DeleteImageAsync(int id, string rootPath);
 
+        Task<string?> GetInformationById(int id);
+
         Task<bool> ExistsByIdAsync(int id);
     }
 }

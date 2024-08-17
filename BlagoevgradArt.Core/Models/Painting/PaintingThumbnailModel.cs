@@ -1,6 +1,8 @@
-﻿namespace BlagoevgradArt.Core.Models.Painting
+﻿using BlagoevgradArt.Core.Contracts;
+
+namespace BlagoevgradArt.Core.Models.Painting
 {
-    public class PaintingThumbnailModel
+    public class PaintingThumbnailModel : IPaintingInformationModel
     {
         public int Id { get; set; }
 
@@ -8,9 +10,11 @@
 
         public string AuthorName { get; set; } = string.Empty;
 
-        public int Height { get; set; }
+        public string? Description { get; set; } = string.Empty;
 
-        public int Width { get; set; }
+        public int HeightCm { get; set; }
+
+        public int WidthCm { get; set; }
 
         public string ImagePath { get; set; } = string.Empty;
     }
