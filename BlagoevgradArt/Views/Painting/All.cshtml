@@ -66,10 +66,10 @@
 
                     <p style="margin-left: 10px; margin-top: -10px;">@painting.AuthorName</p>
 
-                    <p style="margin-left: 10px; margin-top: -10px;">@($"Размери: {@painting.Height}х{@painting.Width}см")</p>
+                    <p style="margin-left: 10px; margin-top: -10px;">@($"Размери: {@painting.HeightCm}х{@painting.WidthCm}см")</p>
 
                     <a asp-area="" asp-action="Details" asp-controller="Painting" asp-route-id="@painting.Id"
-                       class="btn btn-success" style="align-content:flex-end">Детайли</a>
+                       asp-route-information="@painting.GetInformation()" class="btn btn-success" style="align-content:flex-end">Детайли</a>
                 </div>
             </li>
         }

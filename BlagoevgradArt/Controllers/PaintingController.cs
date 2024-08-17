@@ -1,5 +1,6 @@
 ﻿using BlagoevgradArt.Attributes;
 using BlagoevgradArt.Core.Contracts;
+using BlagoevgradArt.Core.Extensions;
 using BlagoevgradArt.Core.Models.Painting;
 using BlagoevgradArt.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -47,29 +48,43 @@ namespace BlagoevgradArt.Controllers
 
         [HttpGet]
         [MustBeExistingAuthor]
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int id, string information)
         {
-            PaintingFormModel model = await _paintingService.GetPaintingFormModel(id);
+            PaintingFormModel? model = await _paintingService.GetPaintingFormModel(id);
+            string? correctInformation = model?.GetInformation();
+
+            if (model == null || information != correctInformation)
+            {
+                return NotFound();
+            }
 
             return View(model);
         }
 
         [HttpPost]
         [MustBeExistingAuthor]
-        public async Task<IActionResult> Edit(int id, PaintingFormModel model)
+        public async Task<IActionResult> Edit(int id, PaintingFormModel? model)
         {
+            if (model == null)
+            {
+                return NotFound();
+            }
+
             await _paintingService.EditPaintingAsync(model, id, _hostingEnv.WebRootPath);
 
-            return RedirectToAction(nameof(Details), new { id });
+            string information = model.GetInformation();
+
+            return RedirectToAction(nameof(Details), new { id, information });
         }
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int id, string information)
         {
             PaintingDetailsModel? model = await _paintingService.GetPaintingDetailsAsync(id);
+            string? correctInformation = model?.GetInformation();
 
-            if (model == null)
+            if (model == null || correctInformation != information)
             {
                 return NotFound();
             }
@@ -85,6 +100,7 @@ namespace BlagoevgradArt.Controllers
                 await _paintingHelperService.GetArtTypesAsync(),
                 await _paintingHelperService.GetBaseTypesAsync(),
                 await _paintingHelperService.GetMaterialsAsync());
+            model.AuthorName = await _authorService.GetFullNameAsync(User.Id());
 
             ViewBag.IsNewPainting = true;
 
@@ -114,13 +130,22 @@ namespace BlagoevgradArt.Controllers
 
             int id = await _paintingService.AddPaintingAsync(model, authorId, $"~/Images/Paintings/{model.ImageFile.FileName}");
 
-            return RedirectToAction(nameof(Details), new { id });
+            string information = model.GetInformation();
+
+            return RedirectToAction(nameof(Details), new { id, information });
         }
 
         [HttpPost]
         [MustBeExistingAuthor]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id, string information)
         {
+            string? correctInformation = await _paintingService.GetInformationById(id);
+
+            if (correctInformation == null || information != correctInformation)
+            {
+                return NotFound();
+            }
+
             await _paintingService.DeleteImageAsync(id, _hostingEnv.WebRootPath);
 
             return RedirectToAction(nameof(All), new { id });

@@ -8,6 +8,7 @@
                 <input asp-for="Title" class="form-control" placeholder="Заглавие...">
                 <span asp-validation-for="Title" class="small text-danger"></span>
             </div>
+            <input hidden name="AuthorName" value="@Model.AuthorName" />
             <div class="form-group">
                 <label asp-for="Year"></label>
                 <input asp-for="Year" class="form-control" placeholder="Година...">
@@ -83,7 +84,7 @@
             </div>
 
             <div class="text-center">
-                <input class="btn btn-primary mt-3" type="submit" value="Запази" />
+                <button class="btn btn-primary mt-3" asp-route-information="@Model.GetInformation()" type="submit">Запази</button>
 
                 @if (ViewBag.IsNewPainting == false)
                 {

@@ -39,6 +39,24 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "Painting Details",
+        pattern: "Painting/Details/{id}/{information}",
+        defaults: new { Controller = "Painting", Action = "Details" });
+
+    endpoints.MapControllerRoute(
+        name: "Painting Edit",
+        pattern: "Painting/Edit/{id}/{information}",
+        defaults: new { Controller = "Painting", Action = "Edit" });
+
+    endpoints.MapControllerRoute(
+        name: "Painting Delete",
+        pattern: "Painting/Delete/{id}/{information}",
+        defaults: new { Controller = "Painting", Action = "Delete" });
+});
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

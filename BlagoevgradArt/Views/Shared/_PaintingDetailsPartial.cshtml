@@ -54,12 +54,12 @@
                 {
                     <th>
                         <a class="btn btn-primary" asp-controller="Painting" asp-action="Edit"
-                           asp-route-id="@Model.Id">Edit</a>
+                           asp-route-id="@Model.Id" asp-route-information="@Model.GetInformation()">Edit</a>
                     </th>
                     <th>
                         <form method="post">
-                            <button class="btn btn-warning" asp-controller="Painting" asp-action="Delete"
-                               asp-route-id="@Model.Id" onclick="return confirmDelete()">Delete</button>
+                            <button class="btn btn-warning" asp-controller="Painting" asp-action="Delete" asp-route-id="@Model.Id"
+                                asp-route-information="@Model.GetInformation()" onclick="return confirmDelete()">Delete</button>
 
                         </form>
                     </th>
