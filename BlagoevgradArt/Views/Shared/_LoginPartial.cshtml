@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNetCore.Identity
+﻿@using static BlagoevgradArt.Core.Constants.RoleConstants;
+@using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 @inject IAuthorService authorService;
@@ -7,6 +8,7 @@
 @{
     bool isAuthor = await authorService.ExistsByIdAsync(User.Id());
     bool isGallery = await galleryService.ExistsByIdAsync(User.Id());
+    bool isAdministrator = User.IsInRole(AdministratorRole);
 }
 
 <ul class="navbar-nav">
@@ -15,18 +17,24 @@
         <li class="nav-item">
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Здравейте, @User.Identity?.Name!</a>
         </li>
-            if (isAuthor)
-            {
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-controller="Author" asp-action="Profile">Авторски профил</a>
-                </li>
-            }
-            else if (isGallery)
-            {
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-controller="Gallery" asp-action="Profile">Профил на галерията</a>
-                </li>
-            }
+        if (isAuthor)
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-controller="Author" asp-action="Profile">Авторски профил</a>
+            </li>
+        }
+        else if (isGallery)
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-controller="Gallery" asp-action="Profile">Профил на галерията</a>
+            </li>
+        }
+        else if (isAdministrator)
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-controller="Administrator" asp-action="Index">Администраторски панел</a>
+            </li>
+        }
         <li class="nav-item">
             <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                 <button type="submit" class="nav-link btn btn-link text-dark">Изход</button>
