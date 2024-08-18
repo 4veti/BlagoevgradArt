@@ -1,6 +1,5 @@
 ﻿using BlagoevgradArt.Core.Contracts;
 using BlagoevgradArt.Core.Models.User;
-using BlagoevgradArt.ModelBinders;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static BlagoevgradArt.Core.Constants.RoleConstants;

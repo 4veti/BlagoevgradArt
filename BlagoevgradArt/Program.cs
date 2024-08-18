@@ -10,7 +10,7 @@ builder.Services.AddApplicationIdentity();
 
 builder.Services.AddControllersWithViews(options =>
 {
-    //options.ModelBinderProviders.Insert(1, new ManageUserRolesModelBinderProvider());
+    options.ModelBinderProviders.Insert(1, new ManageUserRolesModelBinderProvider());
     options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
 });
 
