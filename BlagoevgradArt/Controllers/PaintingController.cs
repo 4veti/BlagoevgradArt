@@ -58,6 +58,8 @@ namespace BlagoevgradArt.Controllers
                 return NotFound();
             }
 
+            ViewBag.IsNewPainting = false;
+
             return View(model);
         }
 
