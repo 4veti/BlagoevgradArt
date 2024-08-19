@@ -18,6 +18,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IPaintingHelperService, PaintingHelperService>();
             services.AddScoped<IExhibitionService, ExhibitionService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IStatisticsService, StatisticsService>();
             return services;
         }
 
