@@ -20,12 +20,14 @@ public class StatisticsService : IStatisticsService
         int countPaintings = await _repository.AllAsReadOnly<Painting>().CountAsync();
         int countAuthors = await _repository.AllAsReadOnly<Author>().CountAsync();
         int countGalleries = await _repository.AllAsReadOnly<Gallery>().CountAsync();
+        int countExhibitions = await _repository.AllAsReadOnly<Exhibition>().CountAsync();
 
         return new GeneralStatisticsInfoModel
         {
             PaintingsCount = countPaintings,
             AuthorsCount = countAuthors,
-            GalleriesCount = countGalleries
+            GalleriesCount = countGalleries,
+            ExhibitionsCount = countExhibitions
         };
     }
 }

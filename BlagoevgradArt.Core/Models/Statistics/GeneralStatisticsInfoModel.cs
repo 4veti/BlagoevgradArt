@@ -7,4 +7,6 @@ public class GeneralStatisticsInfoModel
     public int AuthorsCount { get; set; }
 
     public int GalleriesCount { get; set; }
+
+    public int ExhibitionsCount { get; set; }
 }
