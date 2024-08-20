@@ -5,6 +5,7 @@ using BlagoevgradArt.Core.Models.Painting;
 using BlagoevgradArt.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static BlagoevgradArt.Core.Constants.ErrorMessages;
 
 namespace BlagoevgradArt.Controllers
 {
@@ -34,11 +35,11 @@ namespace BlagoevgradArt.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> All([FromQuery]AllPaintingsQueryModel model)
+        public async Task<IActionResult> All([FromQuery] AllPaintingsQueryModel model)
         {
             model.ArtTypes = await _paintingHelperService.GetArtTypesAsync();
 
-            model.Thumbnails = await _paintingService.AllAsync(model.CurrentPage, 
+            model.Thumbnails = await _paintingService.AllAsync(model.CurrentPage,
                 model.CountPerPage,
                 model.AuthorFirstName,
                 model.ArtType);
@@ -67,16 +68,27 @@ namespace BlagoevgradArt.Controllers
         [MustBeExistingAuthor]
         public async Task<IActionResult> Edit(int id, PaintingFormModel? model)
         {
-            if (model == null)
+            if (model == null || await _paintingService.ExistsByIdAsync(id) == false)
             {
                 return NotFound();
             }
 
-            await _paintingService.EditPaintingAsync(model, id, _hostingEnv.WebRootPath);
+            try
+            {
+                await _paintingService.EditPaintingAsync(model, id, _hostingEnv.WebRootPath);
+            }
+            catch (InvalidOperationException)
+            {
+                return StatusCode(500, ErrorWhileSavingImage);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
 
             string information = model.GetInformation();
-
             return RedirectToAction(nameof(Details), new { id, information });
+
         }
 
         [HttpGet]
@@ -120,17 +132,20 @@ namespace BlagoevgradArt.Controllers
                 return RedirectToAction(nameof(Add));
             }
 
-            string filePath = Path.Combine(_hostingEnv.WebRootPath, "Images\\Paintings");
-            filePath = Path.Combine(filePath, model.ImageFile.FileName);
-            
-            using (FileStream stream = System.IO.File.Create(filePath))
+            int id = -1;
+
+            try
             {
-                await model.ImageFile.CopyToAsync(stream);
+                id = await _paintingService.AddPaintingAsync(model, User.Id(), _hostingEnv.WebRootPath);
             }
-
-            int authorId = await _authorService.GetIdAsync(User.Id());
-
-            int id = await _paintingService.AddPaintingAsync(model, authorId, $"~/Images/Paintings/{model.ImageFile.FileName}");
+            catch (InvalidOperationException)
+            {
+                return StatusCode(500, ErrorWhileSavingImage);
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
 
             string information = model.GetInformation();
 

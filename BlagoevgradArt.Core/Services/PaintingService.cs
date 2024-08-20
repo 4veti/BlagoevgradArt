@@ -11,21 +11,41 @@ namespace BlagoevgradArt.Core.Services
     {
         private readonly IRepository _repository;
         private readonly IPaintingHelperService _paintingHelperService;
+        private readonly IAuthorService _authorService;
 
         public PaintingService(IRepository repository,
-            IPaintingHelperService paintingHelperService)
+            IPaintingHelperService paintingHelperService,
+            IAuthorService authorService)
         {
             _repository = repository;
             _paintingHelperService = paintingHelperService;
+            _authorService = authorService;
         }
 
-        public async Task<int> AddPaintingAsync(PaintingFormModel model, int authorId, string imagePath)
+        public async Task<int> AddPaintingAsync(PaintingFormModel model, string userId, string rootPath)
         {
+            string filePath = Path.Combine(rootPath, "Images\\Paintings");
+            filePath = Path.Combine(filePath, model.ImageFile.FileName);
+
+            try
+            {
+                using (FileStream stream = System.IO.File.Create(filePath))
+                {
+                    await model.ImageFile.CopyToAsync(stream);
+                }
+            }
+            catch (Exception)
+            {
+                throw new InvalidOperationException();
+            }
+
+            int authorId = await _authorService.GetIdAsync(userId);
+
             Painting painting = new Painting()
             {
                 Title = model.Title,
                 AuthorId = authorId,
-                ImagePath = imagePath,
+                ImagePath = $"~/Images/Paintings/{model.ImageFile.FileName}",
                 Year = model.Year,
                 GenreId = model.GenreId,
                 ArtTypeId = model.ArtTypeId,
@@ -48,20 +68,25 @@ namespace BlagoevgradArt.Core.Services
             Painting? painting = await _repository
                 .GetByIdAsync<Painting>(id);
 
-            if (painting != null)
+            if (painting == null)
             {
-                painting.Title = model.Title;
-                painting.Year = model.Year;
-                painting.GenreId = model.GenreId;
-                painting.ArtTypeId = model.ArtTypeId;
-                painting.BaseTypeId = model.BaseTypeId;
-                painting.MaterialId = model.MaterialId;
-                painting.Description = model.Description;
-                painting.HeightCm = model.HeightCm;
-                painting.WidthCm = model.WidthCm;
-                painting.IsAvailable = model.IsAvailable;
+                return;
+            }
 
-                if (model.ImageFile != null)
+            painting.Title = model.Title;
+            painting.Year = model.Year;
+            painting.GenreId = model.GenreId;
+            painting.ArtTypeId = model.ArtTypeId;
+            painting.BaseTypeId = model.BaseTypeId;
+            painting.MaterialId = model.MaterialId;
+            painting.Description = model.Description;
+            painting.HeightCm = model.HeightCm;
+            painting.WidthCm = model.WidthCm;
+            painting.IsAvailable = model.IsAvailable;
+
+            if (model.ImageFile != null)
+            {
+                try
                 {
                     DeleteImageByPath(painting.ImagePath, rootPath);
 
@@ -73,13 +98,18 @@ namespace BlagoevgradArt.Core.Services
                     }
 
                     painting.ImagePath = $"~/Images/Paintings/{model.ImageFile.FileName}";
+
+                    await _repository.SaveChangesAsync();
+                }
+                catch (Exception)
+                {
+                    throw new InvalidOperationException();
                 }
 
-                await _repository.SaveChangesAsync();
             }
         }
 
-        public async Task<PaintingQueryServiceModel> AllAsync(int currentPage, 
+        public async Task<PaintingQueryServiceModel> AllAsync(int currentPage,
             int countPerPage,
             string? authorFirstName,
             string? artType)
@@ -184,7 +214,7 @@ namespace BlagoevgradArt.Core.Services
         public async Task DeleteImageAsync(int id, string rootPath)
         {
             Painting? painting = await _repository.GetByIdAsync<Painting>(id);
-            
+
             if (painting != null)
             {
                 DeleteImageByPath(painting.ImagePath, rootPath);
@@ -192,7 +222,7 @@ namespace BlagoevgradArt.Core.Services
                 _repository.Remove(painting);
                 await _repository.SaveChangesAsync();
             }
-        }        
+        }
 
         private void DeleteImageByPath(string imagePath, string rootPath)
         {
