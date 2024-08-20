@@ -175,7 +175,9 @@ namespace BlagoevgradArt.Controllers
         {
             string? correctInformation = await _paintingService.GetInformationById(id);
 
-            if (correctInformation == null || information != correctInformation)
+            if (await _paintingService.ExistsByIdAsync(id) == false ||
+                correctInformation == null ||
+                information != correctInformation)
             {
                 return NotFound();
             }

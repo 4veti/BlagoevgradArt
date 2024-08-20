@@ -236,7 +236,7 @@ namespace BlagoevgradArt.Core.Services
 
             try
             {
-                using (FileStream stream = System.IO.File.Create(filePath))
+                using (FileStream stream = File.Create(filePath))
                 {
                     await imageFile.CopyToAsync(stream);
                 }
