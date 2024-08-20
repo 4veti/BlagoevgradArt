@@ -3,6 +3,7 @@ using BlagoevgradArt.Core.Extensions;
 using BlagoevgradArt.Core.Models.Painting;
 using BlagoevgradArt.Infrastructure.Data.Common;
 using BlagoevgradArt.Infrastructure.Data.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlagoevgradArt.Core.Services
@@ -24,20 +25,7 @@ namespace BlagoevgradArt.Core.Services
 
         public async Task<int> AddPaintingAsync(PaintingFormModel model, string userId, string rootPath)
         {
-            string filePath = Path.Combine(rootPath, "Images\\Paintings");
-            filePath = Path.Combine(filePath, model.ImageFile.FileName);
-
-            try
-            {
-                using (FileStream stream = System.IO.File.Create(filePath))
-                {
-                    await model.ImageFile.CopyToAsync(stream);
-                }
-            }
-            catch (Exception)
-            {
-                throw new InvalidOperationException();
-            }
+            await SaveImageToDiskAsync(model.ImageFile, model.ImageFile.FileName, rootPath);
 
             int authorId = await _authorService.GetIdAsync(userId);
 
@@ -73,9 +61,15 @@ namespace BlagoevgradArt.Core.Services
                 return;
             }
 
+            if (model.ImageFile == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             painting.Title = model.Title;
             painting.Year = model.Year;
             painting.GenreId = model.GenreId;
+            painting.ImagePath = $"~/Images/Paintings/{model.ImageFile.FileName}";
             painting.ArtTypeId = model.ArtTypeId;
             painting.BaseTypeId = model.BaseTypeId;
             painting.MaterialId = model.MaterialId;
@@ -84,29 +78,10 @@ namespace BlagoevgradArt.Core.Services
             painting.WidthCm = model.WidthCm;
             painting.IsAvailable = model.IsAvailable;
 
-            if (model.ImageFile != null)
-            {
-                try
-                {
-                    DeleteImageByPath(painting.ImagePath, rootPath);
+            DeleteImageByPath(painting.ImagePath, rootPath);
+            await SaveImageToDiskAsync(model.ImageFile, model.ImageFile.FileName, rootPath);
 
-                    string newFilePath = $"{rootPath}\\Images\\Paintings\\{model.ImageFile.FileName}";
-
-                    using (FileStream stream = File.Create(newFilePath))
-                    {
-                        await model.ImageFile.CopyToAsync(stream);
-                    }
-
-                    painting.ImagePath = $"~/Images/Paintings/{model.ImageFile.FileName}";
-
-                    await _repository.SaveChangesAsync();
-                }
-                catch (Exception)
-                {
-                    throw new InvalidOperationException();
-                }
-
-            }
+            await _repository.SaveChangesAsync();
         }
 
         public async Task<PaintingQueryServiceModel> AllAsync(int currentPage,
@@ -224,12 +199,6 @@ namespace BlagoevgradArt.Core.Services
             }
         }
 
-        private void DeleteImageByPath(string imagePath, string rootPath)
-        {
-            string filePath = $"{rootPath}{imagePath.Trim('~').Replace("/", "\\")}";
-            File.Delete(filePath);
-        }
-
         public async Task<string?> GetInformationById(int id)
         {
             IPaintingInformationModel? model = await _repository
@@ -253,6 +222,29 @@ namespace BlagoevgradArt.Core.Services
             Painting? painting = await _repository.AllAsReadOnly<Painting>().FirstOrDefaultAsync();
 
             return painting == null ? false : true;
+        }
+
+        private void DeleteImageByPath(string imagePath, string rootPath)
+        {
+            string filePath = $"{rootPath}{imagePath.Trim('~').Replace("/", "\\")}";
+            File.Delete(filePath);
+        }
+
+        private async Task SaveImageToDiskAsync(IFormFile imageFile, string ImageFileName, string rootPath)
+        {
+            string filePath = Path.Combine(rootPath, "Images\\Paintings", ImageFileName);
+
+            try
+            {
+                using (FileStream stream = System.IO.File.Create(filePath))
+                {
+                    await imageFile.CopyToAsync(stream);
+                }
+            }
+            catch (Exception)
+            {
+                throw new InvalidOperationException();
+            }
         }
     }
 }

@@ -30,7 +30,7 @@ namespace BlagoevgradArt.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return RedirectToAction(nameof(Add));
+            return RedirectToAction(nameof(All));
         }
 
         [HttpGet]
@@ -73,6 +73,19 @@ namespace BlagoevgradArt.Controllers
                 return NotFound();
             }
 
+            string information = string.Empty;
+
+            // The model binder doesn't bind the lists of materials, bases, etc. so I just redirect to the
+            // HttpPost Action.
+            //
+            // TODO: Implement a helper method that repopulates the FormModel so I can do Return(View)
+            // and display the validation error messages.
+            if (ModelState.IsValid == false)
+            {
+                information = await _paintingService.GetInformationById(id) ?? string.Empty;
+                return RedirectToAction(nameof(Edit), new { id, information });
+            }
+
             try
             {
                 await _paintingService.EditPaintingAsync(model, id, _hostingEnv.WebRootPath);
@@ -81,12 +94,16 @@ namespace BlagoevgradArt.Controllers
             {
                 return StatusCode(500, ErrorWhileSavingImage);
             }
+            catch (ArgumentNullException)
+            {
+                return BadRequest(ImageFileWasNotReceived);
+            }
             catch (Exception)
             {
                 return StatusCode(500);
             }
 
-            string information = model.GetInformation();
+            information = model.GetInformation();
             return RedirectToAction(nameof(Details), new { id, information });
 
         }
