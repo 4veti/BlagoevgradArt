@@ -4,6 +4,8 @@ namespace BlagoevgradArt.Core.Contracts
 {
     public interface IExhibitionService
     {
+        Task<bool> ExistsByIdAsync(int id);
+
         Task<ExhibitionDetailsModel?> GetInfoAsync(int id);
 
         Task<int> SaveExhibitionAsync(int galleryId, ExhibitionFormModel model);

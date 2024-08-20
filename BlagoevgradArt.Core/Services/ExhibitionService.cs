@@ -29,6 +29,14 @@ namespace BlagoevgradArt.Core.Services
             await _repository.SaveChangesAsync();
         }
 
+        public async Task<bool> ExistsByIdAsync(int id)
+        {
+            Exhibition? exhibition = await _repository.AllAsReadOnly<Exhibition>()
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            return exhibition != null;
+        }
+
         public async Task<ExhibitionAllServiceModel> GetAllAsync(int currentPage,
             int countPerPage)
         {
