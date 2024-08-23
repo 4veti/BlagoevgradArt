@@ -16,5 +16,7 @@ namespace BlagoevgradArt.Core.Contracts
 
         Task<ExhibitionAllServiceModel> GetAllAsync(int currentPage,
             int countPerPage);
+
+        Task<bool> DeleteExhibitionAsync(int id);
     }
 }

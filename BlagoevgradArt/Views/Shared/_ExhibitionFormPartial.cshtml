@@ -22,7 +22,7 @@
             <div class="text-center">
                 <input class="btn btn-primary mt-3" type="submit" value="Запази" />
 
-                @if (ViewBag.IsEditing == true)
+                @if (ViewBag.IsNewExhibition == false)
                 {
                     <input class="btn btn-primary mt-3" type="reset" value="Върни промените" />
                 }
@@ -30,7 +30,3 @@
         </form>
     </div>
 </div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

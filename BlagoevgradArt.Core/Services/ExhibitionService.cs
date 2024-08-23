@@ -15,6 +15,30 @@ namespace BlagoevgradArt.Core.Services
             _repository = repository;
         }
 
+        public async Task<bool> DeleteExhibitionAsync(int id)
+        {
+            Exhibition? exhibition = await _repository
+                .All<Exhibition>()
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (exhibition == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                _repository.Remove(exhibition);
+                await _repository.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                throw new InvalidOperationException();
+            }
+        }
+
         public async Task EditExhibitionAsync(int id, ExhibitionFormModel model)
         {
             Exhibition exhibition = await _repository
@@ -83,7 +107,7 @@ namespace BlagoevgradArt.Core.Services
                 .Include(e => e.AuthorExhibitions)
                     .ThenInclude(ae => ae.Author)
                 .Include(e => e.Gallery)
-                .Where(e => e.Id ==  id)
+                .Where(e => e.Id == id)
                 .FirstOrDefaultAsync();
 
             if (exhibition == null)
