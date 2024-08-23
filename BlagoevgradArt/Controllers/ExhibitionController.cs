@@ -101,7 +101,7 @@ namespace BlagoevgradArt.Controllers
                     return NotFound();
                 }
 
-                return RedirectToAction(nameof(Details), new { id });
+                return RedirectToAction(nameof(All));
             }
             catch (InvalidOperationException)
             {

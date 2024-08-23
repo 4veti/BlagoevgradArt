@@ -1,5 +1,7 @@
 ﻿@model ExhibitionDetailsModel;
 
+@inject IGalleryService _galleryService;
+
 @{
     ViewData["Title"] = "Изложба";
 }
@@ -10,15 +12,26 @@
 <div style="display: flex;">
     <div style="flex: 1">
         <table class="table table-borderless">
-            <tr>
-                <th>Опции:</th>
-                <td>
-                    <form method="get">
-                        <button class="btn btn-info" asp-controller="Exhibition" 
-                            asp-action="Edit" asp-route-id="@Model.Id">Редактиране</button>
-                    </form>
-                </td>
-            </tr>
+            @if ((User?.Identity?.IsAuthenticated ?? false) && await _galleryService.ExistsByIdAsync(User.Id()))
+            {
+                <tr>
+                    <th>Опции:</th>
+                    <td>
+                        <form method="get">
+                            <button class="btn btn-info" asp-controller="Exhibition"
+                                    asp-action="Edit" asp-route-id="@Model.Id">
+                                Редактиране
+                            </button>
+                        </form>
+                        <form method="post">
+                            <button class="btn btn-info" asp-controller="Exhibition" onclick="return confirmDelete()"
+                                    asp-action="Delete" asp-route-id="@Model.Id">
+                                Изтрий
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
             <tr>
                 <th>Заглавие: </th>
                 <td style="font-size:large; font-weight: 500">@Model.Name</td>
@@ -47,3 +60,9 @@
         </table>
     </div>
 </div>
+
+<script>
+    function confirmDelete() {
+        return confirm("Сигурни ли сте, че искате да изтриете изложбата?");
+    }
+</script>
