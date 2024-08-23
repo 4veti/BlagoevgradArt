@@ -75,8 +75,8 @@ namespace BlagoevgradArt.Controllers
 
             string information = string.Empty;
 
-            // The model binder doesn't bind the lists of materials, bases, etc. so I just redirect to the
-            // HttpPost Action.
+            // The model binder doesn't bind the lists of materials, bases, etc. so I just reload the
+            // model with its original data.
             //
             // TODO: Implement a helper method that repopulates the FormModel so I can do Return(View)
             // and display the validation error messages.
