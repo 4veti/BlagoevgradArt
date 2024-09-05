@@ -8,9 +8,9 @@ namespace BlagoevgradArt.ModelBinders
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
             bool success = false;
-            var usersBasicInfoCount = Convert.ToInt32(bindingContext.ValueProvider.GetValue("count").FirstValue);
-            var usersBasicInfo = new List<UserBasicInfoModel>(usersBasicInfoCount);
-            ManageUserRolesModel manageUserRolesModel = new ManageUserRolesModel();
+            int usersBasicInfoCount = Convert.ToInt32(bindingContext.ValueProvider.GetValue("count").FirstValue);
+            List<UserBasicInfoModel> usersBasicInfo = new (usersBasicInfoCount);
+            ManageUserRolesModel manageUserRolesModel = new ();
 
             try
             {

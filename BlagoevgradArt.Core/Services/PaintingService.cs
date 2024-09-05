@@ -1,4 +1,5 @@
 ﻿using BlagoevgradArt.Core.Contracts;
+using BlagoevgradArt.Core.Exceptions;
 using BlagoevgradArt.Core.Extensions;
 using BlagoevgradArt.Core.Models.Painting;
 using BlagoevgradArt.Infrastructure.Data.Common;
@@ -243,7 +244,7 @@ namespace BlagoevgradArt.Core.Services
             }
             catch (Exception)
             {
-                throw new InvalidOperationException();
+                throw new ErrorWhileSavingImageToDiskException();
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using BlagoevgradArt.Attributes;
 using BlagoevgradArt.Core.Contracts;
+using BlagoevgradArt.Core.Exceptions;
 using BlagoevgradArt.Core.Extensions;
 using BlagoevgradArt.Core.Models.Painting;
 using BlagoevgradArt.Extensions;
@@ -142,7 +143,7 @@ namespace BlagoevgradArt.Controllers
         [MustBeExistingAuthor]
         public async Task<IActionResult> Add(PaintingFormModel model)
         {
-            ValidateImageAttributes(model);
+            await ValidateImageAttributes(model);
 
             if (ModelState.IsValid == false)
             {
@@ -155,7 +156,7 @@ namespace BlagoevgradArt.Controllers
             {
                 id = await _paintingService.AddPaintingAsync(model, User.Id(), _hostingEnv.WebRootPath);
             }
-            catch (InvalidOperationException)
+            catch (ErrorWhileSavingImageToDiskException)
             {
                 return StatusCode(500, ErrorWhileSavingImage);
             }
@@ -187,7 +188,7 @@ namespace BlagoevgradArt.Controllers
             return RedirectToAction(nameof(All), new { id });
         }
 
-        private async void ValidateImageAttributes(PaintingFormModel model)
+        private async Task ValidateImageAttributes(PaintingFormModel model)
         {
             if (await _paintingHelperService.GenreExistsAsync(model.GenreId) == false)
             {
