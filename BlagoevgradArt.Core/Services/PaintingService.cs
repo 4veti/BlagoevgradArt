@@ -1,8 +1,10 @@
 ﻿using BlagoevgradArt.Core.Contracts;
+using BlagoevgradArt.Core.Exceptions;
 using BlagoevgradArt.Core.Extensions;
 using BlagoevgradArt.Core.Models.Painting;
 using BlagoevgradArt.Infrastructure.Data.Common;
 using BlagoevgradArt.Infrastructure.Data.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlagoevgradArt.Core.Services
@@ -11,21 +13,28 @@ namespace BlagoevgradArt.Core.Services
     {
         private readonly IRepository _repository;
         private readonly IPaintingHelperService _paintingHelperService;
+        private readonly IAuthorService _authorService;
 
         public PaintingService(IRepository repository,
-            IPaintingHelperService paintingHelperService)
+            IPaintingHelperService paintingHelperService,
+            IAuthorService authorService)
         {
             _repository = repository;
             _paintingHelperService = paintingHelperService;
+            _authorService = authorService;
         }
 
-        public async Task<int> AddPaintingAsync(PaintingFormModel model, int authorId, string imagePath)
+        public async Task<int> AddPaintingAsync(PaintingFormModel model, string userId, string rootPath)
         {
+            await SaveImageToDiskAsync(model.ImageFile, model.ImageFile.FileName, rootPath);
+
+            int authorId = await _authorService.GetIdAsync(userId);
+
             Painting painting = new Painting()
             {
                 Title = model.Title,
                 AuthorId = authorId,
-                ImagePath = imagePath,
+                ImagePath = $"~/Images/Paintings/{model.ImageFile.FileName}",
                 Year = model.Year,
                 GenreId = model.GenreId,
                 ArtTypeId = model.ArtTypeId,
@@ -48,38 +57,35 @@ namespace BlagoevgradArt.Core.Services
             Painting? painting = await _repository
                 .GetByIdAsync<Painting>(id);
 
-            if (painting != null)
+            if (painting == null)
             {
-                painting.Title = model.Title;
-                painting.Year = model.Year;
-                painting.GenreId = model.GenreId;
-                painting.ArtTypeId = model.ArtTypeId;
-                painting.BaseTypeId = model.BaseTypeId;
-                painting.MaterialId = model.MaterialId;
-                painting.Description = model.Description;
-                painting.HeightCm = model.HeightCm;
-                painting.WidthCm = model.WidthCm;
-                painting.IsAvailable = model.IsAvailable;
-
-                if (model.ImageFile != null)
-                {
-                    DeleteImageByPath(painting.ImagePath, rootPath);
-
-                    string newFilePath = $"{rootPath}\\Images\\Paintings\\{model.ImageFile.FileName}";
-
-                    using (FileStream stream = File.Create(newFilePath))
-                    {
-                        await model.ImageFile.CopyToAsync(stream);
-                    }
-
-                    painting.ImagePath = $"~/Images/Paintings/{model.ImageFile.FileName}";
-                }
-
-                await _repository.SaveChangesAsync();
+                return;
             }
+
+            if (model.ImageFile == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            painting.Title = model.Title;
+            painting.Year = model.Year;
+            painting.GenreId = model.GenreId;
+            painting.ImagePath = $"~/Images/Paintings/{model.ImageFile.FileName}";
+            painting.ArtTypeId = model.ArtTypeId;
+            painting.BaseTypeId = model.BaseTypeId;
+            painting.MaterialId = model.MaterialId;
+            painting.Description = model.Description;
+            painting.HeightCm = model.HeightCm;
+            painting.WidthCm = model.WidthCm;
+            painting.IsAvailable = model.IsAvailable;
+
+            DeleteImageByPath(painting.ImagePath, rootPath);
+            await SaveImageToDiskAsync(model.ImageFile, model.ImageFile.FileName, rootPath);
+
+            await _repository.SaveChangesAsync();
         }
 
-        public async Task<PaintingQueryServiceModel> AllAsync(int currentPage, 
+        public async Task<PaintingQueryServiceModel> AllAsync(int currentPage,
             int countPerPage,
             string? authorFirstName,
             string? artType)
@@ -184,7 +190,7 @@ namespace BlagoevgradArt.Core.Services
         public async Task DeleteImageAsync(int id, string rootPath)
         {
             Painting? painting = await _repository.GetByIdAsync<Painting>(id);
-            
+
             if (painting != null)
             {
                 DeleteImageByPath(painting.ImagePath, rootPath);
@@ -192,12 +198,6 @@ namespace BlagoevgradArt.Core.Services
                 _repository.Remove(painting);
                 await _repository.SaveChangesAsync();
             }
-        }        
-
-        private void DeleteImageByPath(string imagePath, string rootPath)
-        {
-            string filePath = $"{rootPath}{imagePath.Trim('~').Replace("/", "\\")}";
-            File.Delete(filePath);
         }
 
         public async Task<string?> GetInformationById(int id)
@@ -223,6 +223,29 @@ namespace BlagoevgradArt.Core.Services
             Painting? painting = await _repository.AllAsReadOnly<Painting>().FirstOrDefaultAsync();
 
             return painting == null ? false : true;
+        }
+
+        private void DeleteImageByPath(string imagePath, string rootPath)
+        {
+            string filePath = $"{rootPath}{imagePath.Trim('~').Replace("/", "\\")}";
+            File.Delete(filePath);
+        }
+
+        private async Task SaveImageToDiskAsync(IFormFile imageFile, string ImageFileName, string rootPath)
+        {
+            string filePath = Path.Combine(rootPath, "Images\\Paintings", ImageFileName);
+
+            try
+            {
+                using (FileStream stream = File.Create(filePath))
+                {
+                    await imageFile.CopyToAsync(stream);
+                }
+            }
+            catch (Exception)
+            {
+                throw new ErrorWhileSavingImageToDiskException();
+            }
         }
     }
 }

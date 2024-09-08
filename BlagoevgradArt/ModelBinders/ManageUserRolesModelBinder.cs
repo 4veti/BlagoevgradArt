@@ -7,49 +7,50 @@ namespace BlagoevgradArt.ModelBinders
     {
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
-            ValueProviderResult valueResult = bindingContext.ValueProvider
-                .GetValue(bindingContext.ModelName);
+            bool success = false;
+            int usersBasicInfoCount = Convert.ToInt32(bindingContext.ValueProvider.GetValue("count").FirstValue);
+            List<UserBasicInfoModel> usersBasicInfo = new (usersBasicInfoCount);
+            ManageUserRolesModel manageUserRolesModel = new ();
 
-            if (valueResult != ValueProviderResult.None && !string.IsNullOrWhiteSpace(valueResult.FirstValue))
+            try
             {
-                bool success = false;
-                var usersBasicInfoCount = Convert.ToInt32(valueResult.FirstValue);
-                var usersBasicInfo = new List<UserBasicInfoModel>(usersBasicInfoCount);
-
-                try
+                for (int i = 0; i < usersBasicInfoCount; i++)
                 {
-                    for (int i = 0; i < usersBasicInfoCount; i++)
+                    var isCheckedResult = bindingContext.ValueProvider.GetValue($"UsersBasicInfo[{i}].IsSelected");
+                    if (isCheckedResult != ValueProviderResult.None && isCheckedResult.FirstValue == "true")
                     {
-                        var isCheckedResult = bindingContext.ValueProvider.GetValue($"UsersBasicInfo[{i}].IsSelected");
-                        if (isCheckedResult != ValueProviderResult.None && isCheckedResult.FirstValue == "true")
-                        {
-                            usersBasicInfo.Add(new UserBasicInfoModel { IsSelected = true });
-                        }
-                        else
-                        {
-                            usersBasicInfo.Add(new UserBasicInfoModel { IsSelected = false });
-                        }
+                        usersBasicInfo.Add(new UserBasicInfoModel { IsSelected = true });
+                    }
+                    else
+                    {
+                        usersBasicInfo.Add(new UserBasicInfoModel { IsSelected = false });
+                    }
 
-                        var emailResult = bindingContext.ValueProvider.GetValue($"UsersBasicInfo[{i}].Email");
+                    var emailResult = bindingContext.ValueProvider.GetValue($"UserBasicInfo[{i}].Email");
 
-                        if (emailResult != ValueProviderResult.None)
-                        {
-                            usersBasicInfo[i].Email = emailResult.FirstValue;
-                        }
-
-                        success = true;
+                    if (emailResult != ValueProviderResult.None)
+                    {
+                        usersBasicInfo[i].Email = emailResult.FirstValue;
                     }
                 }
 
-                catch (Exception ex)
-                {
-                    bindingContext.ModelState.AddModelError(bindingContext.ModelName, ex, bindingContext.ModelMetadata);
-                }
+                var selectedRoleValue = bindingContext.ValueProvider.GetValue("SelectedRoleName");
 
-                if (success)
+                if (selectedRoleValue != ValueProviderResult.None && selectedRoleValue.FirstValue != null)
                 {
-                    bindingContext.Result = ModelBindingResult.Success(usersBasicInfo);
+                    manageUserRolesModel.SelectedRoleName = selectedRoleValue.FirstValue;
+                    manageUserRolesModel.UsersBasicInfo = usersBasicInfo;
+                    success = true;
                 }
+            }
+            catch (Exception ex)
+            {
+                bindingContext.ModelState.AddModelError(bindingContext.ModelName, ex, bindingContext.ModelMetadata);
+            }
+
+            if (success)
+            {
+                bindingContext.Result = ModelBindingResult.Success(manageUserRolesModel);
             }
 
             return Task.CompletedTask;

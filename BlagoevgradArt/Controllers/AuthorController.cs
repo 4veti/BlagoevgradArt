@@ -1,4 +1,5 @@
-﻿using BlagoevgradArt.Core.Contracts;
+﻿using BlagoevgradArt.Attributes;
+using BlagoevgradArt.Core.Contracts;
 using BlagoevgradArt.Core.Models.Author;
 using BlagoevgradArt.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -41,6 +42,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpGet]
+        [MustBeExistingAuthor]
         public async Task<IActionResult> EditProfile()
         {
             AuthorProfileInfoModel model = await _authorService
@@ -55,6 +57,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpPost]
+        [MustBeExistingAuthor]
         public async Task<IActionResult> EditProfile(AuthorFormModel model)
         {
             if (ModelState.IsValid == false)

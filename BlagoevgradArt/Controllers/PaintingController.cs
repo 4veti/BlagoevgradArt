@@ -1,10 +1,12 @@
 ﻿using BlagoevgradArt.Attributes;
 using BlagoevgradArt.Core.Contracts;
+using BlagoevgradArt.Core.Exceptions;
 using BlagoevgradArt.Core.Extensions;
 using BlagoevgradArt.Core.Models.Painting;
 using BlagoevgradArt.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static BlagoevgradArt.Core.Constants.ErrorMessages;
 
 namespace BlagoevgradArt.Controllers
 {
@@ -29,16 +31,16 @@ namespace BlagoevgradArt.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return RedirectToAction(nameof(Add));
+            return RedirectToAction(nameof(All));
         }
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> All([FromQuery]AllPaintingsQueryModel model)
+        public async Task<IActionResult> All([FromQuery] AllPaintingsQueryModel model)
         {
             model.ArtTypes = await _paintingHelperService.GetArtTypesAsync();
 
-            model.Thumbnails = await _paintingService.AllAsync(model.CurrentPage, 
+            model.Thumbnails = await _paintingService.AllAsync(model.CurrentPage,
                 model.CountPerPage,
                 model.AuthorFirstName,
                 model.ArtType);
@@ -58,6 +60,8 @@ namespace BlagoevgradArt.Controllers
                 return NotFound();
             }
 
+            ViewBag.IsNewPainting = false;
+
             return View(model);
         }
 
@@ -65,16 +69,44 @@ namespace BlagoevgradArt.Controllers
         [MustBeExistingAuthor]
         public async Task<IActionResult> Edit(int id, PaintingFormModel? model)
         {
-            if (model == null)
+            if (model == null || await _paintingService.ExistsByIdAsync(id) == false)
             {
                 return NotFound();
             }
 
-            await _paintingService.EditPaintingAsync(model, id, _hostingEnv.WebRootPath);
+            string information = string.Empty;
 
-            string information = model.GetInformation();
+            // The model binder doesn't bind the lists of materials, bases, etc. so I just reload the
+            // model with its original data.
+            //
+            // TODO: Implement a helper method that repopulates the FormModel so I can do Return(View)
+            // and display the validation error messages.
+            if (ModelState.IsValid == false)
+            {
+                information = await _paintingService.GetInformationById(id) ?? string.Empty;
+                return RedirectToAction(nameof(Edit), new { id, information });
+            }
 
+            try
+            {
+                await _paintingService.EditPaintingAsync(model, id, _hostingEnv.WebRootPath);
+            }
+            catch (InvalidOperationException)
+            {
+                return StatusCode(500, ErrorWhileSavingImage);
+            }
+            catch (ArgumentNullException)
+            {
+                return BadRequest(ImageFileWasNotReceived);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+
+            information = model.GetInformation();
             return RedirectToAction(nameof(Details), new { id, information });
+
         }
 
         [HttpGet]
@@ -111,24 +143,27 @@ namespace BlagoevgradArt.Controllers
         [MustBeExistingAuthor]
         public async Task<IActionResult> Add(PaintingFormModel model)
         {
-            ValidateImageAttributes(model);
+            await ValidateImageAttributes(model);
 
             if (ModelState.IsValid == false)
             {
                 return RedirectToAction(nameof(Add));
             }
 
-            string filePath = Path.Combine(_hostingEnv.WebRootPath, "Images\\Paintings");
-            filePath = Path.Combine(filePath, model.ImageFile.FileName);
-            
-            using (FileStream stream = System.IO.File.Create(filePath))
+            int id = -1;
+
+            try
             {
-                await model.ImageFile.CopyToAsync(stream);
+                id = await _paintingService.AddPaintingAsync(model, User.Id(), _hostingEnv.WebRootPath);
             }
-
-            int authorId = await _authorService.GetIdAsync(User.Id());
-
-            int id = await _paintingService.AddPaintingAsync(model, authorId, $"~/Images/Paintings/{model.ImageFile.FileName}");
+            catch (ErrorWhileSavingImageToDiskException)
+            {
+                return StatusCode(500, ErrorWhileSavingImage);
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
 
             string information = model.GetInformation();
 
@@ -141,7 +176,9 @@ namespace BlagoevgradArt.Controllers
         {
             string? correctInformation = await _paintingService.GetInformationById(id);
 
-            if (correctInformation == null || information != correctInformation)
+            if (await _paintingService.ExistsByIdAsync(id) == false ||
+                correctInformation == null ||
+                information != correctInformation)
             {
                 return NotFound();
             }
@@ -151,7 +188,7 @@ namespace BlagoevgradArt.Controllers
             return RedirectToAction(nameof(All), new { id });
         }
 
-        private async void ValidateImageAttributes(PaintingFormModel model)
+        private async Task ValidateImageAttributes(PaintingFormModel model)
         {
             if (await _paintingHelperService.GenreExistsAsync(model.GenreId) == false)
             {

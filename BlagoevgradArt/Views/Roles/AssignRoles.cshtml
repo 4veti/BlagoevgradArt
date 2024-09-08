@@ -1,7 +1,6 @@
 ﻿@model ManageUserRolesModel
 @{
     ViewData["Title"] = "Управление на роли";
-    int userCounter = 0;
 }
 
 <h2 class="text-center">@ViewData["Title"]</h2>
@@ -10,7 +9,7 @@
 <div class="row">
     <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
         <form method="post">
-            <input hidden name="count" value="@Model.UsersBasicInfo.Count()"/>
+            <input hidden name="count" value="@Model.UsersBasicInfo.Count()" />
 
             <div class="form-group">
                 <label asp-for="SelectedRoleName">Избери роля за задаване:</label>
@@ -20,18 +19,23 @@
                         <option value="@roleName">@roleName</option>
                     }
                 </select>
-                <span asp-validation-for="SelectedRoleName" class="small text-danger"></span>
             </div>
 
             <div class="form-group">
                 <table>
+                    @{
+                        int userCounter = 0;
+                    }
+
                     @foreach (var user in Model.UsersBasicInfo)
                     {
                         <tr>
                             <th>
-                                <input asp-for="@user.IsSelected" class="form-check-input" name="UsersBasicInfo[@userCounter].IsSelected" type="checkbox" value="">
+                                <input class="form-check-input"
+                                       name="UsersBasicInfo[@userCounter].IsSelected" type="checkbox" value="true">
                                 <label class="form-check-label" for="@user.Email">@user.Email</label>
-                                <input hidden name="UsersBasicInfo[@userCounter++].Email" />
+
+                                <input hidden name="UserBasicInfo[@(userCounter++)].Email" value="@user.Email" />
                             </th>
                             <td>
                                 <p>@user.InRoles</p>

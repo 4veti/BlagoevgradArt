@@ -2,6 +2,7 @@
 using BlagoevgradArt.Core.Contracts;
 using BlagoevgradArt.Core.Models.Exhibition;
 using BlagoevgradArt.Extensions;
+using BlagoevgradArt.Infrastructure.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,47 +31,45 @@ namespace BlagoevgradArt.Controllers
 
         [HttpGet]
         [MustBeExistingGallery]
+        [ExhibitionMustExist]
         public async Task<IActionResult> Edit(int id)
         {
             ExhibitionFormModel model = await _exhibitionService.GetFormDataByIdAsync(id);
-            ViewBag.IsEditing = true;
+            ViewBag.IsNewExhibition = false;
 
             return View(model);
         }
 
         [HttpPost]
         [MustBeExistingGallery]
+        [ExhibitionMustExist]
         public async Task<IActionResult> Edit(int id, ExhibitionFormModel model)
         {
-            await _exhibitionService.EditExhibitionAsync(id, model);
-            ViewBag.IsNewExhibition = false;
+            if (ModelState.IsValid == false)
+            {
+                return View(id);
+            }
+
+            await _exhibitionService.EditExhibitionAsync(id, model);            
 
             return RedirectToAction(nameof(Details), new { id });
         }
 
         [HttpGet]
         [AllowAnonymous]
+        [ExhibitionMustExist]
         public async Task<IActionResult> Details(int id)
         {
             ExhibitionDetailsModel? model = await _exhibitionService.GetInfoAsync(id);
-
-            if (model == null)
-            {
-                return NotFound();
-            }
 
             return View(model);
         }
 
         [HttpGet]
         [MustBeExistingGallery]
-        public async Task<IActionResult> Add()
+        public IActionResult Add()
         {
-            if (!await _galleryService.ExistsByIdAsync(User.Id()))
-            {
-                return Unauthorized();
-            }
-
+            ViewBag.IsNewExhibition = true;
             return View(new ExhibitionFormModel());
         }
 
@@ -80,11 +79,6 @@ namespace BlagoevgradArt.Controllers
         {
             int galleryId = await _galleryService.GetIdAsync(User.Id());
 
-            if (!await _galleryService.ExistsByIdAsync(User.Id()))
-            {
-                return Unauthorized();
-            }
-
             if (ModelState.IsValid == false)
             {
                 return View();
@@ -93,6 +87,26 @@ namespace BlagoevgradArt.Controllers
             int exhibitionId = await _exhibitionService.SaveExhibitionAsync(galleryId, model);
 
             return RedirectToAction(nameof(Details), new { id = exhibitionId });
+        }
+
+        [HttpPost]
+        [MustBeExistingGallery]
+        [ExhibitionMustExist]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                if (await _exhibitionService.DeleteExhibitionAsync(id) == false)
+                {
+                    return NotFound();
+                }
+
+                return RedirectToAction(nameof(All));
+            }
+            catch (InvalidOperationException)
+            {
+                return BadRequest();
+            }
         }
     }
 }

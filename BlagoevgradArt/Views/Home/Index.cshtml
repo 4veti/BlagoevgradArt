@@ -3,6 +3,47 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Добре дошли в портала за художници в Благоевград!</h1>
+    <br />
+
+    <h2 style="align-content:flex-start">На платформата имаме:</h2>
+    <br />
+    <table>
+        <tr>
+            <th>
+                <p id="countPaintings" style="font-size:xx-large" />
+            </th>
+            <td>
+                <p style="font-size:xx-large"> Картини</p>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                <p id="countAuthors" style="font-size:xx-large" />
+            </th>
+            <td>
+                <p style="font-size:xx-large"> Автора</p>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                <p id="countGalleries" style="font-size:xx-large" />
+            </th>
+            <td>
+                <p style="font-size:xx-large"> Галерии</p>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                <p id="countExhibitions" style="font-size:xx-large" />
+            </th>
+            <td>
+                <p style="font-size:xx-large"> Изложби</p>
+            </td>
+        </tr>
+    </table>
 </div>
+
+@section Scripts {
+    <script src="~/js/Home.js"></script>
+}
