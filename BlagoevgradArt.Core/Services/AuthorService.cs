@@ -70,7 +70,6 @@ namespace BlagoevgradArt.Core.Services
             return string.Join(" ", new string[] { author.FirstName, author.LastName ?? string.Empty });
         }
 
-
         public async Task<List<AuthorSmallThumbnailModel>> GetAuthorThumbnails(int id, bool isAuthorInExhibition)
         {
             var authors = await _repository.AllAsReadOnly<Author>()

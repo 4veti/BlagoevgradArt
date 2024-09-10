@@ -7,7 +7,7 @@ namespace BlagoevgradArt.Attributes
 {
     public class GalleryMustOwnExhibitionAttribute : ActionFilterAttribute
     {
-        public override async void OnActionExecuting(ActionExecutingContext context)
+        public override void OnActionExecuting(ActionExecutingContext context)
         {
             IExhibitionService? _exhibitionService = context.HttpContext.RequestServices.GetService<IExhibitionService>();
 
@@ -19,7 +19,7 @@ namespace BlagoevgradArt.Attributes
             {
                 if (int.TryParse((context.ActionArguments["id"] ?? "-1").ToString(), out int exhibitionId))
                 {
-                    bool galleryIsOwnerOfExhibition = await _exhibitionService.GalleryUserIsOwnerOfExhibitionAsync(context.HttpContext.User.Id(), exhibitionId);
+                    bool galleryIsOwnerOfExhibition = _exhibitionService.GalleryUserIsOwnerOfExhibitionAsync(context.HttpContext.User.Id(), exhibitionId).Result;
 
                     if (galleryIsOwnerOfExhibition == false)
                     {
