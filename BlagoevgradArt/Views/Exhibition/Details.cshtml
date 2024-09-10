@@ -1,4 +1,5 @@
 ﻿@model ExhibitionDetailsModel;
+@inject IGalleryService _galleryService;
 
 @{
     ViewData["Title"] = "Изложба";
@@ -59,10 +60,11 @@
     </div>
 </div>
 
-@if (Model.AuthorSmallThumbnails.Any())
+@if (User != null && await _galleryService.ExistsByIdAsync(User.Id()) && Model.AuthorSmallThumbnails.Any())
 {
+    <h3>Добави художници към изложбата:</h3>
     <div class="col-md-3">
-        <table class="table table-stripped table-bordered border-secondary" style="align-content:center">
+        <table class="table table-stripped table-bordered border-secondary">
             @foreach (var author in Model.AuthorSmallThumbnails)
             {
                 <tr>
@@ -72,7 +74,9 @@
                     <td>
                         <form method="post">
                             <button class="btn btn-success" asp-controller="Exhibition" asp-action="AddAuthor"
-                               asp-route-id="@Model.Id" asp-route-authorId="@author.Id">Добави</button>
+                                    asp-route-id="@Model.Id" asp-route-authorId="@author.Id">
+                                Добави
+                            </button>
                         </form>
                     </td>
                 </tr>
