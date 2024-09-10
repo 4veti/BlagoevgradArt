@@ -26,17 +26,29 @@ namespace BlagoevgradArt.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> All([FromQuery] ExhibitionAllModel model)
         {
-            model.Exhibitions = await _exhibitionService.GetAllAsync(model.CurrentPage, model.CountPerPage);
+            try
+            {
+                model.Exhibitions = await _exhibitionService.GetAllAsync(model.CurrentPage, model.CountPerPage);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
 
             return View(model);
         }
 
         [HttpGet]
         [MustBeExistingGallery]
-        [ExhibitionMustExist]
         public async Task<IActionResult> Edit(int id)
         {
-            ExhibitionFormModel model = await _exhibitionService.GetFormDataByIdAsync(id);
+            ExhibitionFormModel? model = await _exhibitionService.GetFormDataByIdAsync(id);
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+
             ViewBag.IsNewExhibition = false;
 
             return View(model);
@@ -44,7 +56,6 @@ namespace BlagoevgradArt.Controllers
 
         [HttpPost]
         [MustBeExistingGallery]
-        [ExhibitionMustExist]
         public async Task<IActionResult> Edit(int id, ExhibitionFormModel model)
         {
             if (ModelState.IsValid == false)
@@ -52,21 +63,41 @@ namespace BlagoevgradArt.Controllers
                 return View(id);
             }
 
-            await _exhibitionService.EditExhibitionAsync(id, model);
+            try
+            {
+                if (await _exhibitionService.EditExhibitionAsync(id, model) == false)
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
 
             return RedirectToAction(nameof(Details), new { id });
         }
 
         [HttpGet]
         [AllowAnonymous]
-        [ExhibitionMustExist]
         public async Task<IActionResult> Details(int id)
         {
-            ExhibitionDetailsModel model = await _exhibitionService.GetInfoAsync(id);
+            ExhibitionDetailsModel? model = await _exhibitionService.GetInfoAsync(id);
 
-            if (await _exhibitionService.GalleryUserIsOwnerOfExhibition(User.Id(), id))
+            if (model == null)
             {
-                model.AuthorSmallThumbnails = await _exhibitionService.GetAuthorThumbnails(id);
+                return NotFound();
+            }
+
+            bool isGalleryOwnerOfExhibition = await _exhibitionService.GalleryUserIsOwnerOfExhibition(User.Id(), id);
+
+            if (isGalleryOwnerOfExhibition)
+            {
+                model.NotParticipants = await _authorService.GetAuthorThumbnails(id, isAuthorInExhibition: false);
+            }
+            else
+            {
+                return Unauthorized();
             }
 
             return View(model);
@@ -91,43 +122,76 @@ namespace BlagoevgradArt.Controllers
                 return View();
             }
 
-            int exhibitionId = await _exhibitionService.SaveExhibitionAsync(galleryId, model);
-
-            return RedirectToAction(nameof(Details), new { id = exhibitionId });
+            try
+            {
+                int exhibitionId = await _exhibitionService.SaveExhibitionAsync(galleryId, model);
+                return RedirectToAction(nameof(Details), new { id = exhibitionId });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
 
         [HttpPost]
         [MustBeExistingGallery]
-        [ExhibitionMustExist]
         public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                if (await _exhibitionService.DeleteExhibitionAsync(id) == false)
+                bool isDeletedSuccessfully = await _exhibitionService.DeleteExhibitionAsync(id);
+
+                if (isDeletedSuccessfully)
                 {
                     return NotFound();
                 }
 
                 return RedirectToAction(nameof(All));
             }
-            catch (InvalidOperationException)
+            catch (Exception)
             {
-                return BadRequest();
+                return StatusCode(500);
             }
         }
 
         [HttpPost]
         [MustBeExistingGallery]
-        public async Task<IActionResult> AddAuthor(int id, int authorId)
+        public async Task<IActionResult> AddAuthor(int exhibitionId, int authorId)
         {
-            if (await _authorService.ExistsByIdAsync(authorId) == false)
+            try
             {
-                return NotFound();
+                bool addAuthorResult = await _exhibitionService.AddAuthorToExhibitionAsync(exhibitionId, authorId);
+
+                if (addAuthorResult == false)
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
             }
 
-            await _exhibitionService.AddAuthorToExhibitionAsync(id, authorId);
+            return RedirectToAction(nameof(Details), new { id = exhibitionId });
+        }
 
-            return RedirectToAction(nameof(Details), new { id });
+        public async Task<IActionResult> RemoveAuthor(int exhibitionId, int authorId)
+        {
+            try
+            {
+                bool isRemovedSuccessfully = await _exhibitionService.RemoveAuthorFromExhibitionAsync(exhibitionId, authorId);
+
+                if (isRemovedSuccessfully == false)
+                {
+                    return NotFound();
+                }
+
+                return RedirectToAction(nameof(Details), new { id = exhibitionId });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
     }
 }

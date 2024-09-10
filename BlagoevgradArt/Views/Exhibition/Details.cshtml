@@ -1,4 +1,5 @@
 ﻿@model ExhibitionDetailsModel;
+@inject IGalleryService _galleryService;
 
 @{
     ViewData["Title"] = "Изложба";
@@ -46,24 +47,35 @@
                 <th>Галерия: </th>
                 <td style="font-size:large; font-weight: 500">@Model.HostGalleryName</td>
             </tr>
-            <tr>
-                <th style="font-size:large; font-weight: 550">Участници:</th>
-                <td>
-                    @foreach (string authorName in Model.Participants)
-                    {
-                        <p style="font-size:large; font-weight: 450; font-style: italic">@authorName</p>
-                    }
-                </td>
-            </tr>
+        </table>
+        <h2>Участници</h2>
+        <table>
+            @foreach (var author in Model.Participants)
+            {
+                <tr>
+                    <td>
+                        <p style="font-size:large; font-weight: 450; font-style: italic">@author.FullName</p>
+                    </td>
+                    <td>
+                        <form method="post">
+                            <button onclick="return confirmRemoveAuthor()" class="btn btn-danger" asp-action="RemoveAuthor" asp-controller="Exhibition"
+                                    asp-route-exhibitionId="@Model.Id" asp-route-authorId="@author.Id">
+                                Премахни
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
         </table>
     </div>
 </div>
 
-@if (Model.AuthorSmallThumbnails.Any())
+@if (User != null && await _galleryService.ExistsByIdAsync(User.Id()) && Model.NotParticipants.Any())
 {
+    <h3>Добави художници към изложбата:</h3>
     <div class="col-md-3">
-        <table class="table table-stripped table-bordered border-secondary" style="align-content:center">
-            @foreach (var author in Model.AuthorSmallThumbnails)
+        <table class="table table-stripped table-bordered border-secondary">
+            @foreach (var author in Model.NotParticipants)
             {
                 <tr>
                     <td>
@@ -72,7 +84,9 @@
                     <td>
                         <form method="post">
                             <button class="btn btn-success" asp-controller="Exhibition" asp-action="AddAuthor"
-                               asp-route-id="@Model.Id" asp-route-authorId="@author.Id">Добави</button>
+                                    asp-route-exhibitionId="@Model.Id" asp-route-authorId="@author.Id">
+                                Добави
+                            </button>
                         </form>
                     </td>
                 </tr>
@@ -84,5 +98,9 @@
 <script>
     function confirmDelete() {
         return confirm("Сигурни ли сте, че искате да изтриете изложбата?");
+    }
+
+    function confirmRemoveAuthor() {
+        return confirm("Сигурни ли сте, че искате да премахнете автора? Това също ще премахне всички техни картини от изложбата.");
     }
 </script>
