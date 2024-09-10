@@ -7,13 +7,13 @@ namespace BlagoevgradArt.Core.Contracts
     {
         Task<bool> ExistsByIdAsync(int id);
 
-        Task<ExhibitionDetailsModel> GetInfoAsync(int id);
+        Task<ExhibitionDetailsModel?> GetInfoAsync(int id);
 
         Task<int> SaveExhibitionAsync(int galleryId, ExhibitionFormModel model);
 
-        Task EditExhibitionAsync(int id, ExhibitionFormModel model);
+        Task<bool> EditExhibitionAsync(int id, ExhibitionFormModel model);
 
-        Task<ExhibitionFormModel> GetFormDataByIdAsync(int id);
+        Task<ExhibitionFormModel?> GetFormDataByIdAsync(int id);
 
         Task<ExhibitionAllServiceModel> GetAllAsync(int currentPage,
             int countPerPage);

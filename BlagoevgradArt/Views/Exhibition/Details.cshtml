@@ -50,9 +50,9 @@
             <tr>
                 <th style="font-size:large; font-weight: 550">Участници:</th>
                 <td>
-                    @foreach (string authorName in Model.Participants)
+                    @foreach (var author in Model.Participants)
                     {
-                        <p style="font-size:large; font-weight: 450; font-style: italic">@authorName</p>
+                        <p style="font-size:large; font-weight: 450; font-style: italic">@author.FullName</p>
                     }
                 </td>
             </tr>
@@ -60,12 +60,12 @@
     </div>
 </div>
 
-@if (User != null && await _galleryService.ExistsByIdAsync(User.Id()) && Model.AuthorSmallThumbnails.Any())
+@if (User != null && await _galleryService.ExistsByIdAsync(User.Id()) && Model.NotParticipants.Any())
 {
     <h3>Добави художници към изложбата:</h3>
     <div class="col-md-3">
         <table class="table table-stripped table-bordered border-secondary">
-            @foreach (var author in Model.AuthorSmallThumbnails)
+            @foreach (var author in Model.NotParticipants)
             {
                 <tr>
                     <td>

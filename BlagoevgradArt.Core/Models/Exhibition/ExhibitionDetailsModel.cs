@@ -14,7 +14,7 @@ public class ExhibitionDetailsModel
 
     public string HostGalleryName { get; set; } = string.Empty;
 
-    public ICollection<string> Participants { get; set;} = new List<string>();
+    public ICollection<AuthorSmallThumbnailModel> Participants { get; set; } = new List<AuthorSmallThumbnailModel>();
 
-    public ICollection<AuthorSmallThumbnailModel> AuthorSmallThumbnails { get; set; } = new List<AuthorSmallThumbnailModel>();
+    public ICollection<AuthorSmallThumbnailModel> NotParticipants { get; set; } = new List<AuthorSmallThumbnailModel>();
 }

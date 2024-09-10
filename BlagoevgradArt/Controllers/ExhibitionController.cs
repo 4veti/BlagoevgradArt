@@ -33,10 +33,15 @@ namespace BlagoevgradArt.Controllers
 
         [HttpGet]
         [MustBeExistingGallery]
-        [ExhibitionMustExist]
         public async Task<IActionResult> Edit(int id)
         {
-            ExhibitionFormModel model = await _exhibitionService.GetFormDataByIdAsync(id);
+            ExhibitionFormModel? model = await _exhibitionService.GetFormDataByIdAsync(id);
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+
             ViewBag.IsNewExhibition = false;
 
             return View(model);
@@ -44,7 +49,6 @@ namespace BlagoevgradArt.Controllers
 
         [HttpPost]
         [MustBeExistingGallery]
-        [ExhibitionMustExist]
         public async Task<IActionResult> Edit(int id, ExhibitionFormModel model)
         {
             if (ModelState.IsValid == false)
@@ -52,17 +56,31 @@ namespace BlagoevgradArt.Controllers
                 return View(id);
             }
 
-            await _exhibitionService.EditExhibitionAsync(id, model);
+            try
+            {
+                if (await _exhibitionService.EditExhibitionAsync(id, model) == false)
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
 
             return RedirectToAction(nameof(Details), new { id });
         }
 
         [HttpGet]
         [AllowAnonymous]
-        [ExhibitionMustExist]
         public async Task<IActionResult> Details(int id)
         {
-            ExhibitionDetailsModel model = await _exhibitionService.GetInfoAsync(id);
+            ExhibitionDetailsModel? model = await _exhibitionService.GetInfoAsync(id);
+
+            if (model == null)
+            {
+                return NotFound();
+            }
 
             if (await _exhibitionService.GalleryUserIsOwnerOfExhibition(User.Id(), id))
             {
@@ -98,7 +116,6 @@ namespace BlagoevgradArt.Controllers
 
         [HttpPost]
         [MustBeExistingGallery]
-        [ExhibitionMustExist]
         public async Task<IActionResult> Delete(int id)
         {
             try

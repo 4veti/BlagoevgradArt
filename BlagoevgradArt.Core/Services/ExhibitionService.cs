@@ -10,10 +10,13 @@ namespace BlagoevgradArt.Core.Services
     public class ExhibitionService : IExhibitionService
     {
         private readonly IRepository _repository;
+        private readonly IAuthorService _authorService;
 
-        public ExhibitionService(IRepository repository)
+        public ExhibitionService(IRepository repository,
+            IAuthorService authorService)
         {
             _repository = repository;
+            _authorService = authorService;
         }
 
         public async Task AddAuthorToExhibitionAsync(int exhibitionId, int authorId)
@@ -52,18 +55,24 @@ namespace BlagoevgradArt.Core.Services
             }
         }
 
-        public async Task EditExhibitionAsync(int id, ExhibitionFormModel model)
+        public async Task<bool> EditExhibitionAsync(int id, ExhibitionFormModel model)
         {
-            Exhibition exhibition = await _repository
+            Exhibition? exhibition = await _repository
                 .All<Exhibition>()
                 .Where(e => e.Id == id)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
+
+            if (exhibition == null)
+            {
+                return false;
+            }
 
             exhibition.Name = model.Name;
             exhibition.Description = model.Description;
             exhibition.OpeningDate = model.OpeningDate;
 
             await _repository.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> ExistsByIdAsync(int id)
@@ -114,9 +123,9 @@ namespace BlagoevgradArt.Core.Services
                 .FirstOrDefaultAsync();
 
             if (exhibition == null)
-                {
+            {
                 return null;
-        }
+            }
 
             return new ExhibitionFormModel()
             {
@@ -126,7 +135,7 @@ namespace BlagoevgradArt.Core.Services
             };
         }
 
-        public async Task<ExhibitionDetailsModel> GetInfoAsync(int id)
+        public async Task<ExhibitionDetailsModel?> GetInfoAsync(int id)
         {
             Exhibition? exhibition = await _repository
                 .AllAsReadOnly<Exhibition>()
