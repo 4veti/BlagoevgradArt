@@ -4,9 +4,11 @@ using BlagoevgradArt.Core.Models.Author;
 using BlagoevgradArt.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static BlagoevgradArt.Core.Constants.RoleConstants;
 
 namespace BlagoevgradArt.Controllers
 {
+    [Authorize(Roles = AuthorRole)]
     public class AuthorController : BaseController
     {
         private IAuthorService _authorService;
@@ -18,16 +20,19 @@ namespace BlagoevgradArt.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction(nameof(Profile));
         }
 
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Profile(int id = -1)
         {
+            ViewBag.IsOwnerProfile = false;
+
             if (id == -1)
             {
                 id = await _authorService.GetIdAsync(User.Id());
+                ViewBag.IsOwnerProfile = true;
             }
 
             if (await _authorService.ExistsByIdAsync(id) == false)
