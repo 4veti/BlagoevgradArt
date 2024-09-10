@@ -106,27 +106,17 @@ namespace BlagoevgradArt.Core.Services
             return model;
         }
 
-        public async Task<List<AuthorSmallThumbnailModel>> GetAuthorThumbnails(int id)
+        public async Task<ExhibitionFormModel?> GetFormDataByIdAsync(int id)
         {
-            bool isAuthorInExhibition = false;
-
-            var authors = await _repository.AllAsReadOnly<Author>()
-                .Where(a => a.AuthorExhibitions.Any(ae => ae.ExhibitionId == id) == isAuthorInExhibition)
-                .Select(a => new AuthorSmallThumbnailModel()
-                {
-                    Id = a.Id,
-                    FullName = (a.FirstName + " " + a.LastName ?? string.Empty).Trim(),
-                }).ToListAsync();
-
-            return authors;
-        }
-
-        public async Task<ExhibitionFormModel> GetFormDataByIdAsync(int id)
-        {
-            Exhibition exhibition = await _repository
+            Exhibition? exhibition = await _repository
                 .AllAsReadOnly<Exhibition>()
                 .Where(e => e.Id == id)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
+
+            if (exhibition == null)
+                {
+                return null;
+        }
 
             return new ExhibitionFormModel()
             {
@@ -158,10 +148,7 @@ namespace BlagoevgradArt.Core.Services
                 OpeningDate = exhibition.OpeningDate,
                 Description = exhibition.Description,
                 HostGalleryName = exhibition.Gallery.Name,
-                Participants = exhibition.AuthorExhibitions
-                    .Select(ae => (ae.Author.FirstName + " " + ae.Author.LastName ?? "").Trim()
-                    .Trim())
-                    .ToList()
+                Participants = await _authorService.GetAuthorThumbnails(id, isAuthorInExhibition: true)
             };
 
             return infoModel;

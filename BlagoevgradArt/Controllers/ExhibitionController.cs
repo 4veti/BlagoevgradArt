@@ -66,7 +66,7 @@ namespace BlagoevgradArt.Controllers
 
             if (await _exhibitionService.GalleryUserIsOwnerOfExhibition(User.Id(), id))
             {
-                model.AuthorSmallThumbnails = await _exhibitionService.GetAuthorThumbnails(id);
+                model.NotParticipants = await _authorService.GetAuthorThumbnails(id, isAuthorInExhibition: true);
             }
 
             return View(model);
