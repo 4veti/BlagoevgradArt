@@ -26,7 +26,14 @@ namespace BlagoevgradArt.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> All([FromQuery] ExhibitionAllModel model)
         {
-            model.Exhibitions = await _exhibitionService.GetAllAsync(model.CurrentPage, model.CountPerPage);
+            try
+            {
+                model.Exhibitions = await _exhibitionService.GetAllAsync(model.CurrentPage, model.CountPerPage);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
 
             return View(model);
         }
@@ -65,7 +72,7 @@ namespace BlagoevgradArt.Controllers
             }
             catch (Exception)
             {
-                return BadRequest();
+                return StatusCode(500);
             }
 
             return RedirectToAction(nameof(Details), new { id });
@@ -82,9 +89,15 @@ namespace BlagoevgradArt.Controllers
                 return NotFound();
             }
 
-            if (await _exhibitionService.GalleryUserIsOwnerOfExhibition(User.Id(), id))
+            bool isGalleryOwnerOfExhibition = await _exhibitionService.GalleryUserIsOwnerOfExhibition(User.Id(), id);
+
+            if (isGalleryOwnerOfExhibition)
             {
-                model.NotParticipants = await _authorService.GetAuthorThumbnails(id, isAuthorInExhibition: true);
+                model.NotParticipants = await _authorService.GetAuthorThumbnails(id, isAuthorInExhibition: false);
+            }
+            else
+            {
+                return Unauthorized();
             }
 
             return View(model);
@@ -109,9 +122,15 @@ namespace BlagoevgradArt.Controllers
                 return View();
             }
 
-            int exhibitionId = await _exhibitionService.SaveExhibitionAsync(galleryId, model);
-
-            return RedirectToAction(nameof(Details), new { id = exhibitionId });
+            try
+            {
+                int exhibitionId = await _exhibitionService.SaveExhibitionAsync(galleryId, model);
+                return RedirectToAction(nameof(Details), new { id = exhibitionId });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
 
         [HttpPost]
@@ -127,9 +146,9 @@ namespace BlagoevgradArt.Controllers
 
                 return RedirectToAction(nameof(All));
             }
-            catch (InvalidOperationException)
+            catch (Exception)
             {
-                return BadRequest();
+                return StatusCode(500);
             }
         }
 
@@ -137,12 +156,19 @@ namespace BlagoevgradArt.Controllers
         [MustBeExistingGallery]
         public async Task<IActionResult> AddAuthor(int id, int authorId)
         {
-            if (await _authorService.ExistsByIdAsync(authorId) == false)
+            try
             {
-                return NotFound();
-            }
+                bool addAuthorResult = await _exhibitionService.AddAuthorToExhibitionAsync(id, authorId);
 
-            await _exhibitionService.AddAuthorToExhibitionAsync(id, authorId);
+                if (addAuthorResult == false)
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
 
             return RedirectToAction(nameof(Details), new { id });
         }

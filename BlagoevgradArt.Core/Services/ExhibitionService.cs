@@ -1,5 +1,4 @@
 ﻿using BlagoevgradArt.Core.Contracts;
-using BlagoevgradArt.Core.Models.Author;
 using BlagoevgradArt.Core.Models.Exhibition;
 using BlagoevgradArt.Infrastructure.Data.Common;
 using BlagoevgradArt.Infrastructure.Data.Models;
@@ -19,8 +18,16 @@ namespace BlagoevgradArt.Core.Services
             _authorService = authorService;
         }
 
-        public async Task AddAuthorToExhibitionAsync(int exhibitionId, int authorId)
+        public async Task<bool> AddAuthorToExhibitionAsync(int exhibitionId, int authorId)
         {
+            bool bothExist = await _authorService.ExistsByIdAsync(authorId) &&
+                await ExistsByIdAsync(exhibitionId);
+
+            if (bothExist == false)
+            {
+                return false;
+            }
+
             AuthorExhibition ae = new AuthorExhibition()
             {
                 ExhibitionId = exhibitionId,
@@ -29,6 +36,8 @@ namespace BlagoevgradArt.Core.Services
 
             await _repository.AddAsync(ae);
             await _repository.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task<bool> DeleteExhibitionAsync(int id)
@@ -42,17 +51,10 @@ namespace BlagoevgradArt.Core.Services
                 return false;
             }
 
-            try
-            {
-                _repository.Remove(exhibition);
-                await _repository.SaveChangesAsync();
+            _repository.Remove(exhibition);
+            await _repository.SaveChangesAsync();
 
-                return true;
-            }
-            catch (Exception)
-            {
-                throw new InvalidOperationException();
-            }
+            return true;
         }
 
         public async Task<bool> EditExhibitionAsync(int id, ExhibitionFormModel model)
@@ -86,7 +88,7 @@ namespace BlagoevgradArt.Core.Services
         public async Task<bool> GalleryUserIsOwnerOfExhibition(string userId, int exhibitionId)
         {
             Exhibition? exhibition = await _repository.AllAsReadOnly<Exhibition>()
-                .FirstAsync(e => e.Gallery.UserId == userId);
+                .FirstOrDefaultAsync(e => e.Gallery.UserId == userId);
 
             return exhibition != null;
         }
@@ -122,12 +124,7 @@ namespace BlagoevgradArt.Core.Services
                 .Where(e => e.Id == id)
                 .FirstOrDefaultAsync();
 
-            if (exhibition == null)
-            {
-                return null;
-            }
-
-            return new ExhibitionFormModel()
+            return exhibition == null ? null : new ExhibitionFormModel()
             {
                 Name = exhibition.Name,
                 Description = exhibition.Description,
@@ -173,7 +170,7 @@ namespace BlagoevgradArt.Core.Services
                 GalleryId = galleryId
             };
 
-            await _repository.AddAsync<Exhibition>(exhibition);
+            await _repository.AddAsync(exhibition);
             await _repository.SaveChangesAsync();
 
             return exhibition.Id;
