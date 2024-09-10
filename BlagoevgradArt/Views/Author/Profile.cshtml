@@ -1,5 +1,5 @@
 ﻿@model AuthorProfileInfoModel;
-@inject IAuthorService authorService
+@inject IAuthorService _authorService
 
 @{
     ViewData["Title"] = "Авторски профил";
@@ -31,7 +31,7 @@
                 <th>Ел. поща: </th>
                 <td style="font-size:large; font-weight: 500">@Model.Email</td>
             </tr>
-            @if ((User?.Identity?.IsAuthenticated ?? false) && await authorService.ExistsByIdAsync(User.Id()))
+            @if ((User?.Identity?.IsAuthenticated ?? false) && ViewBag.IsOwnerProfile)
             {
                 <tr>
                     <td style="flex: 1">

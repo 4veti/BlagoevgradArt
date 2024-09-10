@@ -147,6 +147,8 @@ namespace BlagoevgradArt.Core.Services
                     HeightCm = p.HeightCm,
                     WidthCm = p.WidthCm,
                     IsAvailable = p.IsAvailable,
+                    ExhibitionId = p.ExhibitionId,
+                    ExhibitionName = p.Exhibition == null ? null : p.Exhibition.Name,
                     ImagePath = p.ImagePath
                 })
                 .FirstOrDefaultAsync();

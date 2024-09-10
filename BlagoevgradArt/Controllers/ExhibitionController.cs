@@ -40,6 +40,7 @@ namespace BlagoevgradArt.Controllers
 
         [HttpGet]
         [MustBeExistingGallery]
+        [GalleryMustOwnExhibition]
         public async Task<IActionResult> Edit(int id)
         {
             ExhibitionFormModel? model = await _exhibitionService.GetFormDataByIdAsync(id);
@@ -56,6 +57,7 @@ namespace BlagoevgradArt.Controllers
 
         [HttpPost]
         [MustBeExistingGallery]
+        [GalleryMustOwnExhibition]
         public async Task<IActionResult> Edit(int id, ExhibitionFormModel model)
         {
             if (ModelState.IsValid == false)
@@ -65,7 +67,9 @@ namespace BlagoevgradArt.Controllers
 
             try
             {
-                if (await _exhibitionService.EditExhibitionAsync(id, model) == false)
+                bool editedSuccessfully = await _exhibitionService.EditExhibitionAsync(id, model);
+
+                if (editedSuccessfully == false)
                 {
                     return NotFound();
                 }
@@ -89,15 +93,12 @@ namespace BlagoevgradArt.Controllers
                 return NotFound();
             }
 
-            bool isGalleryOwnerOfExhibition = await _exhibitionService.GalleryUserIsOwnerOfExhibition(User.Id(), id);
+            bool isGalleryOwnerOfExhibition = await _exhibitionService.GalleryUserIsOwnerOfExhibitionAsync(User.Id(), id);
+            ViewBag.GalleryIsOwnerOfExhibition = isGalleryOwnerOfExhibition;
 
             if (isGalleryOwnerOfExhibition)
             {
                 model.NotParticipants = await _authorService.GetAuthorThumbnails(id, isAuthorInExhibition: false);
-            }
-            else
-            {
-                return Unauthorized();
             }
 
             return View(model);
@@ -135,6 +136,7 @@ namespace BlagoevgradArt.Controllers
 
         [HttpPost]
         [MustBeExistingGallery]
+        [GalleryMustOwnExhibition]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -156,11 +158,12 @@ namespace BlagoevgradArt.Controllers
 
         [HttpPost]
         [MustBeExistingGallery]
-        public async Task<IActionResult> AddAuthor(int exhibitionId, int authorId)
+        [GalleryMustOwnExhibition]
+        public async Task<IActionResult> AddAuthor(int id, int authorId)
         {
             try
             {
-                bool addAuthorResult = await _exhibitionService.AddAuthorToExhibitionAsync(exhibitionId, authorId);
+                bool addAuthorResult = await _exhibitionService.AddAuthorToExhibitionAsync(id, authorId);
 
                 if (addAuthorResult == false)
                 {
@@ -172,21 +175,24 @@ namespace BlagoevgradArt.Controllers
                 return StatusCode(500);
             }
 
-            return RedirectToAction(nameof(Details), new { id = exhibitionId });
+            return RedirectToAction(nameof(Details), new { id });
         }
 
-        public async Task<IActionResult> RemoveAuthor(int exhibitionId, int authorId)
+        [HttpPost]
+        [MustBeExistingGallery]
+        [GalleryMustOwnExhibition]
+        public async Task<IActionResult> RemoveAuthor(int id, int authorId)
         {
             try
             {
-                bool isRemovedSuccessfully = await _exhibitionService.RemoveAuthorFromExhibitionAsync(exhibitionId, authorId);
+                bool isRemovedSuccessfully = await _exhibitionService.RemoveAuthorFromExhibitionAsync(id, authorId);
 
                 if (isRemovedSuccessfully == false)
                 {
                     return NotFound();
                 }
 
-                return RedirectToAction(nameof(Details), new { id = exhibitionId });
+                return RedirectToAction(nameof(Details), new { id });
             }
             catch (Exception)
             {

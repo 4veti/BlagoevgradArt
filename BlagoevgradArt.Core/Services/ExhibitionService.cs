@@ -85,7 +85,7 @@ namespace BlagoevgradArt.Core.Services
             return exhibition != null;
         }
 
-        public async Task<bool> GalleryUserIsOwnerOfExhibition(string userId, int exhibitionId)
+        public async Task<bool> GalleryUserIsOwnerOfExhibitionAsync(string userId, int exhibitionId)
         {
             Exhibition? exhibition = await _repository.AllAsReadOnly<Exhibition>()
                 .FirstOrDefaultAsync(e => e.Gallery.UserId == userId);

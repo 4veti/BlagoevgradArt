@@ -56,14 +56,17 @@
                     <td>
                         <p style="font-size:large; font-weight: 450; font-style: italic">@author.FullName</p>
                     </td>
-                    <td>
-                        <form method="post">
-                            <button onclick="return confirmRemoveAuthor()" class="btn btn-danger" asp-action="RemoveAuthor" asp-controller="Exhibition"
-                                    asp-route-exhibitionId="@Model.Id" asp-route-authorId="@author.Id">
-                                Премахни
-                            </button>
-                        </form>
-                    </td>
+                    @if (ViewBag.GalleryIsOwnerOfExhibition)
+                    {
+                        <td>
+                            <form method="post">
+                                <button onclick="return confirmRemoveAuthor()" class="btn btn-danger" asp-action="RemoveAuthor" asp-controller="Exhibition"
+                                        asp-route-id="@Model.Id" asp-route-authorId="@author.Id">
+                                    Премахни
+                                </button>
+                            </form>
+                        </td>
+                    }
                 </tr>
             }
         </table>
@@ -84,7 +87,7 @@
                     <td>
                         <form method="post">
                             <button class="btn btn-success" asp-controller="Exhibition" asp-action="AddAuthor"
-                                    asp-route-exhibitionId="@Model.Id" asp-route-authorId="@author.Id">
+                                    asp-route-id="@Model.Id" asp-route-authorId="@author.Id">
                                 Добави
                             </button>
                         </form>
