@@ -2,7 +2,6 @@
 using BlagoevgradArt.Core.Contracts;
 using BlagoevgradArt.Core.Models.Exhibition;
 using BlagoevgradArt.Extensions;
-using BlagoevgradArt.Infrastructure.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,17 +11,20 @@ namespace BlagoevgradArt.Controllers
     {
         IExhibitionService _exhibitionService;
         IGalleryService _galleryService;
+        IAuthorService _authorService;
 
         public ExhibitionController(IExhibitionService exhibitionService
-            ,IGalleryService galleryService)
+            , IGalleryService galleryService
+            , IAuthorService authorService)
         {
             _exhibitionService = exhibitionService;
             _galleryService = galleryService;
+            _authorService = authorService;
         }
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> All([FromQuery]ExhibitionAllModel model)
+        public async Task<IActionResult> All([FromQuery] ExhibitionAllModel model)
         {
             model.Exhibitions = await _exhibitionService.GetAllAsync(model.CurrentPage, model.CountPerPage);
 
@@ -50,7 +52,7 @@ namespace BlagoevgradArt.Controllers
                 return View(id);
             }
 
-            await _exhibitionService.EditExhibitionAsync(id, model);            
+            await _exhibitionService.EditExhibitionAsync(id, model);
 
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -60,7 +62,12 @@ namespace BlagoevgradArt.Controllers
         [ExhibitionMustExist]
         public async Task<IActionResult> Details(int id)
         {
-            ExhibitionDetailsModel? model = await _exhibitionService.GetInfoAsync(id);
+            ExhibitionDetailsModel model = await _exhibitionService.GetInfoAsync(id);
+
+            if (await _exhibitionService.GalleryUserIsOwnerOfExhibition(User.Id(), id))
+            {
+                model.AuthorSmallThumbnails = await _exhibitionService.GetAuthorThumbnails(id);
+            }
 
             return View(model);
         }
@@ -107,6 +114,20 @@ namespace BlagoevgradArt.Controllers
             {
                 return BadRequest();
             }
+        }
+
+        [HttpPost]
+        [MustBeExistingGallery]
+        public async Task<IActionResult> AddAuthor(int id, int authorId)
+        {
+            if (await _authorService.ExistsByIdAsync(authorId) == false)
+            {
+                return NotFound();
+            }
+
+            await _exhibitionService.AddAuthorToExhibitionAsync(id, authorId);
+
+            return RedirectToAction(nameof(Details), new { id });
         }
     }
 }

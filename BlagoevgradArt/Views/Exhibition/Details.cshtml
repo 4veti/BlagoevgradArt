@@ -1,7 +1,5 @@
 ﻿@model ExhibitionDetailsModel;
 
-@inject IGalleryService _galleryService;
-
 @{
     ViewData["Title"] = "Изложба";
 }
@@ -12,7 +10,7 @@
 <div style="display: flex;">
     <div style="flex: 1">
         <table class="table table-borderless">
-            @if ((User?.Identity?.IsAuthenticated ?? false) && await _galleryService.ExistsByIdAsync(User.Id()))
+            @if (User?.Identity?.IsAuthenticated ?? false)
             {
                 <tr>
                     <th>Опции:</th>
@@ -60,6 +58,28 @@
         </table>
     </div>
 </div>
+
+@if (Model.AuthorSmallThumbnails.Any())
+{
+    <div class="col-md-3">
+        <table class="table table-stripped table-bordered border-secondary" style="align-content:center">
+            @foreach (var author in Model.AuthorSmallThumbnails)
+            {
+                <tr>
+                    <td>
+                        @author.FullName
+                    </td>
+                    <td>
+                        <form method="post">
+                            <button class="btn btn-success" asp-controller="Exhibition" asp-action="AddAuthor"
+                               asp-route-id="@Model.Id" asp-route-authorId="@author.Id">Добави</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+}
 
 <script>
     function confirmDelete() {
