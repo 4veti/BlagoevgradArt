@@ -1,4 +1,5 @@
 ﻿using BlagoevgradArt.Core.Contracts;
+using BlagoevgradArt.Core.Models.Author;
 using BlagoevgradArt.Core.Models.Exhibition;
 using BlagoevgradArt.Infrastructure.Data.Common;
 using BlagoevgradArt.Infrastructure.Data.Models;
@@ -13,6 +14,18 @@ namespace BlagoevgradArt.Core.Services
         public ExhibitionService(IRepository repository)
         {
             _repository = repository;
+        }
+
+        public async Task AddAuthorToExhibitionAsync(int exhibitionId, int authorId)
+        {
+            AuthorExhibition ae = new AuthorExhibition()
+            {
+                ExhibitionId = exhibitionId,
+                AuthorId = authorId
+            };
+
+            await _repository.AddAsync(ae);
+            await _repository.SaveChangesAsync();
         }
 
         public async Task<bool> DeleteExhibitionAsync(int id)
@@ -91,6 +104,21 @@ namespace BlagoevgradArt.Core.Services
             };
 
             return model;
+        }
+
+        public async Task<List<AuthorSmallThumbnailModel>> GetAuthorThumbnails(int id)
+        {
+            bool isAuthorInExhibition = false;
+
+            var authors = await _repository.AllAsReadOnly<Author>()
+                .Where(a => a.AuthorExhibitions.Any(ae => ae.ExhibitionId == id) == isAuthorInExhibition)
+                .Select(a => new AuthorSmallThumbnailModel()
+                {
+                    Id = a.Id,
+                    FullName = (a.FirstName + " " + a.LastName ?? string.Empty).Trim(),
+                }).ToListAsync();
+
+            return authors;
         }
 
         public async Task<ExhibitionFormModel> GetFormDataByIdAsync(int id)

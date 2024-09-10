@@ -1,4 +1,5 @@
-﻿using BlagoevgradArt.Core.Models.Exhibition;
+﻿using BlagoevgradArt.Core.Models.Author;
+using BlagoevgradArt.Core.Models.Exhibition;
 
 namespace BlagoevgradArt.Core.Contracts
 {
@@ -6,7 +7,7 @@ namespace BlagoevgradArt.Core.Contracts
     {
         Task<bool> ExistsByIdAsync(int id);
 
-        Task<ExhibitionDetailsModel?> GetInfoAsync(int id);
+        Task<ExhibitionDetailsModel> GetInfoAsync(int id);
 
         Task<int> SaveExhibitionAsync(int galleryId, ExhibitionFormModel model);
 
@@ -18,5 +19,11 @@ namespace BlagoevgradArt.Core.Contracts
             int countPerPage);
 
         Task<bool> DeleteExhibitionAsync(int id);
+
+        Task<List<AuthorSmallThumbnailModel>> GetAuthorThumbnails(int id);
+
+        Task<bool> GalleryUserIsOwnerOfExhibition(string userId, int exhibitionId);
+
+        Task AddAuthorToExhibitionAsync(int exhibitionId, int authorId);
     }
 }
