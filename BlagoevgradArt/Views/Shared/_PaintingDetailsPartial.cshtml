@@ -54,16 +54,32 @@
                 {
                     <th>
                         <a class="btn btn-primary" asp-controller="Painting" asp-action="Edit"
-                           asp-route-id="@Model.Id" asp-route-information="@Model.GetInformation()">Edit</a>
+                           asp-route-id="@Model.Id" asp-route-information="@Model.GetInformation()">Промени</a>
                     </th>
                     <th>
                         <form method="post">
                             <button class="btn btn-warning" asp-controller="Painting" asp-action="Delete" asp-route-id="@Model.Id"
-                                asp-route-information="@Model.GetInformation()" onclick="return confirmDelete()">Delete</button>
+                                    asp-route-information="@Model.GetInformation()" onclick="return confirmDelete()">
+                                Изтрий
+                            </button>
 
                         </form>
                     </th>
                 }
+            </tr>
+            <tr>
+                <th>Участва в изложба:</th>
+                <th>
+                    @if (Model.ExhibitionId == null)
+                    {
+                        <p style="font-style:italic">Картината не е част от изложба.</p>
+                    }
+                    else
+                    {
+                        <p>@Model.ExhibitionName</p>
+                        <a class="btn btn-info" asp-action="Details" asp-controller="Exhibition" asp-route-id="@Model.ExhibitionId">Посети</a>
+                    }
+                </th>
             </tr>
         </table>
     </div>

@@ -65,6 +65,13 @@ namespace BlagoevgradArt.Core.Models.Painting
         public bool IsAvailable { get; set; }
 
         /// <summary>
+        /// Id of the Exhibition the painting is part of.
+        /// </summary>
+        public int? ExhibitionId { get; set; }
+
+        public string? ExhibitionName { get; set; }
+
+        /// <summary>
         /// Painting's file.
         /// </summary>
         public string ImagePath { get; set; } = string.Empty;
