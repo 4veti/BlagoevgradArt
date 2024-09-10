@@ -94,14 +94,11 @@ namespace BlagoevgradArt.Controllers
             }
 
             bool isGalleryOwnerOfExhibition = await _exhibitionService.GalleryUserIsOwnerOfExhibitionAsync(User.Id(), id);
+            ViewBag.GalleryIsOwnerOfExhibition = isGalleryOwnerOfExhibition;
 
             if (isGalleryOwnerOfExhibition)
             {
                 model.NotParticipants = await _authorService.GetAuthorThumbnails(id, isAuthorInExhibition: false);
-            }
-            else
-            {
-                return Unauthorized();
             }
 
             return View(model);
