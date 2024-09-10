@@ -160,6 +160,24 @@ namespace BlagoevgradArt.Core.Services
             return infoModel;
         }
 
+        public async Task<bool> RemoveAuthorFromExhibitionAsync(int exhibitionId, int authorId)
+        {
+            AuthorExhibition? authorExhibition = await _repository
+                .AllAsReadOnly<AuthorExhibition>()
+                .Where(ae => ae.ExhibitionId == exhibitionId && ae.AuthorId == authorId)
+                .FirstOrDefaultAsync();
+
+            if (authorExhibition == null)
+            {
+                return false;
+            }
+
+            _repository.Remove(authorExhibition);
+            await _repository.SaveChangesAsync();
+
+            return true;
+        }
+
         public async Task<int> SaveExhibitionAsync(int galleryId, ExhibitionFormModel model)
         {
             Exhibition exhibition = new Exhibition

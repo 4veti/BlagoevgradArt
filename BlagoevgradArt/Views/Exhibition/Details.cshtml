@@ -47,15 +47,25 @@
                 <th>Галерия: </th>
                 <td style="font-size:large; font-weight: 500">@Model.HostGalleryName</td>
             </tr>
-            <tr>
-                <th style="font-size:large; font-weight: 550">Участници:</th>
-                <td>
-                    @foreach (var author in Model.Participants)
-                    {
+        </table>
+        <h2>Участници</h2>
+        <table>
+            @foreach (var author in Model.Participants)
+            {
+                <tr>
+                    <td>
                         <p style="font-size:large; font-weight: 450; font-style: italic">@author.FullName</p>
-                    }
-                </td>
-            </tr>
+                    </td>
+                    <td>
+                        <form method="post">
+                            <button onclick="return confirmRemoveAuthor()" class="btn btn-danger" asp-action="RemoveAuthor" asp-controller="Exhibition"
+                                    asp-route-exhibitionId="@Model.Id" asp-route-authorId="@author.Id">
+                                Премахни
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
         </table>
     </div>
 </div>
@@ -74,7 +84,7 @@
                     <td>
                         <form method="post">
                             <button class="btn btn-success" asp-controller="Exhibition" asp-action="AddAuthor"
-                                    asp-route-id="@Model.Id" asp-route-authorId="@author.Id">
+                                    asp-route-exhibitionId="@Model.Id" asp-route-authorId="@author.Id">
                                 Добави
                             </button>
                         </form>
@@ -88,5 +98,9 @@
 <script>
     function confirmDelete() {
         return confirm("Сигурни ли сте, че искате да изтриете изложбата?");
+    }
+
+    function confirmRemoveAuthor() {
+        return confirm("Сигурни ли сте, че искате да премахнете автора? Това също ще премахне всички техни картини от изложбата.");
     }
 </script>

@@ -23,5 +23,7 @@ namespace BlagoevgradArt.Core.Contracts
         Task<bool> GalleryUserIsOwnerOfExhibition(string userId, int exhibitionId);
 
         Task<bool> AddAuthorToExhibitionAsync(int exhibitionId, int authorId);
+
+        Task<bool> RemoveAuthorFromExhibitionAsync(int exhibitionId, int authorId);
     }
 }

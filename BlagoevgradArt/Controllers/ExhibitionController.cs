@@ -156,7 +156,7 @@ namespace BlagoevgradArt.Controllers
 
         [HttpPost]
         [MustBeExistingGallery]
-        public async Task<IActionResult> AddAuthor(int id, int authorId)
+        public async Task<IActionResult> AddAuthor(int exhibitionId, int authorId)
         {
             try
             {
@@ -173,6 +173,25 @@ namespace BlagoevgradArt.Controllers
             }
 
             return RedirectToAction(nameof(Details), new { id = exhibitionId });
+        }
+
+        public async Task<IActionResult> RemoveAuthor(int exhibitionId, int authorId)
+        {
+            try
+            {
+                bool isRemovedSuccessfully = await _exhibitionService.RemoveAuthorFromExhibitionAsync(exhibitionId, authorId);
+
+                if (isRemovedSuccessfully == false)
+                {
+                    return NotFound();
+                }
+
+                return RedirectToAction(nameof(Details), new { id = exhibitionId });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
     }
 }
