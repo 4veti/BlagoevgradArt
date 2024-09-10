@@ -173,6 +173,13 @@ namespace BlagoevgradArt.Core.Services
             }
 
             _repository.Remove(authorExhibition);
+
+            List<Painting> paintingsInExhibition = await _repository
+                .All<Painting>()
+                .Where(p => p.ExhibitionId == exhibitionId && p.AuthorId == authorId)
+                .ToListAsync();
+            paintingsInExhibition.ForEach(p => p.ExhibitionId = null);
+
             await _repository.SaveChangesAsync();
 
             return true;
