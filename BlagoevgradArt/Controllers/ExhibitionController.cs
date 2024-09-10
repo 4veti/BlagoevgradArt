@@ -139,7 +139,9 @@ namespace BlagoevgradArt.Controllers
         {
             try
             {
-                if (await _exhibitionService.DeleteExhibitionAsync(id) == false)
+                bool isDeletedSuccessfully = await _exhibitionService.DeleteExhibitionAsync(id);
+
+                if (isDeletedSuccessfully)
                 {
                     return NotFound();
                 }
@@ -158,7 +160,7 @@ namespace BlagoevgradArt.Controllers
         {
             try
             {
-                bool addAuthorResult = await _exhibitionService.AddAuthorToExhibitionAsync(id, authorId);
+                bool addAuthorResult = await _exhibitionService.AddAuthorToExhibitionAsync(exhibitionId, authorId);
 
                 if (addAuthorResult == false)
                 {
@@ -170,7 +172,7 @@ namespace BlagoevgradArt.Controllers
                 return StatusCode(500);
             }
 
-            return RedirectToAction(nameof(Details), new { id });
+            return RedirectToAction(nameof(Details), new { id = exhibitionId });
         }
     }
 }
