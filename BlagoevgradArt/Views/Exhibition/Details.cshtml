@@ -1,5 +1,4 @@
 ﻿@model ExhibitionDetailsModel;
-@inject IGalleryService _galleryService;
 
 @{
     ViewData["Title"] = "Изложба";
@@ -11,7 +10,7 @@
 <div style="display: flex;">
     <div style="flex: 1">
         <table class="table table-borderless">
-            @if (User?.Identity?.IsAuthenticated ?? false)
+            @if (ViewBag.GalleryIsOwnerOfExhibition)
             {
                 <tr>
                     <th>Опции:</th>
@@ -73,7 +72,7 @@
     </div>
 </div>
 
-@if (User != null && await _galleryService.ExistsByIdAsync(User.Id()) && Model.NotParticipants.Any())
+@if (ViewBag.GalleryIsOwnerOfExhibition && Model.NotParticipants.Any())
 {
     <h3>Добави художници към изложбата:</h3>
     <div class="col-md-3">
