@@ -50,6 +50,18 @@ namespace BlagoevgradArt.Controllers
 
         [HttpGet]
         [MustBeExistingAuthor]
+        public async Task<IActionResult> AllPersonal([FromQuery] AllPersonalPaintingsQueryModel model)
+        {
+            model.Thumbnails = await _paintingService.AllPersonalAsync(User.Id(),
+                model.CurrentPage,
+                model.CountPerPage,
+                model.PaintingTitle);
+
+            return View(model);
+        }
+
+        [HttpGet]
+        [MustBeExistingAuthor]
         public async Task<IActionResult> Edit(int id, string information)
         {
             PaintingFormModel? model = await _paintingService.GetPaintingFormModel(id);

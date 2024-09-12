@@ -13,9 +13,14 @@ namespace BlagoevgradArt.Core.Contracts
         Task<PaintingFormModel?> GetPaintingFormModel(int id);
 
         Task<PaintingQueryServiceModel> AllAsync(int currentPage,
-            int housesPerPage,
+            int countPerPage,
             string? authorFirstName,
             string? artType);
+
+        Task<PaintingQueryServiceModel> AllPersonalAsync(string userId,
+            int currentPage,
+            int countPerPage,
+            string? paintingTitle);
 
         Task DeleteImageAsync(int id, string rootPath);
 
