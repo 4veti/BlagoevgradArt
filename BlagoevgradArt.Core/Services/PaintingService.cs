@@ -119,12 +119,13 @@ namespace BlagoevgradArt.Core.Services
                     ImagePath = p.ImagePath
                 })
                 .Skip((currentPage - 1) * countPerPage)
+                .Take(countPerPage)
                 .ToListAsync();
 
             return new PaintingQueryServiceModel()
             {
-                Thumbnails = thumbnailsToShow.Take(countPerPage),
-                TotalThumbnailsCount = thumbnailsToShow.Count()
+                Thumbnails = thumbnailsToShow,
+                TotalThumbnailsCount = await paintingsToShow.CountAsync()
             };
         }
 
@@ -248,6 +249,41 @@ namespace BlagoevgradArt.Core.Services
             {
                 throw new ErrorWhileSavingImageToDiskException();
             }
+        }
+
+        public async Task<PaintingQueryServiceModel> AllPersonalAsync(string userId, int currentPage, int countPerPage, string? paintingTitle)
+        {
+            var paintingsToShow = _repository.AllAsReadOnly<Painting>()
+                .Where(p => p.Author.UserId == userId);
+
+            if (paintingTitle != null)
+            {
+                paintingsToShow = paintingsToShow
+                    .Where(p => p.Title.ToLower().Contains(paintingTitle.ToLower()));
+            }
+
+            List<PaintingThumbnailModel> thumbnails = await paintingsToShow
+                .Select(p => new PaintingThumbnailModel()
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    AuthorName = (p.Author.FirstName + " " + p.Author.LastName ?? "").Trim(),
+                    Description = p.Description,
+                    HeightCm = p.HeightCm,
+                    WidthCm = p.WidthCm,
+                    ImagePath = p.ImagePath
+                })
+                .Skip((currentPage - 1) * countPerPage)
+                .Take(countPerPage)
+                .ToListAsync();
+
+            PaintingQueryServiceModel model = new PaintingQueryServiceModel()
+            {
+                Thumbnails = thumbnails,
+                TotalThumbnailsCount = paintingsToShow.Count()
+            };
+
+            return model;
         }
     }
 }
