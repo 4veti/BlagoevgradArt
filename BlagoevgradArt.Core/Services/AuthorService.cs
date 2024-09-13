@@ -25,9 +25,11 @@ namespace BlagoevgradArt.Core.Services
 
         public async Task<int> GetIdAsync(string userId)
         {
-            Author author = await _repository.AllAsReadOnly<Author>().FirstAsync(a => a.UserId == userId);
+            Author? author = await _repository
+                .AllAsReadOnly<Author>()
+                .FirstOrDefaultAsync(a => a.UserId == userId);
 
-            return author.Id;
+            return author != null ? author.Id : -1;
         }
 
         public async Task<AuthorProfileInfoModel> GetAuthorProfileInfo(int id)
@@ -81,6 +83,29 @@ namespace BlagoevgradArt.Core.Services
                 }).ToListAsync();
 
             return authors;
+        }
+
+        public async Task<bool> SubmitRequestToJoinExhibitionAsync(string userId, int exhibitionId)
+        {
+            AuthorExhibition? request = await _repository
+                .AllAsReadOnly<AuthorExhibition>()
+                .FirstOrDefaultAsync(ae => ae.Author.UserId == userId && ae.ExhibitionId == exhibitionId);
+
+            if (request != null)
+            {
+                return false;
+            }
+
+            request = new AuthorExhibition()
+            {
+                AuthorId = await GetIdAsync(userId),
+                ExhibitionId = exhibitionId
+            };
+
+            await _repository.AddAsync(request);
+            await _repository.SaveChangesAsync();
+
+            return true;
         }
     }
 }

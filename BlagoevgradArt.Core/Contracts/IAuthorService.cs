@@ -11,5 +11,6 @@ namespace BlagoevgradArt.Core.Contracts
         Task SetAuthorProfileInfo(AuthorFormModel authorProfileInfo, string userId);
         Task<string> GetFullNameAsync(string userId);
         Task<List<AuthorSmallThumbnailModel>> GetAuthorThumbnails(int id, bool isAuthorInExhibition);
+        Task<bool> SubmitRequestToJoinExhibitionAsync(string userId, int exhibitionId);
     }
 }

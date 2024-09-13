@@ -1,4 +1,5 @@
 ﻿@model ExhibitionDetailsModel;
+@inject IAuthorService _authorService;
 
 @{
     ViewData["Title"] = "Изложба";
@@ -47,13 +48,27 @@
                 <td style="font-size:large; font-weight: 500">@Model.HostGalleryName</td>
             </tr>
         </table>
+        @if (await _authorService.ExistsByIdAsync(User.Id()) && Model.OpeningDate.Day - DateTime.Today.Day >= 3)
+        {
+            if (ViewBag.IsAuthorPartOfExhibition == false)
+            {
+                <form method="get">
+                    <button class="btn btn-success" asp-controller="Author" asp-action="RequestToJoinExhibition"
+                            asp-route-id="@Model.Id">
+                        Присъедини се!
+                    </button>
+                </form>
+            }
+        }
         <h2>Участници</h2>
         <table>
             @foreach (var author in Model.Participants)
             {
                 <tr>
                     <td>
-                        <p style="font-size:large; font-weight: 450; font-style: italic">@author.FullName</p>
+                        <p style="@(author.Id == ViewBag.CurrentAuthorId ?
+                            "font-size:larger; font-weight: 550; color:forestgreen"
+                            : "font-size:large; font-weight: 450;"); font-style: italic">@author.FullName</p>
                     </td>
                     @if (ViewBag.GalleryIsOwnerOfExhibition)
                     {

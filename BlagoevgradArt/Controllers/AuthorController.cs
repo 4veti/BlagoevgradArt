@@ -74,5 +74,21 @@ namespace BlagoevgradArt.Controllers
 
             return RedirectToAction(nameof(Profile));
         }
+
+        [HttpGet]
+        [MustBeExistingAuthor]
+        public async Task<IActionResult> RequestToJoinExhibition(int id)
+        {
+            try
+            {
+                bool isSuccessfulRequest = await _authorService.SubmitRequestToJoinExhibitionAsync(User.Id(), id);
+
+                return RedirectToAction(nameof(ExhibitionController.Details), "Exhibition", new { id });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }

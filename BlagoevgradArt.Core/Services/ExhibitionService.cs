@@ -160,10 +160,19 @@ namespace BlagoevgradArt.Core.Services
             return infoModel;
         }
 
+        public async Task<bool> IsAuthorPartOfExhibitionAsync(int authorId, int exhibitionId)
+        {
+            AuthorExhibition? targetAuthorExhibition = await _repository
+                .AllAsReadOnly<AuthorExhibition>()
+                .FirstOrDefaultAsync(ae => ae.Author.Id == authorId && ae.ExhibitionId == exhibitionId);
+
+            return targetAuthorExhibition != null;
+        }
+
         public async Task<bool> RemoveAuthorFromExhibitionAsync(int exhibitionId, int authorId)
         {
             AuthorExhibition? authorExhibition = await _repository
-                .AllAsReadOnly<AuthorExhibition>()
+                .All<AuthorExhibition>()
                 .Where(ae => ae.ExhibitionId == exhibitionId && ae.AuthorId == authorId)
                 .FirstOrDefaultAsync();
 

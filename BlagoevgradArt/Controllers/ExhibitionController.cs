@@ -96,6 +96,9 @@ namespace BlagoevgradArt.Controllers
             bool isGalleryOwnerOfExhibition = await _exhibitionService.GalleryUserIsOwnerOfExhibitionAsync(User.Id(), id);
             ViewBag.GalleryIsOwnerOfExhibition = isGalleryOwnerOfExhibition;
 
+            ViewBag.CurrentAuthorId = await _authorService.GetIdAsync(User.Id());
+            ViewBag.IsAuthorPartOfExhibition = await _exhibitionService.IsAuthorPartOfExhibitionAsync(ViewBag.CurrentAuthorId, id);
+
             if (isGalleryOwnerOfExhibition)
             {
                 model.NotParticipants = await _authorService.GetAuthorThumbnails(id, isAuthorInExhibition: false);
