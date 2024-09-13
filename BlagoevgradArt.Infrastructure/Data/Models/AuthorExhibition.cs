@@ -32,5 +32,11 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         /// Navigation property of the exhibition.
         /// </summary>
         public Exhibition Exhibition { get; set; } = null!;
+
+        /// <summary>
+        /// An indicator if the Author is accepted into the Exhibition
+        /// </summary>
+        [Comment("An indicator if the Author is accepted into the Exhibition. | Индикатор дали Авторът е приет в Изложбата.")]
+        public bool IsAccepted { get; set; } = false;
     }
 }

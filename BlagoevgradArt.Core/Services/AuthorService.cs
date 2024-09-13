@@ -17,7 +17,7 @@ namespace BlagoevgradArt.Core.Services
 
         public async Task<bool> ExistsByIdAsync(string userId)
             => await _repository.AllAsReadOnly<Author>()
-            .AnyAsync(a => a.UserId ==  userId);
+            .AnyAsync(a => a.UserId == userId);
 
         public async Task<bool> ExistsByIdAsync(int id)
             => await _repository.AllAsReadOnly<Author>()
@@ -25,9 +25,11 @@ namespace BlagoevgradArt.Core.Services
 
         public async Task<int> GetIdAsync(string userId)
         {
-            Author author = await _repository.AllAsReadOnly<Author>().FirstAsync(a => a.UserId == userId);
+            Author? author = await _repository
+                .AllAsReadOnly<Author>()
+                .FirstOrDefaultAsync(a => a.UserId == userId);
 
-            return author.Id;
+            return author != null ? author.Id : -1;
         }
 
         public async Task<AuthorProfileInfoModel> GetAuthorProfileInfo(int id)
@@ -70,10 +72,13 @@ namespace BlagoevgradArt.Core.Services
             return string.Join(" ", new string[] { author.FirstName, author.LastName ?? string.Empty });
         }
 
-        public async Task<List<AuthorSmallThumbnailModel>> GetAuthorThumbnails(int id, bool isAuthorInExhibition)
+        public async Task<List<AuthorSmallThumbnailModel>> GetAuthorThumbnails(int id, bool isAuthorAccepted)
         {
-            var authors = await _repository.AllAsReadOnly<Author>()
-                .Where(a => a.AuthorExhibitions.Any(ae => ae.ExhibitionId == id) == isAuthorInExhibition)
+            var authorsFiltered = _repository.AllAsReadOnly<Author>()
+                .Where(a => a.AuthorExhibitions.Any(ae => ae.ExhibitionId == id))
+                .Where(a => a.AuthorExhibitions.Any(ae => ae.IsAccepted == isAuthorAccepted));
+
+            List<AuthorSmallThumbnailModel> authors = await authorsFiltered
                 .Select(a => new AuthorSmallThumbnailModel()
                 {
                     Id = a.Id,
@@ -81,6 +86,39 @@ namespace BlagoevgradArt.Core.Services
                 }).ToListAsync();
 
             return authors;
+        }
+
+        public async Task<bool> SubmitRequestToJoinExhibitionAsync(string userId, int exhibitionId)
+        {
+            Exhibition exhibition = await _repository
+                .AllAsReadOnly<Exhibition>()
+                .FirstAsync(e => e.Id == exhibitionId);
+
+            bool moreThanThreeDaysRemain = exhibition.OpeningDate.Day - DateTime.Today.Day >= 3;
+
+            if (moreThanThreeDaysRemain == false)
+            {
+                return false;
+            }
+
+            AuthorExhibition? existingAuthorExhibition = await _repository
+                .AllAsReadOnly<AuthorExhibition>()
+                .Where(ae => ae.Author.UserId == userId && ae.ExhibitionId == exhibitionId)
+                .FirstOrDefaultAsync();
+
+            if (existingAuthorExhibition == null)
+            {
+                existingAuthorExhibition = new AuthorExhibition()
+                {
+                    AuthorId = await GetIdAsync(userId),
+                    ExhibitionId = exhibitionId
+                };
+
+                await _repository.AddAsync(existingAuthorExhibition);
+                await _repository.SaveChangesAsync();
+            }
+
+            return true;
         }
     }
 }
