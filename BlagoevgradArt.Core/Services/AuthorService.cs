@@ -17,7 +17,7 @@ namespace BlagoevgradArt.Core.Services
 
         public async Task<bool> ExistsByIdAsync(string userId)
             => await _repository.AllAsReadOnly<Author>()
-            .AnyAsync(a => a.UserId ==  userId);
+            .AnyAsync(a => a.UserId == userId);
 
         public async Task<bool> ExistsByIdAsync(int id)
             => await _repository.AllAsReadOnly<Author>()
@@ -72,10 +72,13 @@ namespace BlagoevgradArt.Core.Services
             return string.Join(" ", new string[] { author.FirstName, author.LastName ?? string.Empty });
         }
 
-        public async Task<List<AuthorSmallThumbnailModel>> GetAuthorThumbnails(int id, bool isAuthorInExhibition)
+        public async Task<List<AuthorSmallThumbnailModel>> GetAuthorThumbnails(int id, bool isAuthorAccepted)
         {
-            var authors = await _repository.AllAsReadOnly<Author>()
-                .Where(a => a.AuthorExhibitions.Any(ae => ae.ExhibitionId == id) == isAuthorInExhibition)
+            var authorsFiltered = _repository.AllAsReadOnly<Author>()
+                .Where(a => a.AuthorExhibitions.Any(ae => ae.ExhibitionId == id))
+                .Where(a => a.AuthorExhibitions.Any(ae => ae.IsAccepted == isAuthorAccepted));
+
+            List<AuthorSmallThumbnailModel> authors = await authorsFiltered
                 .Select(a => new AuthorSmallThumbnailModel()
                 {
                     Id = a.Id,
@@ -98,14 +101,22 @@ namespace BlagoevgradArt.Core.Services
                 return false;
             }
 
-            AuthorExhibition request = new AuthorExhibition()
-            {
-                AuthorId = await GetIdAsync(userId),
-                ExhibitionId = exhibitionId
-            };
+            AuthorExhibition? existingAuthorExhibition = await _repository
+                .AllAsReadOnly<AuthorExhibition>()
+                .Where(ae => ae.Author.UserId == userId && ae.ExhibitionId == exhibitionId)
+                .FirstOrDefaultAsync();
 
-            await _repository.AddAsync(request);
-            await _repository.SaveChangesAsync();
+            if (existingAuthorExhibition == null)
+            {
+                existingAuthorExhibition = new AuthorExhibition()
+                {
+                    AuthorId = await GetIdAsync(userId),
+                    ExhibitionId = exhibitionId
+                };
+
+                await _repository.AddAsync(existingAuthorExhibition);
+                await _repository.SaveChangesAsync();
+            }
 
             return true;
         }

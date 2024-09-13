@@ -28,13 +28,18 @@ namespace BlagoevgradArt.Core.Services
                 return false;
             }
 
-            AuthorExhibition ae = new AuthorExhibition()
-            {
-                ExhibitionId = exhibitionId,
-                AuthorId = authorId
-            };
+            AuthorExhibition? existingAuthorExhibition = await _repository
+                .All<AuthorExhibition>()
+                .Where(ae => ae.AuthorId == authorId && ae.ExhibitionId == exhibitionId)
+                .FirstOrDefaultAsync();
 
-            await _repository.AddAsync(ae);
+            if (existingAuthorExhibition == null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            existingAuthorExhibition.IsAccepted = true;
+
             await _repository.SaveChangesAsync();
 
             return true;
@@ -137,7 +142,7 @@ namespace BlagoevgradArt.Core.Services
             Exhibition? exhibition = await _repository
                 .AllAsReadOnly<Exhibition>()
                 .Include(e => e.AuthorExhibitions)
-                    .ThenInclude(ae => ae.Author)
+                    .ThenInclude(a => a.Author)
                 .Include(e => e.Gallery)
                 .Where(e => e.Id == id)
                 .FirstOrDefaultAsync();
@@ -154,7 +159,7 @@ namespace BlagoevgradArt.Core.Services
                 OpeningDate = exhibition.OpeningDate,
                 Description = exhibition.Description,
                 HostGalleryName = exhibition.Gallery.Name,
-                Participants = await _authorService.GetAuthorThumbnails(id, isAuthorInExhibition: true)
+                AcceptedAuthors = await _authorService.GetAuthorThumbnails(id, true)
             };
 
             return infoModel;
@@ -164,7 +169,19 @@ namespace BlagoevgradArt.Core.Services
         {
             AuthorExhibition? targetAuthorExhibition = await _repository
                 .AllAsReadOnly<AuthorExhibition>()
+                .Where(ae => ae.IsAccepted == true)
                 .FirstOrDefaultAsync(ae => ae.Author.Id == authorId && ae.ExhibitionId == exhibitionId);
+
+            return targetAuthorExhibition != null;
+        }
+
+        public async Task<bool> IsAuthorRequestedToJoinExhibitionAsync(string userId, int exhibitionId)
+        {
+            AuthorExhibition? targetAuthorExhibition = await _repository
+                .AllAsReadOnly<AuthorExhibition>()
+                .FirstOrDefaultAsync(ae => ae.Author.UserId == userId &&
+                    ae.ExhibitionId == exhibitionId &&
+                    ae.IsAccepted == false);
 
             return targetAuthorExhibition != null;
         }

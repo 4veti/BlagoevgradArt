@@ -75,7 +75,7 @@ namespace BlagoevgradArt.Controllers
             return RedirectToAction(nameof(Profile));
         }
 
-        [HttpGet]
+        [HttpPost]
         [MustBeExistingAuthor]
         public async Task<IActionResult> RequestToJoinExhibition(int id)
         {

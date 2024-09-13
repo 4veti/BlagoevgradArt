@@ -99,9 +99,11 @@ namespace BlagoevgradArt.Controllers
             ViewBag.CurrentAuthorId = await _authorService.GetIdAsync(User.Id());
             ViewBag.IsAuthorPartOfExhibition = await _exhibitionService.IsAuthorPartOfExhibitionAsync(ViewBag.CurrentAuthorId, id);
 
+            ViewBag.IsAuthorRequestedToJoin = await _exhibitionService.IsAuthorRequestedToJoinExhibitionAsync(User.Id(), id);
+
             if (isGalleryOwnerOfExhibition)
             {
-                model.NotParticipants = await _authorService.GetAuthorThumbnails(id, isAuthorInExhibition: false);
+                model.NotAcceptedAuthors = await _authorService.GetAuthorThumbnails(id, false);
             }
 
             return View(model);
@@ -172,6 +174,10 @@ namespace BlagoevgradArt.Controllers
                 {
                     return NotFound();
                 }
+            }
+            catch (InvalidOperationException)
+            {
+                return BadRequest();
             }
             catch (Exception)
             {

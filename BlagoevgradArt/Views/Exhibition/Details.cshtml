@@ -52,28 +52,35 @@
         {
             if (ViewBag.IsAuthorPartOfExhibition == false)
             {
-                <form method="get">
-                    <button class="btn btn-success" asp-controller="Author" asp-action="RequestToJoinExhibition"
-                            asp-route-id="@Model.Id">
-                        Присъедини се!
-                    </button>
-                </form>
+                if (ViewBag.IsAuthorRequestedToJoin)
+                {
+                    <p style="font-size:large; font-style:italic; color:coral">Заявка за участие е изпратена!</p>
+                }
+                else
+                {
+                    <form method="post">
+                        <button class="btn btn-success" asp-controller="Author" asp-action="RequestToJoinExhibition"
+                                asp-route-id="@Model.Id">
+                            Присъедини се!
+                        </button>
+                    </form>
+                }
             }
         }
         <h2>Участници</h2>
-        <table>
-            @foreach (var author in Model.Participants)
+        <table class="table" style="padding:20px">
+            @foreach (var author in Model.AcceptedAuthors)
             {
                 <tr>
                     <td>
                         <p style="@(author.Id == ViewBag.CurrentAuthorId ?
                             "font-size:larger; font-weight: 550; color:forestgreen"
-                            : "font-size:large; font-weight: 450;"); font-style: italic">@author.FullName</p>
+                            : "font-size:large; font-weight: 450;"); font-style: italic; padding:15px">@author.FullName</p>
                     </td>
                     @if (ViewBag.GalleryIsOwnerOfExhibition)
                     {
                         <td>
-                            <form method="post">
+                            <form method="post" style="padding:15px">
                                 <button onclick="return confirmRemoveAuthor()" class="btn btn-danger" asp-action="RemoveAuthor" asp-controller="Exhibition"
                                         asp-route-id="@Model.Id" asp-route-authorId="@author.Id">
                                     Премахни
@@ -84,33 +91,32 @@
                 </tr>
             }
         </table>
+
+        @if (ViewBag.GalleryIsOwnerOfExhibition)
+        {
+            <h2>Заявки за участие</h2>
+            <table class="table" style="padding:20px">
+                @foreach (var author in Model.NotAcceptedAuthors)
+                {
+                    <tr>
+                        <td>
+                            <a asp-controller="Author" asp-action="Profile" asp-route-id="@author.Id"
+                               style="font-size:large; font-weight: 450; font-style: italic; padding:15px">@author.FullName</a>
+                        </td>
+                        <td>
+                            <form method="post" style="padding:15px">
+                                <button onclick="return confirmAcceptAuthor()" class="btn btn-success" asp-action="AddAuthor"
+                                asp-controller="Exhibition" asp-route-id="@Model.Id" asp-route-authorId="@author.Id">
+                                    Добави
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
     </div>
 </div>
-
-@if (ViewBag.GalleryIsOwnerOfExhibition && Model.NotParticipants.Any())
-{
-    <h3>Добави художници към изложбата:</h3>
-    <div class="col-md-3">
-        <table class="table table-stripped table-bordered border-secondary">
-            @foreach (var author in Model.NotParticipants)
-            {
-                <tr>
-                    <td>
-                        @author.FullName
-                    </td>
-                    <td>
-                        <form method="post">
-                            <button class="btn btn-success" asp-controller="Exhibition" asp-action="AddAuthor"
-                                    asp-route-id="@Model.Id" asp-route-authorId="@author.Id">
-                                Добави
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-            }
-        </table>
-    </div>
-}
 
 <script>
     function confirmDelete() {
@@ -119,5 +125,9 @@
 
     function confirmRemoveAuthor() {
         return confirm("Сигурни ли сте, че искате да премахнете автора? Това също ще премахне всички техни картини от изложбата.");
+    }
+
+    function confirmAcceptAuthor() {
+        return confirm("Сигурни ли сте, че искате да приемете автора в изложбата?");
     }
 </script>
