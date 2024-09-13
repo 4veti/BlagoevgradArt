@@ -87,16 +87,18 @@ namespace BlagoevgradArt.Core.Services
 
         public async Task<bool> SubmitRequestToJoinExhibitionAsync(string userId, int exhibitionId)
         {
-            AuthorExhibition? request = await _repository
-                .AllAsReadOnly<AuthorExhibition>()
-                .FirstOrDefaultAsync(ae => ae.Author.UserId == userId && ae.ExhibitionId == exhibitionId);
+            Exhibition exhibition = await _repository
+                .AllAsReadOnly<Exhibition>()
+                .FirstAsync(e => e.Id == exhibitionId);
 
-            if (request != null)
+            bool moreThanThreeDaysRemain = exhibition.OpeningDate.Day - DateTime.Today.Day >= 3;
+
+            if (moreThanThreeDaysRemain == false)
             {
                 return false;
             }
 
-            request = new AuthorExhibition()
+            AuthorExhibition request = new AuthorExhibition()
             {
                 AuthorId = await GetIdAsync(userId),
                 ExhibitionId = exhibitionId

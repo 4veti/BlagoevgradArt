@@ -83,6 +83,11 @@ namespace BlagoevgradArt.Controllers
             {
                 bool isSuccessfulRequest = await _authorService.SubmitRequestToJoinExhibitionAsync(User.Id(), id);
 
+                if (isSuccessfulRequest == false)
+                {
+                    return BadRequest();
+                }
+
                 return RedirectToAction(nameof(ExhibitionController.Details), "Exhibition", new { id });
             }
             catch (Exception)
