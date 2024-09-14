@@ -159,7 +159,7 @@ namespace BlagoevgradArt.Core.Services
                 OpeningDate = exhibition.OpeningDate,
                 Description = exhibition.Description,
                 HostGalleryName = exhibition.Gallery.Name,
-                AcceptedAuthors = await _authorService.GetAuthorThumbnails(id, true)
+                AcceptedAuthors = await _authorService.GetAuthorThumbnailsAsync(id, true)
             };
 
             return infoModel;
@@ -200,11 +200,14 @@ namespace BlagoevgradArt.Core.Services
 
             _repository.Remove(authorExhibition);
 
-            List<Painting> paintingsInExhibition = await _repository
-                .All<Painting>()
-                .Where(p => p.ExhibitionId == exhibitionId && p.AuthorId == authorId)
-                .ToListAsync();
-            paintingsInExhibition.ForEach(p => p.ExhibitionId = null);
+            if (authorExhibition.IsAccepted)
+            {
+                List<Painting> paintingsInExhibition = await _repository
+                    .All<Painting>()
+                    .Where(p => p.ExhibitionId == exhibitionId && p.AuthorId == authorId)
+                    .ToListAsync();
+                paintingsInExhibition.ForEach(p => p.ExhibitionId = null);
+            }
 
             await _repository.SaveChangesAsync();
 

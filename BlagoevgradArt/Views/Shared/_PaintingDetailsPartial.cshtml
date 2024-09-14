@@ -50,7 +50,7 @@
 
             </tr>
             <tr>
-                @if ((User?.Identity?.IsAuthenticated ?? false) && await authorService.ExistsByIdAsync(User.Id()))
+                @if (await authorService.ExistsByIdAsync(User.Id()) || User.IsAdministrator())
                 {
                     <th>
                         <a class="btn btn-primary" asp-controller="Painting" asp-action="Edit"

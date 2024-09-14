@@ -32,7 +32,7 @@ namespace BlagoevgradArt.Core.Services
             return author != null ? author.Id : -1;
         }
 
-        public async Task<AuthorProfileInfoModel> GetAuthorProfileInfo(int id)
+        public async Task<AuthorProfileInfoModel> GetAuthorProfileInfoAsync(int id)
         {
             Author author = await _repository
                 .AllAsReadOnly<Author>()
@@ -51,7 +51,7 @@ namespace BlagoevgradArt.Core.Services
             return model;
         }
 
-        public async Task SetAuthorProfileInfo(AuthorFormModel pInfo, string userId)
+        public async Task SetAuthorProfileInfoAsync(AuthorFormModel pInfo, string userId)
         {
             Author author = await _repository
                 .All<Author>()
@@ -72,7 +72,7 @@ namespace BlagoevgradArt.Core.Services
             return string.Join(" ", new string[] { author.FirstName, author.LastName ?? string.Empty });
         }
 
-        public async Task<List<AuthorSmallThumbnailModel>> GetAuthorThumbnails(int id, bool isAuthorAccepted)
+        public async Task<List<AuthorSmallThumbnailModel>> GetAuthorThumbnailsAsync(int id, bool isAuthorAccepted)
         {
             var authorsFiltered = _repository.AllAsReadOnly<Author>()
                 .Where(a => a.AuthorExhibitions.Any(ae => ae.ExhibitionId == id))

@@ -41,7 +41,7 @@ namespace BlagoevgradArt.Controllers
             }
 
             AuthorProfileInfoModel model = await _authorService
-                .GetAuthorProfileInfo(id);
+                .GetAuthorProfileInfoAsync(id);
 
             return View(model);
         }
@@ -50,7 +50,7 @@ namespace BlagoevgradArt.Controllers
         public async Task<IActionResult> EditProfile()
         {
             AuthorProfileInfoModel model = await _authorService
-                .GetAuthorProfileInfo(await _authorService.GetIdAsync(User.Id()));
+                .GetAuthorProfileInfoAsync(await _authorService.GetIdAsync(User.Id()));
 
             return View(new AuthorFormModel()
             {
@@ -68,7 +68,7 @@ namespace BlagoevgradArt.Controllers
                 return RedirectToAction(nameof(EditProfile));
             }
 
-            await _authorService.SetAuthorProfileInfo(model, User.Id());
+            await _authorService.SetAuthorProfileInfoAsync(model, User.Id());
 
             return RedirectToAction(nameof(Profile));
         }

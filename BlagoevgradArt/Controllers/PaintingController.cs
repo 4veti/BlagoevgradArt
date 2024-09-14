@@ -66,7 +66,7 @@ namespace BlagoevgradArt.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id, string information)
         {
-            PaintingFormModel? model = await _paintingService.GetPaintingFormModel(id);
+            PaintingFormModel? model = await _paintingService.GetPaintingFormModelAsync(id);
             string? correctInformation = model?.GetInformation();
 
             if (model == null || information != correctInformation)
@@ -96,7 +96,7 @@ namespace BlagoevgradArt.Controllers
             // and display the validation error messages.
             if (ModelState.IsValid == false)
             {
-                information = await _paintingService.GetInformationById(id) ?? string.Empty;
+                information = await _paintingService.GetInformationByIdAsync(id) ?? string.Empty;
                 return RedirectToAction(nameof(Edit), new { id, information });
             }
 
@@ -186,7 +186,7 @@ namespace BlagoevgradArt.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id, string information)
         {
-            string? correctInformation = await _paintingService.GetInformationById(id);
+            string? correctInformation = await _paintingService.GetInformationByIdAsync(id);
 
             if (await _paintingService.ExistsByIdAsync(id) == false ||
                 correctInformation == null ||
