@@ -32,7 +32,7 @@ namespace BlagoevgradArt.Controllers
         {
             if (ModelState.IsValid == false)
             {
-                return View(model);
+                return RedirectToAction(nameof(AssignRoles));
             }
 
             await _userService.AssignRolesToSelectedUsersAsync(model);

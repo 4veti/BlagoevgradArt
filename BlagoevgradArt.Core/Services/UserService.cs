@@ -20,7 +20,7 @@ public class UserService : IUserService
 
     public async Task AssignRolesToSelectedUsersAsync(ManageUserRolesModel model)
     {
-        foreach (UserBasicInfoModel user in model.UsersBasicInfo.Where(u => u.IsSelected))
+        foreach (UserBasicInfoModel user in model.UsersBasicInfo.Where(u => u.IsSelected && u.Email != "admin@mail.com"))
         {
             IdentityUser iUser = await _userManager.FindByEmailAsync(user.Email);
             await _userManager.AddToRoleAsync(iUser, model.SelectedRoleName);
@@ -33,7 +33,9 @@ public class UserService : IUserService
             .Select(u => new UserBasicInfoModel()
             {
                 Email = u.Email
-            }).ToListAsync();
+            })
+            .Where(u => u.Email != "admin@mail.com")
+            .ToListAsync();
 
         foreach (UserBasicInfoModel user in authors)
         {

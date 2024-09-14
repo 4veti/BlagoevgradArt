@@ -10,5 +10,6 @@ public class ManageUserRolesModel
     public IEnumerable<string> RolesNames { get; set; } = new List<string>() { AuthorRole, GalleryRole };
 
     [Required]
+    [StringRange(AllowableValues = new[] { AuthorRole, GalleryRole })]
     public string SelectedRoleName { get; set; } = string.Empty;
 }
