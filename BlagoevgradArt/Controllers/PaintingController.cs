@@ -138,6 +138,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = AuthorRole)]
         public async Task<IActionResult> Add()
         {
             PaintingFormModel model = new(await _paintingHelperService.GetGenresAsync(),
@@ -152,6 +153,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = AuthorRole)]
         public async Task<IActionResult> Add(PaintingFormModel model)
         {
             await ValidateImageAttributes(model);

@@ -4,9 +4,11 @@ using BlagoevgradArt.Core.Models.Exhibition;
 using BlagoevgradArt.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static BlagoevgradArt.Core.Constants.RoleConstants;
 
 namespace BlagoevgradArt.Controllers
 {
+    [Authorize(Roles = $"{GalleryRole}, {AdministratorRole}")]
     public class ExhibitionController : BaseController
     {
         IExhibitionService _exhibitionService;
@@ -39,8 +41,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpGet]
-        [MustBeExistingGallery]
-        [GalleryMustOwnExhibition]
+        [ExhibitionOwnerOrAdministrator]
         public async Task<IActionResult> Edit(int id)
         {
             ExhibitionFormModel? model = await _exhibitionService.GetFormDataByIdAsync(id);
@@ -56,8 +57,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpPost]
-        [MustBeExistingGallery]
-        [GalleryMustOwnExhibition]
+        [ExhibitionOwnerOrAdministrator]
         public async Task<IActionResult> Edit(int id, ExhibitionFormModel model)
         {
             if (ModelState.IsValid == false)
@@ -110,7 +110,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpGet]
-        [MustBeExistingGallery]
+        [Authorize(Roles = GalleryRole)]
         public IActionResult Add()
         {
             ViewBag.IsNewExhibition = true;
@@ -118,7 +118,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpPost]
-        [MustBeExistingGallery]
+        [Authorize(Roles = GalleryRole)]
         public async Task<IActionResult> Add(ExhibitionFormModel model)
         {
             int galleryId = await _galleryService.GetIdAsync(User.Id());
@@ -140,8 +140,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpPost]
-        [MustBeExistingGallery]
-        [GalleryMustOwnExhibition]
+        [ExhibitionOwnerOrAdministrator]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -162,8 +161,8 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpPost]
-        [MustBeExistingGallery]
-        [GalleryMustOwnExhibition]
+        [ExhibitionOwnerOrAdministrator]
+        [Authorize(Roles = GalleryRole)]
         public async Task<IActionResult> AddAuthor(int id, int authorId)
         {
             try
@@ -188,8 +187,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpPost]
-        [MustBeExistingGallery]
-        [GalleryMustOwnExhibition]
+        [ExhibitionOwnerOrAdministrator]
         public async Task<IActionResult> RemoveAuthor(int id, int authorId)
         {
             try
