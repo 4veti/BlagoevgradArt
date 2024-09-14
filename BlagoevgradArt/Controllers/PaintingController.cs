@@ -7,9 +7,11 @@ using BlagoevgradArt.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static BlagoevgradArt.Core.Constants.ErrorMessages;
+using static BlagoevgradArt.Core.Constants.RoleConstants;
 
 namespace BlagoevgradArt.Controllers
 {
+    [Authorize(Roles = $"{AdministratorRole}, {AuthorRole}")]
     public class PaintingController : BaseController
     {
         private readonly IPaintingService _paintingService;
@@ -29,6 +31,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return RedirectToAction(nameof(All));
@@ -49,7 +52,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpGet]
-        [MustBeExistingAuthor]
+        [Authorize(Roles = AuthorRole)]
         public async Task<IActionResult> AllPersonal([FromQuery] AllPersonalPaintingsQueryModel model)
         {
             model.Thumbnails = await _paintingService.AllPersonalAsync(User.Id(),
@@ -61,7 +64,6 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpGet]
-        [MustBeExistingAuthor]
         public async Task<IActionResult> Edit(int id, string information)
         {
             PaintingFormModel? model = await _paintingService.GetPaintingFormModel(id);
@@ -78,7 +80,6 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpPost]
-        [MustBeExistingAuthor]
         public async Task<IActionResult> Edit(int id, PaintingFormModel? model)
         {
             if (model == null || await _paintingService.ExistsByIdAsync(id) == false)
@@ -137,7 +138,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpGet]
-        [MustBeExistingAuthor]
+        [Authorize(Roles = AuthorRole)]
         public async Task<IActionResult> Add()
         {
             PaintingFormModel model = new(await _paintingHelperService.GetGenresAsync(),
@@ -152,7 +153,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpPost]
-        [MustBeExistingAuthor]
+        [Authorize(Roles = AuthorRole)]
         public async Task<IActionResult> Add(PaintingFormModel model)
         {
             await ValidateImageAttributes(model);
@@ -183,7 +184,6 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpPost]
-        [MustBeExistingAuthor]
         public async Task<IActionResult> Delete(int id, string information)
         {
             string? correctInformation = await _paintingService.GetInformationById(id);

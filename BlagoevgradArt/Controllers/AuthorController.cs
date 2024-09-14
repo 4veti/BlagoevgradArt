@@ -8,7 +8,7 @@ using static BlagoevgradArt.Core.Constants.RoleConstants;
 
 namespace BlagoevgradArt.Controllers
 {
-    [Authorize(Roles = AuthorRole)]
+    [Authorize(Roles =  AuthorRole)]
     public class AuthorController : BaseController
     {
         private IAuthorService _authorService;
@@ -47,7 +47,6 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpGet]
-        [MustBeExistingAuthor]
         public async Task<IActionResult> EditProfile()
         {
             AuthorProfileInfoModel model = await _authorService
@@ -62,7 +61,6 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpPost]
-        [MustBeExistingAuthor]
         public async Task<IActionResult> EditProfile(AuthorFormModel model)
         {
             if (ModelState.IsValid == false)
@@ -76,7 +74,6 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpPost]
-        [MustBeExistingAuthor]
         public async Task<IActionResult> RequestToJoinExhibition(int id)
         {
             try

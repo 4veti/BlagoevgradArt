@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace BlagoevgradArt.Attributes
 {
-    public class GalleryMustOwnExhibitionAttribute : ActionFilterAttribute
+    public class ExhibitionOwnerOrAdministratorAttribute : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
@@ -21,7 +21,7 @@ namespace BlagoevgradArt.Attributes
                 {
                     bool galleryIsOwnerOfExhibition = _exhibitionService.GalleryUserIsOwnerOfExhibitionAsync(context.HttpContext.User.Id(), exhibitionId).Result;
 
-                    if (galleryIsOwnerOfExhibition == false)
+                    if (galleryIsOwnerOfExhibition == false && context.HttpContext.User.IsAdministrator() == false)
                     {
                         context.Result = new StatusCodeResult(StatusCodes.Status401Unauthorized);
                     }

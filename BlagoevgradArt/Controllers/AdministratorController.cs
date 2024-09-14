@@ -19,11 +19,5 @@ namespace BlagoevgradArt.Controllers
         {
             return View();
         }
-
-        [HttpGet]
-        public IActionResult AddRole()
-        {
-            return RedirectToAction(nameof(Index));
-        }
     }
 }
