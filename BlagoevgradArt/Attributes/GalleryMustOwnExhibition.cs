@@ -21,7 +21,7 @@ namespace BlagoevgradArt.Attributes
                 {
                     bool galleryIsOwnerOfExhibition = _exhibitionService.GalleryUserIsOwnerOfExhibitionAsync(context.HttpContext.User.Id(), exhibitionId).Result;
 
-                    if (galleryIsOwnerOfExhibition == false || context.HttpContext.User.IsAdministrator() == false)
+                    if (galleryIsOwnerOfExhibition == false && context.HttpContext.User.IsAdministrator() == false)
                     {
                         context.Result = new StatusCodeResult(StatusCodes.Status401Unauthorized);
                     }
