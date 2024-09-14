@@ -10,7 +10,7 @@ namespace BlagoevgradArt.Core.Contracts
 
         Task EditPaintingAsync(PaintingFormModel model, int id, string rootPath);
 
-        Task<PaintingFormModel?> GetPaintingFormModel(int id);
+        Task<PaintingFormModel?> GetPaintingFormModelAsync(int id);
 
         Task<PaintingQueryServiceModel> AllAsync(int currentPage,
             int countPerPage,
@@ -24,7 +24,7 @@ namespace BlagoevgradArt.Core.Contracts
 
         Task DeleteImageAsync(int id, string rootPath);
 
-        Task<string?> GetInformationById(int id);
+        Task<string?> GetInformationByIdAsync(int id);
 
         Task<bool> ExistsByIdAsync(int id);
     }

@@ -157,7 +157,7 @@ namespace BlagoevgradArt.Core.Services
             return model;
         }
 
-        public async Task<PaintingFormModel?> GetPaintingFormModel(int id)
+        public async Task<PaintingFormModel?> GetPaintingFormModelAsync(int id)
         {
             Painting? painting = await _repository
                 .AllAsReadOnly<Painting>()
@@ -203,7 +203,7 @@ namespace BlagoevgradArt.Core.Services
             }
         }
 
-        public async Task<string?> GetInformationById(int id)
+        public async Task<string?> GetInformationByIdAsync(int id)
         {
             IPaintingInformationModel? model = await _repository
                 .AllAsReadOnly<Painting>()

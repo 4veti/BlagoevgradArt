@@ -159,7 +159,7 @@ namespace BlagoevgradArt.Core.Services
                 OpeningDate = exhibition.OpeningDate,
                 Description = exhibition.Description,
                 HostGalleryName = exhibition.Gallery.Name,
-                AcceptedAuthors = await _authorService.GetAuthorThumbnails(id, true)
+                AcceptedAuthors = await _authorService.GetAuthorThumbnailsAsync(id, true)
             };
 
             return infoModel;

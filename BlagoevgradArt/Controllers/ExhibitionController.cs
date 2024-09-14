@@ -103,7 +103,7 @@ namespace BlagoevgradArt.Controllers
 
             if (isGalleryOwnerOfExhibition)
             {
-                model.NotAcceptedAuthors = await _authorService.GetAuthorThumbnails(id, false);
+                model.NotAcceptedAuthors = await _authorService.GetAuthorThumbnailsAsync(id, false);
             }
 
             return View(model);
