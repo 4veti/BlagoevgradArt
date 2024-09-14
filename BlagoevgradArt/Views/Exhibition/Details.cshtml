@@ -11,7 +11,7 @@
 <div style="display: flex;">
     <div style="flex: 1">
         <table class="table table-borderless">
-            @if (ViewBag.GalleryIsOwnerOfExhibition)
+            @if (ViewBag.GalleryIsOwnerOfExhibition || User.IsAdministrator())
             {
                 <tr>
                     <th>Опции:</th>
