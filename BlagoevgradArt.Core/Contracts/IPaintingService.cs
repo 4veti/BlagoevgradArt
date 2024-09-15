@@ -20,7 +20,8 @@ namespace BlagoevgradArt.Core.Contracts
         Task<PaintingQueryServiceModel> AllPersonalAsync(string userId,
             int currentPage,
             int countPerPage,
-            string? paintingTitle);
+            string? paintingTitle,
+            bool onlyNotInExhibition = false);
 
         Task DeleteImageAsync(int id, string rootPath);
 

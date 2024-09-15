@@ -1,21 +1,24 @@
-﻿using BlagoevgradArt.Attributes;
-using BlagoevgradArt.Core.Contracts;
+﻿using BlagoevgradArt.Core.Contracts;
 using BlagoevgradArt.Core.Models.Author;
 using BlagoevgradArt.Extensions;
+using BlagoevgradArt.ModelBinders;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static BlagoevgradArt.Core.Constants.RoleConstants;
 
 namespace BlagoevgradArt.Controllers
 {
-    [Authorize(Roles =  AuthorRole)]
+    [Authorize(Roles = AuthorRole)]
     public class AuthorController : BaseController
     {
-        private IAuthorService _authorService;
+        private readonly IAuthorService _authorService;
+        private readonly IExhibitionService _exhibitionService;
 
-        public AuthorController(IAuthorService authorService)
+        public AuthorController(IAuthorService authorService,
+            IExhibitionService exhibitionService)
         {
             _authorService = authorService;
+            _exhibitionService = exhibitionService;
         }
 
         public IActionResult Index()
@@ -86,6 +89,27 @@ namespace BlagoevgradArt.Controllers
                 }
 
                 return RedirectToAction(nameof(ExhibitionController.Details), "Exhibition", new { id });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SubmitPaintingsRequest(int exhibitionId, 
+            [ModelBinder(BinderType = typeof(MapSelectedPaintingsModelBinder))] List<int> models)
+        {
+            try
+            {
+                bool successfullySubmittedAll = await _exhibitionService.SubmitPaintingsRequestAsync(models, exhibitionId);
+
+                if (successfullySubmittedAll == false)
+                {
+                    return BadRequest();
+                }
+
+                return RedirectToAction(nameof(PaintingController.AllPersonal), "Painting");
             }
             catch (Exception)
             {

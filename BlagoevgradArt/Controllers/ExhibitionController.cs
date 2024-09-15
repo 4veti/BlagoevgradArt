@@ -11,9 +11,9 @@ namespace BlagoevgradArt.Controllers
     [Authorize(Roles = $"{GalleryRole}, {AdministratorRole}")]
     public class ExhibitionController : BaseController
     {
-        IExhibitionService _exhibitionService;
-        IGalleryService _galleryService;
-        IAuthorService _authorService;
+        private readonly IExhibitionService _exhibitionService;
+        private readonly IGalleryService _galleryService;
+        private readonly IAuthorService _authorService;
 
         public ExhibitionController(IExhibitionService exhibitionService
             , IGalleryService galleryService
@@ -97,7 +97,7 @@ namespace BlagoevgradArt.Controllers
             ViewBag.GalleryIsOwnerOfExhibition = isGalleryOwnerOfExhibition;
 
             ViewBag.CurrentAuthorId = await _authorService.GetIdAsync(User.Id());
-            ViewBag.IsAuthorPartOfExhibition = await _exhibitionService.IsAuthorPartOfExhibitionAsync(ViewBag.CurrentAuthorId, id);
+            ViewBag.IsAuthorPartOfExhibition = await _exhibitionService.IsAuthorPartOfExhibitionAsync(User.Id(), id);
 
             ViewBag.IsAuthorRequestedToJoin = await _exhibitionService.IsAuthorRequestedToJoinExhibitionAsync(User.Id(), id);
 

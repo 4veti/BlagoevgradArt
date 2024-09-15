@@ -251,7 +251,11 @@ namespace BlagoevgradArt.Core.Services
             }
         }
 
-        public async Task<PaintingQueryServiceModel> AllPersonalAsync(string userId, int currentPage, int countPerPage, string? paintingTitle)
+        public async Task<PaintingQueryServiceModel> AllPersonalAsync(string userId,
+            int currentPage,
+            int countPerPage,
+            string? paintingTitle,
+            bool onlyNotInExhibition = false)
         {
             var paintingsToShow = _repository.AllAsReadOnly<Painting>()
                 .Where(p => p.Author.UserId == userId);
@@ -260,6 +264,12 @@ namespace BlagoevgradArt.Core.Services
             {
                 paintingsToShow = paintingsToShow
                     .Where(p => p.Title.ToLower().Contains(paintingTitle.ToLower()));
+            }
+
+            if (onlyNotInExhibition)
+            {
+                paintingsToShow = paintingsToShow
+                    .Where(p => p.ExhibitionId == null);
             }
 
             List<PaintingThumbnailModel> thumbnails = await paintingsToShow

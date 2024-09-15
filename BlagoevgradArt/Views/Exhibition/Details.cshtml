@@ -66,6 +66,15 @@
                     </form>
                 }
             }
+            else
+            {
+                <form method="get">
+                    <button class="btn btn-success" asp-controller="Painting" asp-action="AllPersonal"
+                            asp-route-id="@Model.Id">
+                        Избери картини
+                    </button>
+                </form>
+            }
         }
         <h2>Участници</h2>
         <div class="col-3">
@@ -109,7 +118,7 @@
                             <td>
                                 <form method="post" style="padding:15px">
                                     <button onclick="return confirmAcceptAuthor()" class="btn btn-success" asp-action="AddAuthor"
-                                    asp-controller="Exhibition" asp-route-id="@Model.Id" asp-route-authorId="@author.Id">
+                                            asp-controller="Exhibition" asp-route-id="@Model.Id" asp-route-authorId="@author.Id">
                                         Добави
                                     </button>
                                 </form>
@@ -117,7 +126,7 @@
                             <td>
                                 <form method="post" style="padding:15px">
                                     <button onclick="return confirmRemoveAuthor()" class="btn btn-danger" asp-action="RemoveAuthor"
-                                    asp-controller="Exhibition" asp-route-id="@Model.Id" asp-route-authorId="@author.Id">
+                                            asp-controller="Exhibition" asp-route-id="@Model.Id" asp-route-authorId="@author.Id">
                                         Откажи
                                     </button>
                                 </form>

@@ -109,7 +109,7 @@ namespace BlagoevgradArt.Core.Services
                     Name = e.Name,
                     OpeningDate = e.OpeningDate,
                     HostGalleryName = e.Gallery.Name,
-                    CountArtworks = e.Paintings.Count
+                    CountArtworks = e.Paintings.Where(p => p.IsAccepted).Count()
                 })
                 .ToListAsync();
 
@@ -165,14 +165,13 @@ namespace BlagoevgradArt.Core.Services
             return infoModel;
         }
 
-        public async Task<bool> IsAuthorPartOfExhibitionAsync(int authorId, int exhibitionId)
+        public async Task<bool> IsAuthorPartOfExhibitionAsync(string userId, int exhibitionId)
         {
-            AuthorExhibition? targetAuthorExhibition = await _repository
-                .AllAsReadOnly<AuthorExhibition>()
-                .Where(ae => ae.IsAccepted == true)
-                .FirstOrDefaultAsync(ae => ae.Author.Id == authorId && ae.ExhibitionId == exhibitionId);
+            bool isAccepted = await _repository
+               .AllAsReadOnly<AuthorExhibition>()
+               .AnyAsync(ae => ae.Author.UserId == userId && ae.ExhibitionId == exhibitionId && ae.IsAccepted == true);
 
-            return targetAuthorExhibition != null;
+            return isAccepted;
         }
 
         public async Task<bool> IsAuthorRequestedToJoinExhibitionAsync(string userId, int exhibitionId)
@@ -206,7 +205,8 @@ namespace BlagoevgradArt.Core.Services
                     .All<Painting>()
                     .Where(p => p.ExhibitionId == exhibitionId && p.AuthorId == authorId)
                     .ToListAsync();
-                paintingsInExhibition.ForEach(p => p.ExhibitionId = null);
+
+                paintingsInExhibition.ForEach(p => { p.ExhibitionId = null; p.IsAccepted = false; });
             }
 
             await _repository.SaveChangesAsync();
@@ -228,6 +228,28 @@ namespace BlagoevgradArt.Core.Services
             await _repository.SaveChangesAsync();
 
             return exhibition.Id;
+        }
+
+        public async Task<bool> SubmitPaintingsRequestAsync(List<int> paintings, int exhibitionId)
+        {
+            List<Painting> validPaintings = await _repository
+                .All<Painting>()
+                .Where(p => paintings.Contains(p.Id) && p.Exhibition == null)
+                .ToListAsync();
+
+            if (await ExistsByIdAsync(exhibitionId) == false || validPaintings.Any() == false)
+            {
+                return false;
+            }
+
+            foreach (Painting painting in validPaintings)
+            {
+                painting.ExhibitionId = exhibitionId;
+            }
+
+            await _repository.SaveChangesAsync();
+
+            return true;
         }
     }
 }
