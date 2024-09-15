@@ -152,5 +152,11 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         /// </summary>
         [ForeignKey(nameof(ExhibitionId))]
         public Exhibition? Exhibition { get; set; }
+
+        /// <summary>
+        /// Indicator if the Painting is accepted in an Exhibition.
+        /// </summary>
+        [Comment("Indicator if the Painting is accepted in an Exhibition. | Индикатор дали картината е приета в изложба.")]
+        public bool IsAccepted { get; set; }
     }
 }
