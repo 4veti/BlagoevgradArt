@@ -20,7 +20,10 @@ public class UserService : IUserService
 
     public async Task AssignRolesToSelectedUsersAsync(ManageUserRolesModel model)
     {
-        foreach (UserBasicInfoModel user in model.UsersBasicInfo.Where(u => u.IsSelected && u.Email != "admin@mail.com"))
+        foreach (UserBasicInfoModel user in model.UsersBasicInfo
+            .Where(u => u.IsSelected
+                && u.Email != "admin@mail.com"
+                && u.InRoles.Contains(model.SelectedRoleName) == false))
         {
             IdentityUser iUser = await _userManager.FindByEmailAsync(user.Email);
             await _userManager.AddToRoleAsync(iUser, model.SelectedRoleName);
