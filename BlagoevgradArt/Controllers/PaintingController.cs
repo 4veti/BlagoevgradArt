@@ -53,12 +53,18 @@ namespace BlagoevgradArt.Controllers
 
         [HttpGet]
         [Authorize(Roles = AuthorRole)]
-        public async Task<IActionResult> AllPersonal([FromQuery] AllPersonalPaintingsQueryModel model)
+        public async Task<IActionResult> AllPersonal([FromQuery] AllPersonalPaintingsQueryModel model, int id = -1)
         {
             model.Thumbnails = await _paintingService.AllPersonalAsync(User.Id(),
                 model.CurrentPage,
                 model.CountPerPage,
                 model.PaintingTitle);
+
+            if (id >= 0)
+            {
+                ViewBag.ExhibitionId = id;
+                ViewBag.IsSelectingForExhibition = true;
+            }
 
             return View(model);
         }

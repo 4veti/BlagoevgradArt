@@ -1,7 +1,5 @@
-﻿using BlagoevgradArt.Attributes;
-using BlagoevgradArt.Core.Contracts;
+﻿using BlagoevgradArt.Core.Contracts;
 using BlagoevgradArt.Core.Models.Author;
-using BlagoevgradArt.Core.Models.Painting;
 using BlagoevgradArt.Extensions;
 using BlagoevgradArt.ModelBinders;
 using Microsoft.AspNetCore.Authorization;
@@ -91,6 +89,27 @@ namespace BlagoevgradArt.Controllers
                 }
 
                 return RedirectToAction(nameof(ExhibitionController.Details), "Exhibition", new { id });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SubmitPaintingsRequest(int exhibitionId, 
+            [ModelBinder(BinderType = typeof(MapSelectedPaintingsModelBinder))] List<int> models)
+        {
+            try
+            {
+                bool successfullySubmittedAll = await _exhibitionService.SubmitPaintingsRequestAsync(models, exhibitionId);
+
+                if (successfullySubmittedAll == false)
+                {
+                    return BadRequest();
+                }
+
+                return RedirectToAction(nameof(PaintingController.AllPersonal), "Painting");
             }
             catch (Exception)
             {

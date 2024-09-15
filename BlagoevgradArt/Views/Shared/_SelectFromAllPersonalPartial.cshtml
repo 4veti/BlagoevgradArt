@@ -1,0 +1,42 @@
+﻿@model PaintingQueryServiceModel;
+
+@{
+    int counter = 0;
+}
+
+<form method="post" style="display: flex; flex-flow: row wrap; align-items: center;">
+    @foreach (PaintingThumbnailModel painting in Model.Thumbnails)
+    {
+        <li>
+            <div class="card" style="min-width: 250px; max-width: 250px; margin-left: 20px; margin-right: 20px;
+                        flex-direction: column; justify-content: space-between">
+                @if (ViewBag.IsSelectingForExhibition ?? false)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="Painting[@(counter)].IsSelected" value="true">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Избери
+                        </label>
+                    </div>
+                    <input hidden name="Painting[@(counter++)].Id" value="@painting.Id" />
+                }
+                <img src="@Url.Content(painting.ImagePath)" alt="@painting.Title"
+                     align-content: center" />
+
+                <p style="font-weight: bold; font-size:large; margin-left: 10px">@painting.Title</p>
+
+                <p style="margin-left: 10px; margin-top: -10px;">@($"Размери: {@painting.HeightCm}х{@painting.WidthCm}см")</p>
+
+                <a asp-action="Details" asp-controller="Painting" asp-route-id="@painting.Id"
+                   asp-route-information="@painting.GetInformation()" class="btn btn-success" style="align-content:flex-end">Детайли</a>
+            </div>
+        </li>
+    }
+    <br />
+    <hr />
+    <input hidden name="CountSelectedPaintings" value="@counter" />
+    <button class="btn btn-outline-success" asp-controller="Author"
+            asp-action="SubmitPaintingsRequest" asp-route-exhibitionId="@ViewBag.ExhibitionId">
+        Изпрати избраните картини за одобрение
+    </button>
+</form>
