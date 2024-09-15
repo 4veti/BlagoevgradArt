@@ -9,7 +9,7 @@ namespace BlagoevgradArt.Controllers
     [Authorize(Roles = AdministratorRole)]
     public class RolesController : BaseController
     {
-        private IUserService _userService;
+        private readonly IUserService _userService;
 
         public RolesController(IUserService userService)
         {
