@@ -55,10 +55,13 @@ namespace BlagoevgradArt.Controllers
         [Authorize(Roles = AuthorRole)]
         public async Task<IActionResult> AllPersonal([FromQuery] AllPersonalPaintingsQueryModel model, int id = -1)
         {
+            bool onlyNotInExhibition = id >= 0;
+
             model.Thumbnails = await _paintingService.AllPersonalAsync(User.Id(),
                 model.CurrentPage,
                 model.CountPerPage,
-                model.PaintingTitle);
+                model.PaintingTitle,
+                onlyNotInExhibition);
 
             if (id >= 0)
             {

@@ -205,7 +205,8 @@ namespace BlagoevgradArt.Core.Services
                     .All<Painting>()
                     .Where(p => p.ExhibitionId == exhibitionId && p.AuthorId == authorId)
                     .ToListAsync();
-                paintingsInExhibition.ForEach(p => p.ExhibitionId = null);
+
+                paintingsInExhibition.ForEach(p => { p.ExhibitionId = null; p.IsAccepted = false; });
             }
 
             await _repository.SaveChangesAsync();
