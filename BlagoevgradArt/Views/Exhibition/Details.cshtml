@@ -97,6 +97,17 @@
                                     </button>
                                 </form>
                             </td>
+                            if (author.HasPendingPaintings)
+                            {
+                                <td>
+                                    <form method="post" style="padding:15px">
+                                        <button class="btn btn-primary" asp-action="PendingPaintingsForApproval" asp-controller="Gallery"
+                                                asp-route-id="@Model.Id" asp-route-authorId="@author.Id">
+                                            Виж подадените картини
+                                        </button>
+                                    </form>
+                                </td>
+                            }
                         }
                     </tr>
                 }
