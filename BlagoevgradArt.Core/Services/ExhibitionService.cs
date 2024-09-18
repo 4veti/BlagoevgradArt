@@ -259,12 +259,21 @@ namespace BlagoevgradArt.Core.Services
                 return false;
             }
 
-            foreach (Painting painting in validPaintings)
+            if (validPaintings.Any())
             {
-                painting.ExhibitionId = exhibitionId;
-            }
+                foreach (Painting painting in validPaintings)
+                {
+                    painting.ExhibitionId = exhibitionId;
+                }
 
-            await _repository.SaveChangesAsync();
+                AuthorExhibition authorExhibition = await _repository
+                    .All<AuthorExhibition>()
+                    .Where(ae => ae.ExhibitionId == exhibitionId && ae.AuthorId == validPaintings.First().AuthorId)
+                    .FirstAsync();
+                authorExhibition.HasPendingPaintings = true;
+
+                await _repository.SaveChangesAsync();
+            }
 
             return true;
         }
