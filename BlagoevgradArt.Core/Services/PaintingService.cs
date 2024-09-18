@@ -295,5 +295,26 @@ namespace BlagoevgradArt.Core.Services
 
             return model;
         }
+
+        public async Task<List<PaintingThumbnailModel>> GetPendingPaintingsForApprovalAsync(int exhibitionId, int authorId)
+        {
+            List<PaintingThumbnailModel> paintings = await _repository
+                .AllAsReadOnly<Painting>()
+                .Where(p => p.ExhibitionId == exhibitionId &&
+                    p.AuthorId == authorId &&
+                    p.IsAccepted == false)
+                .Select(p => new PaintingThumbnailModel()
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    AuthorName = (p.Author.FirstName + " " + p.Author.LastName ?? "").Trim(),
+                    Description = p.Description,
+                    HeightCm = p.HeightCm,
+                    WidthCm = p.WidthCm,
+                    ImagePath = p.ImagePath
+                }).ToListAsync();
+
+            return paintings;
+        }
     }
 }

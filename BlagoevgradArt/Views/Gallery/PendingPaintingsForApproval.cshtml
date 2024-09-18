@@ -1,0 +1,42 @@
+﻿@model List<PaintingThumbnailModel>;
+
+@{
+    ViewData["Title"] = "Одобри/откажи картини";
+}
+
+<h2 class="text-center">@ViewData["Title"]</h2>
+<hr />
+
+@foreach (PaintingThumbnailModel painting in Model)
+{
+    <li>
+        <div class="card" style="min-width: 250px; max-width: 250px; margin-left: 20px; margin-right: 20px;
+                        flex-direction: column; justify-content: space-between">
+            <img src="@Url.Content(painting.ImagePath)" alt="@painting.Title"
+                 align-content: center" />
+
+            <p style="font-weight: bold; font-size:large; margin-left: 10px">@painting.Title</p>
+
+            <p style="margin-left: 10px; margin-top: -10px;">@($"Размери: {@painting.HeightCm}х{@painting.WidthCm}см")</p>
+
+            <form method="post">
+                <button asp-action="ApproveOrDisapprovePainting" asp-controller="Gallery" asp-route-id="@painting.Id"
+                        asp-route-approved="true" class="btn btn-success" style="align-content:flex-end">
+                    Одобри
+                </button>
+
+                <button asp-action="ApproveOrDisapprovePainting" asp-controller="Gallery" asp-route-id="@painting.Id"
+                        asp-route-approved="false" class="btn btn-danger" style="align-content:flex-end">
+                    Откажи
+                </button>
+            </form>
+
+            <form method="get">
+                <button asp-action="Details" asp-controller="Painting" asp-route-id="@painting.Id"
+                        asp-route-information="@painting.GetInformation()" class="btn btn-secondary" style="align-content:flex-end">
+                    Детайли
+                </button>
+            </form>
+        </div>
+    </li>
+}

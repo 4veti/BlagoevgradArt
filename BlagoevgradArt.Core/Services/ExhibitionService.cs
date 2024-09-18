@@ -1,5 +1,6 @@
 ﻿using BlagoevgradArt.Core.Contracts;
 using BlagoevgradArt.Core.Models.Exhibition;
+using BlagoevgradArt.Core.Models.Painting;
 using BlagoevgradArt.Infrastructure.Data.Common;
 using BlagoevgradArt.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -152,6 +153,21 @@ namespace BlagoevgradArt.Core.Services
                 return null;
             }
 
+            List<PaintingThumbnailModel> PaintingThumbnails = await _repository
+                .AllAsReadOnly<Painting>()
+                .Where(p => p.ExhibitionId == id && p.IsAccepted)
+                .Select(p => new PaintingThumbnailModel()
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    AuthorName = (p.Author.FirstName + " " + p.Author.LastName ?? "").Trim(),
+                    Description = p.Description,
+                    HeightCm = p.HeightCm,
+                    WidthCm = p.WidthCm,
+                    ImagePath = p.ImagePath
+
+                }).ToListAsync();
+
             ExhibitionDetailsModel infoModel = new ExhibitionDetailsModel()
             {
                 Id = id,
@@ -159,7 +175,8 @@ namespace BlagoevgradArt.Core.Services
                 OpeningDate = exhibition.OpeningDate,
                 Description = exhibition.Description,
                 HostGalleryName = exhibition.Gallery.Name,
-                AcceptedAuthors = await _authorService.GetAuthorThumbnailsAsync(id, true)
+                AcceptedAuthors = await _authorService.GetAuthorThumbnailsAsync(id, true),
+                Paintings = PaintingThumbnails
             };
 
             return infoModel;
@@ -242,12 +259,21 @@ namespace BlagoevgradArt.Core.Services
                 return false;
             }
 
-            foreach (Painting painting in validPaintings)
+            if (validPaintings.Any())
             {
-                painting.ExhibitionId = exhibitionId;
-            }
+                foreach (Painting painting in validPaintings)
+                {
+                    painting.ExhibitionId = exhibitionId;
+                }
 
-            await _repository.SaveChangesAsync();
+                AuthorExhibition authorExhibition = await _repository
+                    .All<AuthorExhibition>()
+                    .Where(ae => ae.ExhibitionId == exhibitionId && ae.AuthorId == validPaintings.First().AuthorId)
+                    .FirstAsync();
+                authorExhibition.HasPendingPaintings = true;
+
+                await _repository.SaveChangesAsync();
+            }
 
             return true;
         }

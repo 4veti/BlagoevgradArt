@@ -1,4 +1,5 @@
 ﻿using BlagoevgradArt.Core.Models.Author;
+using BlagoevgradArt.Core.Models.Painting;
 
 namespace BlagoevgradArt.Core.Models.Exhibition;
 
@@ -17,4 +18,6 @@ public class ExhibitionDetailsModel
     public ICollection<AuthorSmallThumbnailModel> AcceptedAuthors { get; set; } = new List<AuthorSmallThumbnailModel>();
 
     public ICollection<AuthorSmallThumbnailModel> NotAcceptedAuthors { get; set; } = new List<AuthorSmallThumbnailModel>();
+
+    public ICollection<PaintingThumbnailModel> Paintings { get; set; } = new List<PaintingThumbnailModel>();
 }

@@ -38,5 +38,11 @@ namespace BlagoevgradArt.Infrastructure.Data.Models
         /// </summary>
         [Comment("An indicator if the Author is accepted into the Exhibition. | Индикатор дали Авторът е приет в Изложбата.")]
         public bool IsAccepted { get; set; } = false;
+
+        /// <summary>
+        /// An indicator if the Author has pending Paintings to be approved.
+        /// </summary>
+        [Comment("An indicator if the Author has pending Paintings to be approved. | Индикатор дали Авторът има чакащи картини за одобрение.")]
+        public bool HasPendingPaintings { get; set; } = false;
     }
 }

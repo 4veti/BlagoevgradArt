@@ -28,5 +28,7 @@ namespace BlagoevgradArt.Core.Contracts
         Task<string?> GetInformationByIdAsync(int id);
 
         Task<bool> ExistsByIdAsync(int id);
+
+        Task<List<PaintingThumbnailModel>> GetPendingPaintingsForApprovalAsync(int exhibitionId, int authorId);
     }
 }

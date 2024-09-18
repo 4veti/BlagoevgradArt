@@ -22,7 +22,7 @@ namespace BlagoevgradArt.ModelBinders
                 for (int i = 0; i < countPaintings; i++)
                 {
                     var isCheckedResult = bindingContext.ValueProvider.GetValue($"Painting[{i}].IsSelected");
-                    if (isCheckedResult != ValueProviderResult.None && isCheckedResult.FirstValue != "true")
+                    if (isCheckedResult == ValueProviderResult.None || isCheckedResult.FirstValue != "true")
                     {
                         continue;
                     }

@@ -76,14 +76,14 @@ namespace BlagoevgradArt.Core.Services
         public async Task<List<AuthorSmallThumbnailModel>> GetAuthorThumbnailsAsync(int id, bool isAuthorAccepted)
         {
             var authorsFiltered = _repository.AllAsReadOnly<Author>()
-                .Where(a => a.AuthorExhibitions.Any(ae => ae.ExhibitionId == id))
-                .Where(a => a.AuthorExhibitions.Any(ae => ae.IsAccepted == isAuthorAccepted));
+                .Where(a => a.AuthorExhibitions.Any(ae => ae.ExhibitionId == id && ae.IsAccepted == isAuthorAccepted));
 
             List<AuthorSmallThumbnailModel> authors = await authorsFiltered
                 .Select(a => new AuthorSmallThumbnailModel()
                 {
                     Id = a.Id,
                     FullName = (a.FirstName + " " + a.LastName ?? string.Empty).Trim(),
+                    HasPendingPaintings = a.AuthorExhibitions.Where(ae => ae.ExhibitionId == id && ae.AuthorId == a.Id).First().HasPendingPaintings
                 }).ToListAsync();
 
             return authors;

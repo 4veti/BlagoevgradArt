@@ -97,7 +97,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SubmitPaintingsRequest(int exhibitionId, 
+        public async Task<IActionResult> SubmitPaintingsRequest(int exhibitionId,
             [ModelBinder(BinderType = typeof(MapSelectedPaintingsModelBinder))] List<int> models)
         {
             try
@@ -109,7 +109,7 @@ namespace BlagoevgradArt.Controllers
                     return BadRequest();
                 }
 
-                return RedirectToAction(nameof(PaintingController.AllPersonal), "Painting");
+                return RedirectToAction(nameof(ExhibitionController.Details), "Exhibition", new { id = exhibitionId });
             }
             catch (Exception)
             {
