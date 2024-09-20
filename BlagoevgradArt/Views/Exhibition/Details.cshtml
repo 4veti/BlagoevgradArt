@@ -8,147 +8,191 @@
 <h2 class="text-center">@ViewData["Title"]</h2>
 <hr />
 
-<div style="display: flex;">
-    <div style="flex: 1">
-        <table class="table table-borderless">
-            @if (ViewBag.GalleryIsOwnerOfExhibition || User.IsAdministrator())
-            {
-                <tr>
-                    <th>Опции:</th>
+<table class="table table-borderless">
+    @if (ViewBag.GalleryIsOwnerOfExhibition || User.IsAdministrator())
+    {
+        <tr>
+            <th>Опции:</th>
+            <td>
+                <form method="get">
+                    <button class="btn btn-info" asp-controller="Exhibition"
+                            asp-action="Edit" asp-route-id="@Model.Id">
+                        Редактиране
+                    </button>
+                </form>
+                <form method="post">
+                    <button class="btn btn-info" asp-controller="Exhibition" onclick="return confirmDelete()"
+                            asp-action="Delete" asp-route-id="@Model.Id">
+                        Изтрий
+                    </button>
+                </form>
+            </td>
+        </tr>
+    }
+    <tr>
+        <th>Заглавие: </th>
+        <td style="font-size:large; font-weight: 500">@Model.Name</td>
+    </tr>
+    <tr>
+        <th>Откриване: </th>
+        <td style="font-size:large; font-weight: 500">@Model.OpeningDate.ToString("MM/dd/yyyy - HH:mm")</td>
+    </tr>
+    <tr>
+        <th>Описание: </th>
+        <td style="font-size:large; font-weight: 400; font-style: italic">@Model.Description</td>
+    </tr>
+    <tr>
+        <th>Галерия: </th>
+        <td style="font-size:large; font-weight: 500">@Model.HostGalleryName</td>
+    </tr>
+</table>
+@if (await _authorService.ExistsByIdAsync(User.Id()) && Model.OpeningDate.Day - DateTime.Today.Day >= 3)
+{
+    if (ViewBag.IsAuthorPartOfExhibition == false)
+    {
+        if (ViewBag.IsAuthorRequestedToJoin)
+        {
+            <p style="font-size:large; font-style:italic; color:coral">Заявка за участие е изпратена!</p>
+        }
+        else
+        {
+            <form method="post">
+                <button class="btn btn-success" asp-controller="Author" asp-action="RequestToJoinExhibition"
+                        asp-route-id="@Model.Id">
+                    Присъедини се!
+                </button>
+            </form>
+        }
+    }
+    else
+    {
+        <form method="get">
+            <button class="btn btn-success" asp-controller="Painting" asp-action="AllPersonal"
+                    asp-route-id="@Model.Id">
+                Избери картини
+            </button>
+        </form>
+    }
+}
+
+@if (Model.Paintings.Any())
+{
+    <hr />
+    <div style="display: flex; flex-direction: row; align-items: center; justify-content: center;
+            background-color: slategray; border-style: solid; border-radius:15px; border-color: black; border-width:2px">
+        <div id="paintingsCarousel" style="height:600px; margin-top:30px;" class="carousel slide col-md-4" data-bs-ride="carousel" data-bs-interval="3000">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#paintingsCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                @for (int i = 1; i < Model.Paintings.Count(); i++)
+                {
+                    <button type="button" data-bs-target="#paintingsCarousel" data-bs-slide-to="@i" aria-label="Slide @(i + 1)"></button>
+                }
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="@Url.Content(Model.Paintings.First().ImagePath)" style="border-style: groove; border-width: 25px; border-color: darkorange;"
+                        class="d-block w-100" alt="Painting titled @Model.Paintings.First().Title">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>@Model.Paintings.First().Title</h5>
+                        <p>@Model.Paintings.First().Description</p>
+                    </div>
+                </div>
+                @foreach (PaintingThumbnailModel painting in Model.Paintings.Skip(1))
+                {
+                    <div class="carousel-item" style="border-style: groove; border-width: 25px; border-color: darkorange;">
+                        <img src="@Url.Content(painting.ImagePath)" class="d-block w-100"
+                            style="border-style: solid; border-width:3px; border-color: black" alt="Painting titled @painting.Title">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h5>@painting.Title</h5>
+                            <p>@painting.Description</p>
+                        </div>
+                    </div>
+                }
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#paintingsCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Предишна</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#paintingsCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Следваща</span>
+            </button>
+        </div>
+    </div>
+    <hr />
+}
+
+<h2>Участници</h2>
+<div class="col-3">
+    <table class="table" style="padding:20px">
+        @foreach (var author in Model.AcceptedAuthors)
+        {
+            <tr>
+                <td>
+                    <p style="@(author.Id == ViewBag.CurrentUserId ?
+                                "font-size:larger; font-weight: 550; color:forestgreen"
+                                : "font-size:large; font-weight: 450;"); font-style: italic; padding:15px">@author.FullName</p>
+                </td>
+                @if (ViewBag.GalleryIsOwnerOfExhibition)
+                {
                     <td>
-                        <form method="get">
-                            <button class="btn btn-info" asp-controller="Exhibition"
-                                    asp-action="Edit" asp-route-id="@Model.Id">
-                                Редактиране
+                        <form method="post" style="padding:15px">
+                            <button onclick="return confirmRemoveAuthor()" class="btn btn-danger" asp-action="RemoveAuthor" asp-controller="Exhibition"
+                                    asp-route-id="@Model.Id" asp-route-authorId="@author.Id">
+                                Премахни
                             </button>
                         </form>
-                        <form method="post">
-                            <button class="btn btn-info" asp-controller="Exhibition" onclick="return confirmDelete()"
-                                    asp-action="Delete" asp-route-id="@Model.Id">
-                                Изтрий
+                    </td>
+                    if (author.HasPendingPaintings)
+                    {
+                        <td>
+                            <form method="post" style="padding:15px">
+                                <button class="btn btn-primary" asp-action="PendingPaintingsForApproval" asp-controller="Gallery"
+                                        asp-route-id="@Model.Id" asp-route-authorId="@author.Id">
+                                    Виж подадените картини
+                                </button>
+                            </form>
+                        </td>
+                    }
+                }
+            </tr>
+        }
+    </table>
+</div>
+
+@if (ViewBag.GalleryIsOwnerOfExhibition)
+{
+    <h2>Заявки за участие</h2>
+    <div class="col-3">
+        <table class="table" style="padding:20px">
+            @foreach (var author in Model.NotAcceptedAuthors)
+            {
+                <tr>
+                    <td>
+                        <a asp-controller="Author" asp-action="Profile" asp-route-id="@author.Id"
+                           style="font-size:large; font-weight: 450; font-style: italic; padding:15px">@author.FullName</a>
+                    </td>
+                    <td>
+                        <form method="post" style="padding:15px">
+                            <button onclick="return confirmAcceptAuthor()" class="btn btn-success" asp-action="AddAuthor"
+                                    asp-controller="Exhibition" asp-route-id="@Model.Id" asp-route-authorId="@author.Id">
+                                Добави
+                            </button>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="post" style="padding:15px">
+                            <button onclick="return confirmRemoveAuthor()" class="btn btn-danger" asp-action="RemoveAuthor"
+                                    asp-controller="Exhibition" asp-route-id="@Model.Id" asp-route-authorId="@author.Id">
+                                Откажи
                             </button>
                         </form>
                     </td>
                 </tr>
             }
-            <tr>
-                <th>Заглавие: </th>
-                <td style="font-size:large; font-weight: 500">@Model.Name</td>
-            </tr>
-            <tr>
-                <th>Откриване: </th>
-                <td style="font-size:large; font-weight: 500">@Model.OpeningDate.ToString("MM/dd/yyyy - HH:mm")</td>
-            </tr>
-            <tr>
-                <th>Описание: </th>
-                <td style="font-size:large; font-weight: 400; font-style: italic">@Model.Description</td>
-            </tr>
-            <tr>
-                <th>Галерия: </th>
-                <td style="font-size:large; font-weight: 500">@Model.HostGalleryName</td>
-            </tr>
         </table>
-        @if (await _authorService.ExistsByIdAsync(User.Id()) && Model.OpeningDate.Day - DateTime.Today.Day >= 3)
-        {
-            if (ViewBag.IsAuthorPartOfExhibition == false)
-            {
-                if (ViewBag.IsAuthorRequestedToJoin)
-                {
-                    <p style="font-size:large; font-style:italic; color:coral">Заявка за участие е изпратена!</p>
-                }
-                else
-                {
-                    <form method="post">
-                        <button class="btn btn-success" asp-controller="Author" asp-action="RequestToJoinExhibition"
-                                asp-route-id="@Model.Id">
-                            Присъедини се!
-                        </button>
-                    </form>
-                }
-            }
-            else
-            {
-                <form method="get">
-                    <button class="btn btn-success" asp-controller="Painting" asp-action="AllPersonal"
-                            asp-route-id="@Model.Id">
-                        Избери картини
-                    </button>
-                </form>
-            }
-        }
-        <h2>Участници</h2>
-        <div class="col-3">
-            <table class="table" style="padding:20px">
-                @foreach (var author in Model.AcceptedAuthors)
-                {
-                    <tr>
-                        <td>
-                            <p style="@(author.Id == ViewBag.CurrentUserId ?
-                                "font-size:larger; font-weight: 550; color:forestgreen"
-                                : "font-size:large; font-weight: 450;"); font-style: italic; padding:15px">@author.FullName</p>
-                        </td>
-                        @if (ViewBag.GalleryIsOwnerOfExhibition)
-                        {
-                            <td>
-                                <form method="post" style="padding:15px">
-                                    <button onclick="return confirmRemoveAuthor()" class="btn btn-danger" asp-action="RemoveAuthor" asp-controller="Exhibition"
-                                            asp-route-id="@Model.Id" asp-route-authorId="@author.Id">
-                                        Премахни
-                                    </button>
-                                </form>
-                            </td>
-                            if (author.HasPendingPaintings)
-                            {
-                                <td>
-                                    <form method="post" style="padding:15px">
-                                        <button class="btn btn-primary" asp-action="PendingPaintingsForApproval" asp-controller="Gallery"
-                                                asp-route-id="@Model.Id" asp-route-authorId="@author.Id">
-                                            Виж подадените картини
-                                        </button>
-                                    </form>
-                                </td>
-                            }
-                        }
-                    </tr>
-                }
-            </table>
-        </div>
-
-        @if (ViewBag.GalleryIsOwnerOfExhibition)
-        {
-            <h2>Заявки за участие</h2>
-            <div class="col-3">
-                <table class="table" style="padding:20px">
-                    @foreach (var author in Model.NotAcceptedAuthors)
-                    {
-                        <tr>
-                            <td>
-                                <a asp-controller="Author" asp-action="Profile" asp-route-id="@author.Id"
-                                   style="font-size:large; font-weight: 450; font-style: italic; padding:15px">@author.FullName</a>
-                            </td>
-                            <td>
-                                <form method="post" style="padding:15px">
-                                    <button onclick="return confirmAcceptAuthor()" class="btn btn-success" asp-action="AddAuthor"
-                                            asp-controller="Exhibition" asp-route-id="@Model.Id" asp-route-authorId="@author.Id">
-                                        Добави
-                                    </button>
-                                </form>
-                            </td>
-                            <td>
-                                <form method="post" style="padding:15px">
-                                    <button onclick="return confirmRemoveAuthor()" class="btn btn-danger" asp-action="RemoveAuthor"
-                                            asp-controller="Exhibition" asp-route-id="@Model.Id" asp-route-authorId="@author.Id">
-                                        Откажи
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    }
-                </table>
-            </div>
-        }
     </div>
-</div>
+}
 
 <script>
     function confirmDelete() {
