@@ -48,6 +48,7 @@ namespace BlagoevgradArt.Controllers
             try
             {
                 List<PaintingThumbnailModel> model = await _paintingService.GetPendingPaintingsForApprovalAsync(id, authorId);
+                ViewBag.CountAccepted = await _exhibitionService.GetCountAcceptedPaintingsForAuthorAsync(authorId, id);
 
                 if (model.Any() == false)
                 {
