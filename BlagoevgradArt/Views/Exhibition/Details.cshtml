@@ -21,7 +21,7 @@
                     </button>
                 </form>
                 <form method="post">
-                    <button class="btn btn-info" asp-controller="Exhibition" onclick="return confirmDelete()"
+                    <button class="btn btn-danger" asp-controller="Exhibition" onclick="return confirmDelete()"
                             asp-action="Delete" asp-route-id="@Model.Id">
                         Изтрий
                     </button>
@@ -91,20 +91,24 @@
             <div class="carousel-inner">
                 <div class="carousel-item active">
                     <img src="@Url.Content(Model.Paintings.First().ImagePath)" style="border-style: groove; border-width: 25px; border-color: darkorange;"
-                        class="d-block w-100" alt="Painting titled @Model.Paintings.First().Title">
+                         class="d-block w-100" alt="Painting titled @Model.Paintings.First().Title">
                     <div class="carousel-caption d-none d-md-block">
                         <h5>@Model.Paintings.First().Title</h5>
                         <p>@Model.Paintings.First().Description</p>
+                        <a class="btn btn-light" asp-action="Details" asp-controller="Painting" asp-route-id="@Model.Paintings.First().Id"
+                            asp-route-information="@@Model.Paintings.First().GetInformation()">Детайли</a>
                     </div>
                 </div>
                 @foreach (PaintingThumbnailModel painting in Model.Paintings.Skip(1))
                 {
                     <div class="carousel-item" style="border-style: groove; border-width: 25px; border-color: darkorange;">
                         <img src="@Url.Content(painting.ImagePath)" class="d-block w-100"
-                            style="border-style: solid; border-width:3px; border-color: black" alt="Painting titled @painting.Title">
+                             style="border-style: solid; border-width:3px; border-color: black" alt="Painting titled @painting.Title">
                         <div class="carousel-caption d-none d-md-block">
                             <h5>@painting.Title</h5>
                             <p>@painting.Description</p>
+                            <a class="btn btn-light" asp-action="Details" asp-controller="Painting" asp-route-id="@painting.Id"
+                                asp-route-information="@painting.GetInformation()">Детайли</a>
                         </div>
                     </div>
                 }
