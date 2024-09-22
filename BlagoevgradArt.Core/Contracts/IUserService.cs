@@ -6,4 +6,5 @@ public interface IUserService
 {
     Task<ICollection<UserBasicInfoModel>> GetAllUsersBasicInfoAsync();
     Task AssignRolesToSelectedUsersAsync(ManageUserRolesModel model);
+    Task RemoveUserFromRoleAsync(string email, string inRoles);
 }
