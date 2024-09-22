@@ -4,6 +4,7 @@ using BlagoevgradArt.Infrastructure.Data.Common;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace BlagoevgradArt.Core.Services;
 
 public class UserService : IUserService
@@ -50,5 +51,13 @@ public class UserService : IUserService
         }
 
         return authors;
+    }
+
+    public async Task RemoveUserFromRoleAsync(string email, string inRoles)
+    {
+        IdentityUser iUser = await _userManager.FindByEmailAsync(email);
+
+        string[] roles = inRoles.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries).ToArray();
+        await _userManager.RemoveFromRolesAsync(iUser, roles);
     }
 }

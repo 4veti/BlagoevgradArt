@@ -39,5 +39,23 @@ namespace BlagoevgradArt.Controllers
 
             return RedirectToAction(nameof(AssignRoles));
         }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveFromRole(string email, string inRoles)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(inRoles) == false)
+                {
+                    await _userService.RemoveUserFromRoleAsync(email, inRoles);
+                }
+
+                return RedirectToAction(nameof(AssignRoles));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }

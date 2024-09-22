@@ -123,6 +123,16 @@ namespace BlagoevgradArt.Core.Services
             return model;
         }
 
+        public async Task<int> GetCountAcceptedPaintingsForAuthorAsync(int authorId, int exhibitionId)
+        {
+            int countAcceptedPaintings = await _repository
+                .AllAsReadOnly<Painting>()
+                .Where(p => p.AuthorId == authorId && p.ExhibitionId == exhibitionId && p.IsAccepted)
+                .CountAsync();
+
+            return countAcceptedPaintings;
+        }
+
         public async Task<ExhibitionFormModel?> GetFormDataByIdAsync(int id)
         {
             Exhibition? exhibition = await _repository

@@ -83,6 +83,11 @@ namespace BlagoevgradArt.Controllers
                 return NotFound();
             }
 
+            model.Genres = await _paintingHelperService.GetGenresAsync();
+            model.ArtTypes = await _paintingHelperService.GetArtTypesAsync();
+            model.BaseTypes = await _paintingHelperService.GetBaseTypesAsync();
+            model.Materials = await _paintingHelperService.GetMaterialsAsync();
+
             ViewBag.IsNewPainting = false;
 
             return View(model);
@@ -97,16 +102,16 @@ namespace BlagoevgradArt.Controllers
             }
 
             string information = string.Empty;
+            await ValidateImageAttributes(model);
 
-            // The model binder doesn't bind the lists of materials, bases, etc. so I just reload the
-            // model with its original data.
-            //
-            // TODO: Implement a helper method that repopulates the FormModel so I can do Return(View)
-            // and display the validation error messages.
             if (ModelState.IsValid == false)
             {
-                information = await _paintingService.GetInformationByIdAsync(id) ?? string.Empty;
-                return RedirectToAction(nameof(Edit), new { id, information });
+                model.Genres = await _paintingHelperService.GetGenresAsync();
+                model.ArtTypes = await _paintingHelperService.GetArtTypesAsync();
+                model.BaseTypes = await _paintingHelperService.GetBaseTypesAsync();
+                model.Materials = await _paintingHelperService.GetMaterialsAsync();
+
+                return View(model);
             }
 
             try
@@ -169,7 +174,12 @@ namespace BlagoevgradArt.Controllers
 
             if (ModelState.IsValid == false)
             {
-                return RedirectToAction(nameof(Add));
+                model.Genres = await _paintingHelperService.GetGenresAsync();
+                model.ArtTypes = await _paintingHelperService.GetArtTypesAsync();
+                model.BaseTypes = await _paintingHelperService.GetBaseTypesAsync();
+                model.Materials = await _paintingHelperService.GetMaterialsAsync();
+
+                return View(model);
             }
 
             int id = -1;
@@ -213,22 +223,22 @@ namespace BlagoevgradArt.Controllers
         {
             if (await _paintingHelperService.GenreExistsAsync(model.GenreId) == false)
             {
-                ModelState.AddModelError(nameof(PaintingFormModel.GenreId), "Genre does not exist.");
+                ModelState.AddModelError(nameof(PaintingFormModel.GenreId), string.Format(InvalidGenreId, model.GenreId));
             }
 
             if (await _paintingHelperService.ArtTypeExistsAsync(model.ArtTypeId) == false)
             {
-                ModelState.AddModelError(nameof(PaintingFormModel.ArtTypeId), "Art type does not exist.");
+                ModelState.AddModelError(nameof(PaintingFormModel.ArtTypeId), string.Format(InvalidArtTypeId, model.ArtTypeId));
             }
 
             if (await _paintingHelperService.BaseTypeExistsAsync(model.BaseTypeId) == false)
             {
-                ModelState.AddModelError(nameof(PaintingFormModel.BaseTypeId), "Base type does not exist.");
+                ModelState.AddModelError(nameof(PaintingFormModel.BaseTypeId), string.Format(InvalidBaseTypeId, model.BaseTypeId));
             }
 
             if (model.Materials.Any(m => _paintingHelperService.MaterialExistsAsync(m.Id).Result == false))
             {
-                ModelState.AddModelError(nameof(PaintingFormModel.Materials), "One or more material types do not exist.");
+                ModelState.AddModelError(nameof(PaintingFormModel.Materials), string.Format(InvalidMaterialId, model.MaterialId));
             }
         }
     }

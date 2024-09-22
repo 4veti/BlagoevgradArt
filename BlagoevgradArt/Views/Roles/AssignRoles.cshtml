@@ -40,6 +40,16 @@
                             <td>
                                 <p>@user.InRoles</p>
                             </td>
+                            <td>
+                                @if (string.IsNullOrWhiteSpace(user.InRoles) == false)
+                                {
+                                    <form method-post>
+                                        <button style="margin-left:40px;" class="btn btn-danger" asp-action="RemoveFromRole" asp-route-email="@user.Email" asp-route-inRoles="@user.InRoles">
+                                            Премахни роли
+                                        </button>
+                                    </form>
+                                }
+                            </td>
                         </tr>
                     }
                 </table>

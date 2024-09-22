@@ -17,5 +17,6 @@ namespace BlagoevgradArt.Core.Contracts
         Task<bool> IsAuthorPartOfExhibitionAsync(string userId, int exhibitionId);
         Task<bool> IsAuthorRequestedToJoinExhibitionAsync(string userId, int exhibitionId);
         Task<bool> SubmitPaintingsRequestAsync(List<int> paintings, int exhibitionId);
+        Task<int> GetCountAcceptedPaintingsForAuthorAsync(int authorId, int exhibitionId);
     }
 }

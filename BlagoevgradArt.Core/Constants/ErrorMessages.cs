@@ -2,9 +2,14 @@
 {
     public static class ErrorMessages
     {
-        public const string InvalidLength = "The {0} field must be between {2} and {1} characters long.";
-        public const string DimensionsInvalidValue = "The {0} field must be a positive whole number be between {1} and {2}";
-        public const string ErrorWhileSavingImage = "Image counld not be saved to disk.";
-        public const string ImageFileWasNotReceived = "The image file from the form was not received.";
+        public const string InvalidLength = "Полето {0} трябва да е между {2} и {1} знака.";
+        public const string DimensionsInvalidValue = "Полето {0} трябва да е цяло позитивно число между {1} и {2}.";
+        public const string InvalidGenreId = "Жанр с идентификатор {0} не съществува.";
+        public const string InvalidBaseTypeId = "Основа с идентификатор {0} не съществува.";
+        public const string InvalidArtTypeId = "Вид изкуство с идентификатор {0} не съществува.";
+        public const string InvalidMaterialId = "Материал с идентификатор {0} не съществува.";
+
+        public const string ErrorWhileSavingImage = "Грешка при записването на файла.";
+        public const string ImageFileWasNotReceived = "Файлът на картината от формата не беше получен.";
     }
 }
