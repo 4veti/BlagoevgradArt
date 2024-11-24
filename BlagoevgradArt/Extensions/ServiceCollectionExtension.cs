@@ -46,6 +46,11 @@ namespace Microsoft.Extensions.DependencyInjection
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/MyAccount/Login/{loginUrl?}";
+            });
+
             return services;
         }
     }
