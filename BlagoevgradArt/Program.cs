@@ -55,6 +55,11 @@ app.UseEndpoints(endpoints =>
         name: "Painting Delete",
         pattern: "Painting/Delete/{id}/{information}",
         defaults: new { Controller = "Painting", Action = "Delete" });
+
+    endpoints.MapControllerRoute(
+        name: "MyAccountLogin",
+        pattern: "MyAccount/Login",
+        defaults: new { controller = "MyAccount", action = "Login" });
 });
 
 app.MapControllerRoute(
