@@ -60,6 +60,11 @@ app.UseEndpoints(endpoints =>
         name: "MyAccountLogin",
         pattern: "MyAccount/Login",
         defaults: new { controller = "MyAccount", action = "Login" });
+
+    endpoints.MapControllerRoute(
+        name: "MyAccountRegister",
+        pattern: "MyAccount/Register",
+        defaults: new { controller = "MyAccount", action = "Register" });
 });
 
 app.MapControllerRoute(
