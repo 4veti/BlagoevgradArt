@@ -1,34 +1,23 @@
 ﻿using BlagoevgradArt.Controllers;
+using BlagoevgradArt.Core.Contracts;
 using BlagoevgradArt.Core.Models.Account;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlagoevgradArt.Controllerst;
 
 public class MyAccountController : BaseController
 {
+    private readonly IUserService _userService;
     private readonly SignInManager<IdentityUser> _signInManager;
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly IUserStore<IdentityUser> _userStore;
-    private readonly IUserEmailStore<IdentityUser> _emailStore;
-    private readonly ILogger<RegisterModel> _logger;
-    private readonly IEmailSender _emailSender;
 
     public MyAccountController(SignInManager<IdentityUser> signInManager,
-            UserManager<IdentityUser> userManager,
-            IUserStore<IdentityUser> userStore,
-            ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+        IUserService userServire)
     {
         _signInManager = signInManager;
-        _userManager = userManager;
-        _userStore = userStore;
-        _emailStore = GetEmailStore();
-        _logger = logger;
-        _emailSender = emailSender;
+        _userService = userServire;
     }
 
     [HttpGet]
@@ -75,58 +64,36 @@ public class MyAccountController : BaseController
     [AllowAnonymous]
     public IActionResult Register(string? returnUrl)
     {
-        return View(new RegisterModel() { ReturnUrl = returnUrl ?? "~/" });
+        return View(new RegisterAuthorModel() { ReturnUrl = returnUrl ?? "~/" });
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult RegisterAuthor(string? returnUrl)
+    {
+        return View(new RegisterAuthorModel() { ReturnUrl = returnUrl ?? "~/" });
     }
 
     [HttpPost]
     [AllowAnonymous]
-    public async Task<IActionResult> Register(RegisterModel model)
+    public async Task<IActionResult> RegisterAuthor(RegisterAuthorModel model)
     {
         if (ModelState.IsValid == false)
         {
             return View(model);
         }
 
-        IdentityUser? user = CreateUser();
+        List<string> errors = await _userService.RegisterUserAsync(model);
 
-        await _userStore.SetUserNameAsync(user, model.Email, CancellationToken.None);
-        await _emailStore.SetEmailAsync(user, model.Email, CancellationToken.None);
-        IdentityResult? result = await _userManager.CreateAsync(user, model.Password);
-
-        if (result.Succeeded == false)
+        if (errors.Any())
         {
-            foreach (var error in result.Errors)
+            foreach (var error in errors)
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                ModelState.AddModelError(string.Empty, error);
             }
-
             return View(model);
         }
 
-        await _signInManager.SignInAsync(user, isPersistent: false);
         return LocalRedirect(model.ReturnUrl);
-    }
-
-    private IdentityUser CreateUser()
-    {
-        try
-        {
-            return Activator.CreateInstance<IdentityUser>();
-        }
-        catch
-        {
-            throw new InvalidOperationException($"Can't create an instance of '{nameof(IdentityUser)}'. " +
-                $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
-        }
-    }
-
-    private IUserEmailStore<IdentityUser> GetEmailStore()
-    {
-        if (!_userManager.SupportsUserEmail)
-        {
-            throw new NotSupportedException("The default UI requires a user store with email support.");
-        }
-        return (IUserEmailStore<IdentityUser>)_userStore;
     }
 }

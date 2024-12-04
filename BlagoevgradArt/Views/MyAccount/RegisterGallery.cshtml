@@ -1,0 +1,65 @@
+﻿@using BlagoevgradArt.Core.Models.Account
+@using static BlagoevgradArt.Core.Constants.RoleConstants;
+@model RegisterGalleryModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <h2>Създай нов акаунт.</h2>
+            <hr />
+            <div class="form-floating">
+            </div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating">
+                <input asp-for="@Model.Email" class="form-control" autocomplete="username" aria-required="true" />
+                <label asp-for="@Model.Email"></label>
+                <span asp-validation-for="@Model.Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="@Model.Password" class="form-control" autocomplete="new-password" aria-required="true" />
+                <label asp-for="@Model.Password"></label>
+                <span asp-validation-for="@Model.Password" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="@Model.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" />
+                <label asp-for="@Model.ConfirmPassword"></label>
+                <span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" class="form-control" value=@Model.Name>
+                <span asp-validation-for="Name" class="small text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input asp-for="Address" class="form-control" value=@Model.Address>
+                <span asp-validation-for="Address" class="small text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WorkingTime"></label>
+                <input asp-for="WorkingTime" class="form-control" value=@Model.WorkingTime>
+                <span asp-validation-for="WorkingTime" class="small text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input asp-for="PhoneNumber" class="form-control" value=@Model.PhoneNumber>
+                <span asp-validation-for="PhoneNumber" class="small text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description"></label>
+                <input asp-for="Description" class="form-control" value=@Model.Description>
+                <span asp-validation-for="Description" class="small text-danger"></span>
+            </div>
+            <div class="text-center">
+                <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Регистрирай се</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
