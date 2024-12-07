@@ -106,7 +106,7 @@ public class MyAccountController : BaseController
     [UserMustNotBeSignedIn]
     public IActionResult RegisterGallery()
     {
-        return View(new RegisterAuthorModel());
+        return View(new RegisterGalleryModel());
     }
 
     [HttpPost]
