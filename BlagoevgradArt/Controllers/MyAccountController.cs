@@ -1,4 +1,5 @@
-﻿using BlagoevgradArt.Controllers;
+﻿using BlagoevgradArt.Attributes;
+using BlagoevgradArt.Controllers;
 using BlagoevgradArt.Core.Contracts;
 using BlagoevgradArt.Core.Models.Account;
 using Microsoft.AspNetCore.Authentication;
@@ -62,20 +63,23 @@ public class MyAccountController : BaseController
 
     [HttpGet]
     [AllowAnonymous]
-    public IActionResult Register(string? returnUrl)
+    [UserMustNotBeSignedIn]
+    public IActionResult Register()
     {
-        return View(new RegisterAuthorModel() { ReturnUrl = returnUrl ?? "~/" });
+        return View(new RegisterAuthorModel());
     }
 
     [HttpGet]
     [AllowAnonymous]
-    public IActionResult RegisterAuthor(string? returnUrl)
+    [UserMustNotBeSignedIn]
+    public IActionResult RegisterAuthor()
     {
-        return View(new RegisterAuthorModel() { ReturnUrl = returnUrl ?? "~/" });
+        return View(new RegisterAuthorModel());
     }
 
     [HttpPost]
     [AllowAnonymous]
+    [UserMustNotBeSignedIn]
     public async Task<IActionResult> RegisterAuthor(RegisterAuthorModel model)
     {
         if (ModelState.IsValid == false)
@@ -94,6 +98,38 @@ public class MyAccountController : BaseController
             return View(model);
         }
 
-        return LocalRedirect(model.ReturnUrl);
+        return LocalRedirect("~/");
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    [UserMustNotBeSignedIn]
+    public IActionResult RegisterGallery()
+    {
+        return View(new RegisterAuthorModel());
+    }
+
+    [HttpPost]
+    [AllowAnonymous]
+    [UserMustNotBeSignedIn]
+    public async Task<IActionResult> RegisterGallery(RegisterGalleryModel model)
+    {
+        if (ModelState.IsValid == false)
+        {
+            return View(model);
+        }
+
+        List<string> errors = await _userService.RegisterUserAsync(model);
+
+        if (errors.Any())
+        {
+            foreach (var error in errors)
+            {
+                ModelState.AddModelError(string.Empty, error);
+            }
+            return View(model);
+        }
+
+        return LocalRedirect("~/");
     }
 }

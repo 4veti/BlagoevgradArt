@@ -6,8 +6,6 @@ namespace BlagoevgradArt.Core.Models.Account;
 
 public class RegisterAuthorModel
 {
-    public string ReturnUrl { get; set; } = "~/";
-
     [Required]
     [EmailAddress]
     public string Email { get; set; } = string.Empty;

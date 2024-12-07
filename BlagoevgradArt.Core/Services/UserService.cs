@@ -116,6 +116,52 @@ public class UserService : IUserService
         return errors;
     }
 
+    public async Task<List<string>> RegisterUserAsync(RegisterGalleryModel model)
+    {
+        List<string> errors = new List<string>();
+
+        try
+        {
+            IdentityUser? user = CreateUser();
+
+            await _userStore.SetUserNameAsync(user, model.Email, CancellationToken.None);
+            await _emailStore.SetEmailAsync(user, model.Email, CancellationToken.None);
+            IdentityResult? result = await _userManager.CreateAsync(user, model.Password);
+
+            if (result.Succeeded == false)
+            {
+                foreach (var error in result.Errors)
+                {
+                    errors.Add(error.Description);
+                }
+
+                return errors;
+            }
+
+            await _userManager.AddToRoleAsync(user, AuthorRole);
+            await _signInManager.SignInAsync(user, isPersistent: false);
+
+            Gallery author = new Gallery()
+            {
+                UserId = user.Id,
+                Name = model.Name,
+                Address = model.Address,
+                WorkingTime = model.WorkingTime,
+                PhoneNumber = model.PhoneNumber,
+                Description = model.Description
+            };
+
+            await _repository.AddAsync(author);
+            await _repository.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            errors.Add(ex.Message);
+        }
+
+        return errors;
+    }
+
     private IdentityUser CreateUser()
     {
         try

@@ -10,4 +10,5 @@ public interface IUserService
     Task RemoveUserFromRoleAsync(string email, string inRoles);
 
     Task<List<string>> RegisterUserAsync(RegisterAuthorModel model);
+    Task<List<string>> RegisterUserAsync(RegisterGalleryModel model);
 }
