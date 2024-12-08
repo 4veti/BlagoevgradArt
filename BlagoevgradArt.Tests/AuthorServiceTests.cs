@@ -5,6 +5,7 @@ using BlagoevgradArt.Data;
 using BlagoevgradArt.Infrastructure.Data.Common;
 using BlagoevgradArt.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Net.NetworkInformation;
 using System.Text.Json;
 
 namespace BlagoevgradArt.Tests;
@@ -72,10 +73,34 @@ public class AuthorServiceTests
 
         AuthorProfileInfoModel? actualModel = await _authorService.GetAuthorProfileInfoAsync(id);
 
-        AssertAreEqual(expectedModel, actualModel);
+        AssertAreEqualByJson(expectedModel, actualModel);
     }
 
-    private void AssertAreEqual(object? first, object? second)
+    [Test]
+    public async Task SetAuthorProfileInfoSetsTheInformationCorrectly()
+    {
+        AuthorFormModel expected = new AuthorFormModel()
+        {
+            FirstName = "TestingName",
+            LastName = "TestingLastName",
+            PhoneNumber = "+0123456789test"
+        };
+
+        await _authorService.SetAuthorProfileInfoAsync(expected, VladimirUserId);
+        AuthorProfileInfoModel? actualModel = await _authorService.GetAuthorProfileInfoAsync(1);
+
+        if (actualModel is null)
+        {
+            Assert.That(actualModel, Is.Not.Null);
+            return;
+        }
+
+        Assert.That(expected.FirstName, Is.EqualTo(actualModel.FirstName));
+        Assert.That(expected.LastName, Is.EqualTo(actualModel.LastName));
+        Assert.That(expected.PhoneNumber, Is.EqualTo(actualModel.PhoneNumber));
+    }
+
+    private void AssertAreEqualByJson(object? first, object? second)
     {
         string firstSerialized = JsonSerializer.Serialize(first ?? string.Empty);
         string secondSerialized = JsonSerializer.Serialize(second ?? string.Empty);

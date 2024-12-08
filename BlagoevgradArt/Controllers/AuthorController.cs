@@ -71,6 +71,11 @@ namespace BlagoevgradArt.Controllers
         [HttpPost]
         public async Task<IActionResult> EditProfile(AuthorFormModel model)
         {
+            if (await _authorService.ExistsByIdAsync(User.Id()))
+            {
+                return LocalRedirect("~/");
+            }
+
             if (ModelState.IsValid == false)
             {
                 return RedirectToAction(nameof(EditProfile));
