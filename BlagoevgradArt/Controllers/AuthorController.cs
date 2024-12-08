@@ -38,13 +38,13 @@ namespace BlagoevgradArt.Controllers
                 ViewBag.IsOwnerProfile = true;
             }
 
-            if (await _authorService.ExistsByIdAsync(id) == false)
+            AuthorProfileInfoModel? model = await _authorService
+                .GetAuthorProfileInfoAsync(id);
+
+            if (model is null)
             {
                 return NotFound();
             }
-
-            AuthorProfileInfoModel model = await _authorService
-                .GetAuthorProfileInfoAsync(id);
 
             return View(model);
         }
@@ -52,8 +52,13 @@ namespace BlagoevgradArt.Controllers
         [HttpGet]
         public async Task<IActionResult> EditProfile()
         {
-            AuthorProfileInfoModel model = await _authorService
+            AuthorProfileInfoModel? model = await _authorService
                 .GetAuthorProfileInfoAsync(await _authorService.GetIdAsync(User.Id()));
+
+            if (model is null)
+            {
+                return NotFound();
+            }
 
             return View(new AuthorFormModel()
             {

@@ -32,12 +32,17 @@ namespace BlagoevgradArt.Core.Services
             return author != null ? author.Id : -1;
         }
 
-        public async Task<AuthorProfileInfoModel> GetAuthorProfileInfoAsync(int id)
+        public async Task<AuthorProfileInfoModel?> GetAuthorProfileInfoAsync(int id)
         {
-            Author author = await _repository
+            Author? author = await _repository
                 .AllAsReadOnly<Author>()
                 .Include(a => a.User)
-                .FirstAsync(a => a.Id == id);
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (author is null)
+            {
+                return null;
+            }
 
             AuthorProfileInfoModel model = new AuthorProfileInfoModel()
             {
