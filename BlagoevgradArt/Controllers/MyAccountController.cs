@@ -46,10 +46,12 @@ public class MyAccountController : BaseController
         {
             return LocalRedirect(model.ReturnUrl);
         }
+
         if (result.RequiresTwoFactor)
         {
             return RedirectToPage("./LoginWith2fa", new { ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
         }
+
         if (result.IsLockedOut)
         {
             return RedirectToPage("./Lockout");

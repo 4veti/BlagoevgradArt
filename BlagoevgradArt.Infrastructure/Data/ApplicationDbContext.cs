@@ -8,6 +8,11 @@ namespace BlagoevgradArt.Data
 {
     public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
+        public ApplicationDbContext()
+        {
+            
+        }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -45,6 +50,16 @@ namespace BlagoevgradArt.Data
             builder.ApplyConfiguration(new AuthorExhibitionConfiguration());
 
             base.OnModelCreating(builder);
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (optionsBuilder.IsConfigured == false)
+            {
+                optionsBuilder.UseSqlServer("Server=DESKTOP-3BKCOLA;Database=BlagoevgradArtTests;Trusted_Connection=True;");
+            }
+
+            base.OnConfiguring(optionsBuilder);
         }
     }
 }
