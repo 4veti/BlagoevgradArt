@@ -27,7 +27,7 @@ namespace BlagoevgradArt.Core.Services
 
             int exhibitionId = painting?.ExhibitionId ?? -1;
 
-            if (painting == null || exhibitionId == -1)
+            if (painting == null || exhibitionId < 1)
             {
                 throw new NullReferenceException();
             }
@@ -82,9 +82,11 @@ namespace BlagoevgradArt.Core.Services
 
         public async Task<int> GetIdAsync(string userId)
         {
-            Gallery gallery = await _repository.AllAsReadOnly<Gallery>().FirstAsync(g => g.UserId == userId);
+            Gallery? gallery = await _repository
+                .AllAsReadOnly<Gallery>()
+                .FirstOrDefaultAsync(g => g.UserId == userId);
 
-            return gallery.Id;
+            return gallery?.Id ?? -1;
         }
     }
 }

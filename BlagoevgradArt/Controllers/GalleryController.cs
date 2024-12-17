@@ -34,19 +34,19 @@ namespace BlagoevgradArt.Controllers
         [HttpPost]
         public async Task<IActionResult> PendingPaintingsForApproval(int id, int authorId)
         {
-            if (await _exhibitionService.ExistsByIdAsync(id) == false ||
-                await _authorService.ExistsByIdAsync(authorId) == false)
-            {
-                return BadRequest();
-            }
-
-            if (await _exhibitionService.GalleryUserIsOwnerOfExhibitionAsync(User.Id(), id) == false)
-            {
-                return Unauthorized();
-            }
-
             try
             {
+                if (await _exhibitionService.ExistsByIdAsync(id) == false ||
+                    await _authorService.ExistsByIdAsync(authorId) == false)
+                {
+                    return BadRequest();
+                }
+
+                if (await _exhibitionService.GalleryUserIsOwnerOfExhibitionAsync(User.Id(), id) == false)
+                {
+                    return Unauthorized();
+                }
+
                 List<PaintingThumbnailModel> model = await _paintingService.GetPendingPaintingsForApprovalAsync(id, authorId);
                 ViewBag.CountAccepted = await _exhibitionService.GetCountAcceptedPaintingsForAuthorAsync(authorId, id);
 
