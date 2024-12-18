@@ -18,8 +18,15 @@ public class StatisticsApiController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        GeneralStatisticsInfoModel model = await _statisticsService.GetGeneralStatisticsInfoAsync();
+        try
+        {
+            GeneralStatisticsInfoModel model = await _statisticsService.GetGeneralStatisticsInfoAsync();
 
-        return Ok(model);
+            return Ok(model);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500);
+        }
     }
 }

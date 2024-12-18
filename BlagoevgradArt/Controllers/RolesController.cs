@@ -2,6 +2,7 @@
 using BlagoevgradArt.Core.Models.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using static BlagoevgradArt.Core.Constants.RoleConstants;
 
 namespace BlagoevgradArt.Controllers
@@ -19,25 +20,39 @@ namespace BlagoevgradArt.Controllers
         [HttpGet]
         public async Task<IActionResult> AssignRoles()
         {
-            ManageUserRolesModel model = new ManageUserRolesModel()
+            try
             {
-                UsersBasicInfo = await _userService.GetAllUsersBasicInfoAsync()
-            };
+                ManageUserRolesModel model = new ManageUserRolesModel()
+                {
+                    UsersBasicInfo = await _userService.GetAllUsersBasicInfoAsync()
+                };
 
-            return View(model);
+                return View(model);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> AssignRoles(ManageUserRolesModel model)
         {
-            if (ModelState.IsValid == false)
+            try
             {
+                if (ModelState.IsValid == false)
+                {
+                    return RedirectToAction(nameof(AssignRoles));
+                }
+
+                await _userService.AssignRolesToSelectedUsersAsync(model);
+
                 return RedirectToAction(nameof(AssignRoles));
             }
-
-            await _userService.AssignRolesToSelectedUsersAsync(model);
-
-            return RedirectToAction(nameof(AssignRoles));
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
 
         [HttpPost]

@@ -25,41 +25,54 @@ public class MyAccountController : BaseController
     [AllowAnonymous]
     public async Task<IActionResult> Login(string? returnUrl)
     {
-        // Clear the existing external cookie to ensure a clean login process
-        await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+        try
+        {
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-        return View(new LoginModel() { ReturnUrl = returnUrl ?? "~/" });
+            return View(new LoginModel() { ReturnUrl = returnUrl ?? "~/" });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500);
+        }
     }
 
     [HttpPost]
     [AllowAnonymous]
     public async Task<IActionResult> Login(LoginModel model)
     {
-        if (ModelState.IsValid == false)
+        try
         {
-            return View(model);
-        }
+            if (ModelState.IsValid == false)
+            {
+                return View(model);
+            }
 
-        var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
 
-        if (result.Succeeded)
-        {
-            return LocalRedirect(model.ReturnUrl);
-        }
+            if (result.Succeeded)
+            {
+                return LocalRedirect(model.ReturnUrl);
+            }
 
-        if (result.RequiresTwoFactor)
-        {
-            return RedirectToPage("./LoginWith2fa", new { ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
-        }
+            if (result.RequiresTwoFactor)
+            {
+                return RedirectToPage("./LoginWith2fa", new { ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
+            }
 
-        if (result.IsLockedOut)
-        {
-            return RedirectToPage("./Lockout");
+            if (result.IsLockedOut)
+            {
+                return RedirectToPage("./Lockout");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return View(model);
+            }
         }
-        else
+        catch (Exception)
         {
-            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-            return View(model);
+            return StatusCode(500);
         }
     }
 
@@ -84,23 +97,30 @@ public class MyAccountController : BaseController
     [UserMustNotBeSignedIn]
     public async Task<IActionResult> RegisterAuthor(RegisterAuthorModel model)
     {
-        if (ModelState.IsValid == false)
+        try
         {
-            return View(model);
-        }
-
-        List<string> errors = await _userService.RegisterUserAsync(model);
-
-        if (errors.Any())
-        {
-            foreach (var error in errors)
+            if (ModelState.IsValid == false)
             {
-                ModelState.AddModelError(string.Empty, error);
+                return View(model);
             }
-            return View(model);
-        }
 
-        return LocalRedirect("~/");
+            List<string> errors = await _userService.RegisterUserAsync(model);
+
+            if (errors.Any())
+            {
+                foreach (var error in errors)
+                {
+                    ModelState.AddModelError(string.Empty, error);
+                }
+                return View(model);
+            }
+
+            return LocalRedirect("~/");
+        }
+        catch (Exception)
+        {
+            return StatusCode(500);
+        }
     }
 
     [HttpGet]
@@ -116,22 +136,29 @@ public class MyAccountController : BaseController
     [UserMustNotBeSignedIn]
     public async Task<IActionResult> RegisterGallery(RegisterGalleryModel model)
     {
-        if (ModelState.IsValid == false)
+        try
         {
-            return View(model);
-        }
-
-        List<string> errors = await _userService.RegisterUserAsync(model);
-
-        if (errors.Any())
-        {
-            foreach (var error in errors)
+            if (ModelState.IsValid == false)
             {
-                ModelState.AddModelError(string.Empty, error);
+                return View(model);
             }
-            return View(model);
-        }
 
-        return LocalRedirect("~/");
+            List<string> errors = await _userService.RegisterUserAsync(model);
+
+            if (errors.Any())
+            {
+                foreach (var error in errors)
+                {
+                    ModelState.AddModelError(string.Empty, error);
+                }
+                return View(model);
+            }
+
+            return LocalRedirect("~/");
+        }
+        catch (Exception)
+        {
+            return StatusCode(500);
+        }
     }
 }
