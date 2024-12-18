@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlagoevgradArt.Core", "Blag
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlagoevgradArt.Infrastructure", "BlagoevgradArt.Infrastructure\BlagoevgradArt.Infrastructure.csproj", "{C8DBC6AF-125A-4F91-93F4-3BD10248D381}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlagoevgradArt.Tests", "BlagoevgradArt.Tests\BlagoevgradArt.Tests.csproj", "{927234EE-F452-4827-95EE-60D95E919BC2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{C8DBC6AF-125A-4F91-93F4-3BD10248D381}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8DBC6AF-125A-4F91-93F4-3BD10248D381}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8DBC6AF-125A-4F91-93F4-3BD10248D381}.Release|Any CPU.Build.0 = Release|Any CPU
+		{927234EE-F452-4827-95EE-60D95E919BC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{927234EE-F452-4827-95EE-60D95E919BC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{927234EE-F452-4827-95EE-60D95E919BC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{927234EE-F452-4827-95EE-60D95E919BC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -30,50 +30,82 @@ namespace BlagoevgradArt.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Profile(int id = -1)
         {
-            ViewBag.IsOwnerProfile = false;
-
-            if (id == -1)
+            try
             {
-                id = await _authorService.GetIdAsync(User.Id());
-                ViewBag.IsOwnerProfile = true;
-            }
+                ViewBag.IsOwnerProfile = false;
 
-            if (await _authorService.ExistsByIdAsync(id) == false)
+                if (id == -1)
+                {
+                    id = await _authorService.GetIdAsync(User.Id());
+                    ViewBag.IsOwnerProfile = true;
+                }
+
+                AuthorProfileInfoModel? model = await _authorService
+                    .GetAuthorProfileInfoAsync(id);
+
+                if (model is null)
+                {
+                    return NotFound();
+                }
+
+                return View(model);
+            }
+            catch (Exception)
             {
-                return NotFound();
+
+                throw;
             }
-
-            AuthorProfileInfoModel model = await _authorService
-                .GetAuthorProfileInfoAsync(id);
-
-            return View(model);
         }
 
         [HttpGet]
         public async Task<IActionResult> EditProfile()
         {
-            AuthorProfileInfoModel model = await _authorService
-                .GetAuthorProfileInfoAsync(await _authorService.GetIdAsync(User.Id()));
-
-            return View(new AuthorFormModel()
+            try
             {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                PhoneNumber = model.PhoneNumber
-            });
+                AuthorProfileInfoModel? model = await _authorService
+                    .GetAuthorProfileInfoAsync(await _authorService.GetIdAsync(User.Id()));
+
+                if (model is null)
+                {
+                    return NotFound();
+                }
+
+                return View(new AuthorFormModel()
+                {
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    PhoneNumber = model.PhoneNumber
+                });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> EditProfile(AuthorFormModel model)
         {
-            if (ModelState.IsValid == false)
+            try
             {
-                return RedirectToAction(nameof(EditProfile));
+                if (await _authorService.ExistsByIdAsync(User.Id()) == false)
+                {
+                    return LocalRedirect("~/");
+                }
+
+                if (ModelState.IsValid == false)
+                {
+                    return RedirectToAction(nameof(EditProfile));
+                }
+
+                await _authorService.SetAuthorProfileInfoAsync(model, User.Id());
+
+                return RedirectToAction(nameof(Profile));
             }
-
-            await _authorService.SetAuthorProfileInfoAsync(model, User.Id());
-
-            return RedirectToAction(nameof(Profile));
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
 
         [HttpPost]

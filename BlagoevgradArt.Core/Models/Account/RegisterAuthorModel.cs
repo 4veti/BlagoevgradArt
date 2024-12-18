@@ -2,33 +2,39 @@
 using static BlagoevgradArt.Core.Constants.ErrorMessages;
 using static BlagoevgradArt.Infrastructure.Constants.DataConstants;
 
-namespace BlagoevgradArt.Core.Models.Author;
+namespace BlagoevgradArt.Core.Models.Account;
 
-public class AuthorFormModel
+public class RegisterAuthorModel
 {
-    /// <summary>
-    /// First name of the author.
-    /// </summary>
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; } = string.Empty;
+
+    [Required]
+    [StringLength(100,
+        MinimumLength = 6,
+        ErrorMessage = InvalidLength)]
+    [DataType(DataType.Password)]
+    public string Password { get; set; } = string.Empty;
+
+    [DataType(DataType.Password)]
+    [Display(Name = "Confirm password")]
+    [Compare(nameof(Password), ErrorMessage = "The password and confirmation password do not match.")]
+    public string ConfirmPassword { get; set; } = string.Empty;
+
     [Required]
     [Display(Name = "Име")]
     [StringLength(FirstNameMaxLength,
-        MinimumLength = FirstNameMinLength,
-        ErrorMessage = InvalidLength)]
+            MinimumLength = FirstNameMinLength,
+            ErrorMessage = InvalidLength)]
     public string FirstName { get; set; } = string.Empty;
 
-    /// <summary>
-    /// Lase name of the author.
-    /// </summary>
-    /// 
     [Display(Name = "Фамилия")]
     [StringLength(LastNameMaxLength,
         MinimumLength = LastNameMinLength,
         ErrorMessage = InvalidLength)]
     public string? LastName { get; set; }
 
-    /// <summary>
-    /// Author's phone number.
-    /// </summary>
     [Required]
     [Display(Name = "Тел. номер")]
     [StringLength(PhoneNumberMaxLength,

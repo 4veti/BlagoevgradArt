@@ -1,6 +1,5 @@
 ﻿using BlagoevgradArt.Core.Contracts;
 using BlagoevgradArt.Core.Models.Author;
-using BlagoevgradArt.Core.Models.Painting;
 using BlagoevgradArt.Infrastructure.Data.Common;
 using BlagoevgradArt.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -33,12 +32,17 @@ namespace BlagoevgradArt.Core.Services
             return author != null ? author.Id : -1;
         }
 
-        public async Task<AuthorProfileInfoModel> GetAuthorProfileInfoAsync(int id)
+        public async Task<AuthorProfileInfoModel?> GetAuthorProfileInfoAsync(int id)
         {
-            Author author = await _repository
+            Author? author = await _repository
                 .AllAsReadOnly<Author>()
                 .Include(a => a.User)
-                .FirstAsync(a => a.Id == id);
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (author is null)
+            {
+                return null;
+            }
 
             AuthorProfileInfoModel model = new AuthorProfileInfoModel()
             {
@@ -70,20 +74,20 @@ namespace BlagoevgradArt.Core.Services
             Author author = await _repository.AllAsReadOnly<Author>()
                 .FirstAsync(a => a.UserId == userId);
 
-            return string.Join(" ", new string[] { author.FirstName, author.LastName ?? string.Empty });
+            return (author.FirstName + " " + author.LastName ?? "").Trim();
         }
 
-        public async Task<List<AuthorSmallThumbnailModel>> GetAuthorThumbnailsAsync(int id, bool isAuthorAccepted)
+        public async Task<List<AuthorSmallThumbnailModel>> GetAuthorThumbnailsAsync(int exhibitionId, bool isAuthorAccepted)
         {
-            var authorsFiltered = _repository.AllAsReadOnly<Author>()
-                .Where(a => a.AuthorExhibitions.Any(ae => ae.ExhibitionId == id && ae.IsAccepted == isAuthorAccepted));
+            IQueryable<Author>? authorsFiltered = _repository.AllAsReadOnly<Author>()
+                .Where(a => a.AuthorExhibitions.Any(ae => ae.ExhibitionId == exhibitionId && ae.IsAccepted == isAuthorAccepted));
 
             List<AuthorSmallThumbnailModel> authors = await authorsFiltered
                 .Select(a => new AuthorSmallThumbnailModel()
                 {
                     Id = a.Id,
-                    FullName = (a.FirstName + " " + a.LastName ?? string.Empty).Trim(),
-                    HasPendingPaintings = a.AuthorExhibitions.Where(ae => ae.ExhibitionId == id && ae.AuthorId == a.Id).First().HasPendingPaintings
+                    FullName = (a.FirstName + " " + a.LastName ?? "").Trim(),
+                    HasPendingPaintings = a.AuthorExhibitions.Where(ae => ae.ExhibitionId == exhibitionId && ae.AuthorId == a.Id).First().HasPendingPaintings
                 }).ToListAsync();
 
             return authors;
@@ -91,9 +95,15 @@ namespace BlagoevgradArt.Core.Services
 
         public async Task<bool> SubmitRequestToJoinExhibitionAsync(string userId, int exhibitionId)
         {
-            Exhibition exhibition = await _repository
+            // Add check if exists
+            Exhibition? exhibition = await _repository
                 .AllAsReadOnly<Exhibition>()
-                .FirstAsync(e => e.Id == exhibitionId);
+                .FirstOrDefaultAsync(e => e.Id == exhibitionId);
+
+            if (exhibition == null)
+            {
+                return false;
+            }
 
             bool moreThanThreeDaysRemain = exhibition.OpeningDate.Day - DateTime.Today.Day >= 3;
 
@@ -117,9 +127,11 @@ namespace BlagoevgradArt.Core.Services
 
                 await _repository.AddAsync(existingAuthorExhibition);
                 await _repository.SaveChangesAsync();
+
+                return true;
             }
 
-            return true;
+            return false;
         }
     }
 }

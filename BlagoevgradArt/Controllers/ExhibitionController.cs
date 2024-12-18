@@ -31,82 +31,95 @@ namespace BlagoevgradArt.Controllers
             try
             {
                 model.Exhibitions = await _exhibitionService.GetAllAsync(model.CurrentPage, model.CountPerPage);
+                return View(model);
             }
             catch (Exception)
             {
                 return StatusCode(500);
             }
-
-            return View(model);
         }
 
         [HttpGet]
         [ExhibitionOwnerOrAdministrator]
         public async Task<IActionResult> Edit(int id)
         {
-            ExhibitionFormModel? model = await _exhibitionService.GetFormDataByIdAsync(id);
-
-            if (model == null)
+            try
             {
-                return NotFound();
+                ExhibitionFormModel? model = await _exhibitionService.GetFormDataByIdAsync(id);
+
+                if (model == null)
+                {
+                    return NotFound();
+                }
+
+                ViewBag.IsNewExhibition = false;
+
+                return View(model);
             }
-
-            ViewBag.IsNewExhibition = false;
-
-            return View(model);
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
 
         [HttpPost]
         [ExhibitionOwnerOrAdministrator]
         public async Task<IActionResult> Edit(int id, ExhibitionFormModel model)
         {
-            if (ModelState.IsValid == false)
-            {
-                return View(id);
-            }
-
             try
             {
+                if (ModelState.IsValid == false)
+                {
+                    return View(id);
+                }
+
                 bool editedSuccessfully = await _exhibitionService.EditExhibitionAsync(id, model);
 
                 if (editedSuccessfully == false)
                 {
                     return NotFound();
                 }
+
+                return RedirectToAction(nameof(Details), new { id });
             }
             catch (Exception)
             {
                 return StatusCode(500);
             }
-
-            return RedirectToAction(nameof(Details), new { id });
         }
 
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
-            ExhibitionDetailsModel? model = await _exhibitionService.GetInfoAsync(id);
-
-            if (model == null)
+            try
             {
-                return NotFound();
+                ExhibitionDetailsModel? model = await _exhibitionService.GetInfoAsync(id);
+
+                if (model == null)
+                {
+                    return NotFound();
+                }
+
+                bool isGalleryOwnerOfExhibition = await _exhibitionService.GalleryUserIsOwnerOfExhibitionAsync(User.Id(), id);
+                ViewBag.GalleryIsOwnerOfExhibition = isGalleryOwnerOfExhibition;
+
+                ViewBag.CurrentUserId = await _authorService.GetIdAsync(User.Id());
+                ViewBag.IsAuthorPartOfExhibition = await _exhibitionService.IsAuthorPartOfExhibitionAsync(User.Id(), id);
+
+                ViewBag.IsAuthorRequestedToJoin = await _exhibitionService.IsAuthorRequestedToJoinExhibitionAsync(User.Id(), id);
+
+                if (isGalleryOwnerOfExhibition)
+                {
+                    model.NotAcceptedAuthors = await _authorService.GetAuthorThumbnailsAsync(id, false);
+                }
+
+                return View(model);
             }
-
-            bool isGalleryOwnerOfExhibition = await _exhibitionService.GalleryUserIsOwnerOfExhibitionAsync(User.Id(), id);
-            ViewBag.GalleryIsOwnerOfExhibition = isGalleryOwnerOfExhibition;
-
-            ViewBag.CurrentUserId = await _authorService.GetIdAsync(User.Id());
-            ViewBag.IsAuthorPartOfExhibition = await _exhibitionService.IsAuthorPartOfExhibitionAsync(User.Id(), id);
-
-            ViewBag.IsAuthorRequestedToJoin = await _exhibitionService.IsAuthorRequestedToJoinExhibitionAsync(User.Id(), id);
-
-            if (isGalleryOwnerOfExhibition)
+            catch (Exception)
             {
-                model.NotAcceptedAuthors = await _authorService.GetAuthorThumbnailsAsync(id, false);
+                return StatusCode(500);
             }
-
-            return View(model);
         }
 
         [HttpGet]
@@ -121,15 +134,15 @@ namespace BlagoevgradArt.Controllers
         [Authorize(Roles = GalleryRole)]
         public async Task<IActionResult> Add(ExhibitionFormModel model)
         {
-            int galleryId = await _galleryService.GetIdAsync(User.Id());
-
-            if (ModelState.IsValid == false)
-            {
-                return View();
-            }
-
             try
             {
+                int galleryId = await _galleryService.GetIdAsync(User.Id());
+
+                if (ModelState.IsValid == false)
+                {
+                    return View();
+                }
+
                 int exhibitionId = await _exhibitionService.SaveExhibitionAsync(galleryId, model);
                 return RedirectToAction(nameof(Details), new { id = exhibitionId });
             }

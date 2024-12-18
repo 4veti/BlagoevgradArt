@@ -1,0 +1,23 @@
+﻿@using BlagoevgradArt.Core.Models.Account
+@using static BlagoevgradArt.Core.Constants.RoleConstants;
+@model RegisterAuthorModel
+@{
+    ViewData["Title"] = "Регистрирай се";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form id="registerForm" method="get">
+            <h2>Избери тип акаунт</h2>
+            <hr />
+            <button id="registerAsAuthor" type="submit" class="w-100 btn btn-lg btn-primary" asp-controller="MyAccount" asp-action="RegisterAuthor">Автор</button>
+            <button id="registerAsGallery" type="submit" class="w-100 btn btn-lg btn-primary" asp-controller="MyAccount" asp-action="RegisterGallery">Галерия</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -8,7 +8,8 @@
         public const int AuthorIdMaxLength = 42;
         public const int YearMinValue = 1900;
 
-        public const int ImagePathMaxLength = 150;
+        public const int ImagePathMaxLength = 200;
+        public const int ImagePathMinLength = 10;
         public const int ImageSizeMaxMb = 32;
 
         public const int ImageDescriptionMinLength = 10;
