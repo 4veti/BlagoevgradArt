@@ -142,7 +142,7 @@ namespace BlagoevgradArt.Infrastructure.Data.Configuration
                 FirstName = "Vladimir",
                 LastName = "Maistora",
                 PhoneNumber = "+359888123456",
-                ProfilePicturePath = "~/Images/Authors/Tsanko_Lavrenov.jpg"
+                ProfilePicturePath = "~/Images/Authors/Vladimir_Dimitrov_Maistora.jpg"
             };
 
             Author2 = new Author()
