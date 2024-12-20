@@ -80,13 +80,12 @@
             <div class="form-group">
                 <label asp-for="ImageFile">Изберете снимка:</label>
                 <input asp-for="ImageFile" type="file" id="imageFile" name="imageFile" />
-                <span asp-validation-for="ImageFile" class="small text-danger"></span>
             </div>
 
             <div class="text-center">
                 <button class="btn btn-primary mt-3" asp-route-information="@Model.GetInformation()" type="submit">Запази</button>
 
-                @if (ViewBag.IsNewPainting == false)
+                @if (ViewBag.IsNewPainting is false)
                 {
                     <input class="btn btn-primary mt-3" type="reset" value="Върни промените" />
                 }

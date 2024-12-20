@@ -87,6 +87,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpGet]
+        [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Edit(int id, string information)
         {
             try
@@ -115,6 +116,7 @@ namespace BlagoevgradArt.Controllers
         }
 
         [HttpPost]
+        [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Edit(int id, PaintingFormModel? model)
         {
             try
@@ -133,6 +135,7 @@ namespace BlagoevgradArt.Controllers
                     model.ArtTypes = await _paintingHelperService.GetArtTypesAsync();
                     model.BaseTypes = await _paintingHelperService.GetBaseTypesAsync();
                     model.Materials = await _paintingHelperService.GetMaterialsAsync();
+                    ViewBag.IsNewPainting = false;
 
                     return View(model);
                 }
@@ -180,6 +183,7 @@ namespace BlagoevgradArt.Controllers
 
         [HttpGet]
         [Authorize(Roles = AuthorRole)]
+        [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Add()
         {
             try
@@ -202,6 +206,7 @@ namespace BlagoevgradArt.Controllers
 
         [HttpPost]
         [Authorize(Roles = AuthorRole)]
+        [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Add(PaintingFormModel model)
         {
             try

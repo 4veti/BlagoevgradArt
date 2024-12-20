@@ -1,11 +1,4 @@
-﻿body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    margin: 0;
-    padding: 0;
-}
-
-.container {
+﻿.container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -29,8 +22,8 @@ p {
 }
 
 .kitten {
-    width: 200px;
-    height: 200px;
+    width: 600;
+    height: 600px;
     margin: 20px 0;
 }
 
