@@ -62,11 +62,6 @@ namespace BlagoevgradArt.Core.Services
                 return;
             }
 
-            if (model.ImageFile == null)
-            {
-                throw new ArgumentNullException();
-            }
-
             painting.Title = model.Title;
             painting.Year = model.Year;
             painting.GenreId = model.GenreId;
